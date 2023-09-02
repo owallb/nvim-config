@@ -14,9 +14,9 @@
     limitations under the License.
 ]]
 
-require('gitsigns').setup(
+require("gitsigns").setup(
     {
-        on_attach = function(bufnr)
+        on_attach = function (bufnr)
             local gs = package.loaded.gitsigns
             local function map(mode, l, r, opts)
                 opts = opts or {}
@@ -42,20 +42,20 @@ require('gitsigns').setup(
             --         }
             --     end
             -- )
-            map('n', '<leader>gv', gs.select_hunk)
+            map("n", "<leader>gv", gs.select_hunk)
             -- map('n', '<C-j>', "&diff ? '<C-j>' : '<cmd>Gitsigns next_hunk<CR>'", {expr=true})
             -- map('n', '<C-k>', "&diff ? '<C-k>' : '<cmd>Gitsigns prev_hunk<CR>'", {expr=true})
-            map({ 'n', 'v' }, '<leader>gr', ':Gitsigns reset_hunk<CR>') -- gs.reset_hunk() doesn't work with selected lines
-            map('n', '<leader>g?', gs.preview_hunk)
-            map('n', '<leader>gb', function()
-                gs.blame_line { full = true }
+            map({ "n", "v", }, "<leader>gr", ":Gitsigns reset_hunk<CR>") -- gs.reset_hunk() doesn't work with selected lines
+            map("n", "<leader>g?", gs.preview_hunk)
+            map("n", "<leader>gb", function ()
+                gs.blame_line { full = true, }
             end)
             -- map('n', '<leader>gd', gs.diffthis)
         end,
         signs = {
             -- default
             -- untracked = { text = '┆' }
-            untracked = { text = '│' }
-        }
+            untracked = { text = "│", },
+        },
     }
 )

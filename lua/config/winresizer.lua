@@ -18,5 +18,5 @@ vim.g.winresizer_vert_resize = "5"
 vim.g.winresizer_horiz_resize = "5"
 vim.g.winresizer_start_key = ""
 
-local opts = { remap = false, silent = true }
-vim.keymap.set('n', "<C-W>r", ":WinResizerStartResize<CR>", opts)
+local opts = { remap = false, silent = true, }
+vim.keymap.set("n", "<C-W>r", ":WinResizerStartResize<CR>", opts)

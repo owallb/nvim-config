@@ -15,16 +15,16 @@
 ]]
 
 return {
-    cmd = { 'lemminx' },
+    cmd = { "lemminx", },
     single_file_support = true,
     init_options = {
         settings = {
             xml = {
-                trace = { server = 'verbose' },
+                trace = { server = "verbose", },
                 catalogs = {},
                 logs = {
                     client = false,
-                    file = '/home/oscar/lsp4xml.log'
+                    file = "/home/oscar/lsp4xml.log",
                 },
                 format = {
                     splitAttributes = true,
@@ -32,9 +32,9 @@ return {
                     joinContentLines = true,
                     joinCommentLines = false,
                     spaceBeforeEmptyCloseLine = false,
-                    enabled = true
-                }
-            }
-        }
-    }
+                    enabled = true,
+                },
+            },
+        },
+    },
 }

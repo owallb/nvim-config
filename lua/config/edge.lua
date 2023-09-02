@@ -14,20 +14,20 @@
     limitations under the License.
 ]]
 
-vim.g.edge_style = 'default'
+vim.g.edge_style = "default"
 vim.g.edge_disable_italic_comment = 0
 vim.g.edge_enable_italic = 0
-vim.g.edge_cursor = 'auto'
+vim.g.edge_cursor = "auto"
 vim.g.edge_transparent_background = 0
-vim.g.edge_menu_selection_background = 'blue'
-vim.g.edge_spell_foreground = 'none'
+vim.g.edge_menu_selection_background = "blue"
+vim.g.edge_spell_foreground = "none"
 vim.g.edge_show_eob = 1
 vim.g.edge_diagnostic_text_highlight = 0
 vim.g.edge_diagnostic_line_highlight = 1
-vim.g.edge_diagnostic_virtual_text = 'grey'
-vim.g.edge_current_word = 'grey background'
+vim.g.edge_diagnostic_virtual_text = "grey"
+vim.g.edge_current_word = "grey background"
 vim.g.edge_disable_terminal_colors = 0
 vim.g.edge_lightline_disable_bold = 0
 vim.g.edge_better_performance = 1
 
-vim.fn.execute('colorscheme edge')
+vim.fn.execute("colorscheme edge")

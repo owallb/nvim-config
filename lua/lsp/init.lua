@@ -21,7 +21,7 @@ P._language_servers = nil
 
 P.capabilities = {}
 
-P.spec = require('lsp.spec')
+P.spec = require("lsp.spec")
 
 function P._setup_diagnostic()
     vim.diagnostic.config({
@@ -35,44 +35,44 @@ function P._setup_diagnostic()
         -- },
         float = {
             show_header = false,
-            source = 'if_many',
-            border = 'rounded',
+            source = "if_many",
+            border = "rounded",
             focusable = false,
-            format = function(diagnostic)
-                return string.format('%s', diagnostic.message)
-            end
+            format = function (diagnostic)
+                return string.format("%s", diagnostic.message)
+            end,
 
         },
         update_in_insert = false, -- default to false
-        severity_sort = true      -- default to false
+        severity_sort = true,     -- default to false
     })
     -- Change diagnostic icons
-    vim.fn.sign_define('DiagnosticSignError', {
-        text = 'E',
-        texthl = 'DiagnosticSignError',
+    vim.fn.sign_define("DiagnosticSignError", {
+        text = "E",
+        texthl = "DiagnosticSignError",
         -- culhl = 'DiagnosticSignError',
-        numhl = 'DiagnosticSignError'
+        numhl = "DiagnosticSignError",
         -- linehl = 'LspDiagnosticsUnderlineError'
     })
-    vim.fn.sign_define('DiagnosticSignWarn', {
-        text = 'W',
-        texthl = 'DiagnosticSignWarn',
+    vim.fn.sign_define("DiagnosticSignWarn", {
+        text = "W",
+        texthl = "DiagnosticSignWarn",
         -- culhl = 'DiagnosticSignWarn',
-        numhl = 'DiagnosticSignWarn'
+        numhl = "DiagnosticSignWarn",
         -- linehl = 'LspDiagnosticsUnderlineWarning'
     })
-    vim.fn.sign_define('DiagnosticSignHint', {
-        text = 'H',
-        texthl = 'DiagnosticSignHint',
+    vim.fn.sign_define("DiagnosticSignHint", {
+        text = "H",
+        texthl = "DiagnosticSignHint",
         -- culhl = 'DiagnosticSignHint',
-        numhl = 'DiagnosticSignHint'
+        numhl = "DiagnosticSignHint",
         -- linehl = 'LspDiagnosticsUnderlineHint'
     })
-    vim.fn.sign_define('DiagnosticSignInfo', {
-        text = 'i',
-        texthl = 'DiagnosticSignInfo',
+    vim.fn.sign_define("DiagnosticSignInfo", {
+        text = "i",
+        texthl = "DiagnosticSignInfo",
         -- culhl = 'DiagnosticSignInfo',
-        numhl = 'DiagnosticSignInfo'
+        numhl = "DiagnosticSignInfo",
         -- linehl = 'LspDiagnosticsUnderlineInfo'
     })
 
@@ -85,9 +85,9 @@ function P.on_attach(client, bufnr)
     -- Enable completion triggered by <c-x><c-o>
     -- Disabled in favor of nvim-cmp
     -- vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
-    require('lsp_signature').on_attach({
+    require("lsp_signature").on_attach({
         debug = false,                                              -- set to true to enable debug logging
-        log_path = vim.fn.stdpath('cache') .. '/lsp_signature.log', -- log dir when debug is on
+        log_path = vim.fn.stdpath("cache") .. "/lsp_signature.log", -- log dir when debug is on
         -- default is  ~/.cache/nvim/lsp_signature.log
         verbose = false,                                            -- show debug line number
 
@@ -115,11 +115,11 @@ function P.on_attach(client, bufnr)
         close_timeout = nil, -- close floating window after ms when laster parameter is entered
         fix_pos = false, -- set to true, the floating window will not auto-close until finish all parameters
         hint_enable = false, -- virtual hint enable
-        hint_prefix = '🐼 ', -- Panda for parameter, NOTE: for the terminal not support emoji, might crash
-        hint_scheme = 'String',
-        hi_parameter = 'IncSearch', -- default 'LspSignatureActiveParameter', -- how your parameter will be highlight
+        hint_prefix = "🐼 ", -- Panda for parameter, NOTE: for the terminal not support emoji, might crash
+        hint_scheme = "String",
+        hi_parameter = "IncSearch", -- default 'LspSignatureActiveParameter', -- how your parameter will be highlight
         handler_opts = {
-            border = 'none' -- double, rounded, single, shadow, none
+            border = "none", -- double, rounded, single, shadow, none
         },
 
         always_trigger = true,      -- sometime show signature on new line or in middle of parameter can be confusing, set it to false for #58
@@ -128,80 +128,80 @@ function P.on_attach(client, bufnr)
         extra_trigger_chars = {},   -- Array of extra characters that will trigger signature completion, e.g., {"(", ","}
         zindex = 200,               -- by default it will be on top of all floating windows, set to <= 50 send it to bottom
 
-        padding = '',               -- character to pad on left and right of signature can be ' ', or '|'  etc
+        padding = "",               -- character to pad on left and right of signature can be ' ', or '|'  etc
 
         transparency = nil,         -- disabled by default, allow floating win transparent value 1~100
         shadow_blend = 36,          -- if you using shadow as border use this set the opacity
-        shadow_guibg = 'Black',     -- if you using shadow as border use this set the color e.g. 'Green' or '#121315'
+        shadow_guibg = "Black",     -- if you using shadow as border use this set the color e.g. 'Green' or '#121315'
         timer_interval = 200,       -- default timer check interval set to lower value if you want to reduce latency
-        toggle_key = '<C-e>',       -- toggle signature on and off in insert mode,  e.g. toggle_key = '<M-x>'
+        toggle_key = "<C-e>",       -- toggle signature on and off in insert mode,  e.g. toggle_key = '<M-x>'
 
         select_signature_key = nil, -- cycle to next signature, e.g. '<M-n>' function overloading
-        move_cursor_key = '<C-s>'   -- imap, use nvim_set_current_win to move cursor between current win and floating
+        move_cursor_key = "<C-s>",  -- imap, use nvim_set_current_win to move cursor between current win and floating
     }, bufnr)
     -- Mappings.
     -- See `:help vim.lsp.*` for documentation on any of the below functions
-    local opts = { noremap = true, silent = true }
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', 'L',
-        '<cmd>lua vim.diagnostic.open_float()<CR>', opts)
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', '[d',
-        '<cmd>lua vim.diagnostic.goto_prev()<CR>', opts)
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', ']d',
-        '<cmd>lua vim.diagnostic.goto_next()<CR>', opts)
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>ll',
-        '<cmd>lua vim.diagnostic.setloclist()<CR>', opts)
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gD',
-        '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gd',
-        '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', 'K',
-        '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gi',
-        '<cmd>lua vim.lsp.buf.implementation()<CR>',
+    local opts = { noremap = true, silent = true, }
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "L",
+        "<cmd>lua vim.diagnostic.open_float()<CR>", opts)
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "[d",
+        "<cmd>lua vim.diagnostic.goto_prev()<CR>", opts)
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "]d",
+        "<cmd>lua vim.diagnostic.goto_next()<CR>", opts)
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>ll",
+        "<cmd>lua vim.diagnostic.setloclist()<CR>", opts)
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "gD",
+        "<cmd>lua vim.lsp.buf.declaration()<CR>", opts)
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "gd",
+        "<cmd>lua vim.lsp.buf.definition()<CR>", opts)
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "K",
+        "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "gi",
+        "<cmd>lua vim.lsp.buf.implementation()<CR>",
         opts)
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>s',
-        '<cmd>lua vim.lsp.buf.signature_help()<CR>',
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>s",
+        "<cmd>lua vim.lsp.buf.signature_help()<CR>",
         opts)
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>wa',
-        '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>',
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>wa",
+        "<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>",
         opts)
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>wr',
-        '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>',
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>wr",
+        "<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>",
         opts)
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>wl',
-        '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>',
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>wl",
+        "<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>",
         opts)
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gt',
-        '<cmd>lua vim.lsp.buf.type_definition()<CR>',
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "gt",
+        "<cmd>lua vim.lsp.buf.type_definition()<CR>",
         opts)
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>rn',
-        '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>ca',
-        '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', 'gr',
-        '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-    vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>lf',
-        '<cmd>lua vim.lsp.buf.format({async = true})<CR>',
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>rn",
+        "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>ca",
+        "<cmd>lua vim.lsp.buf.code_action()<CR>", opts)
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "gr",
+        "<cmd>lua vim.lsp.buf.references()<CR>", opts)
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>lf",
+        "<cmd>lua vim.lsp.buf.format({async = true})<CR>",
         opts)
     -- if client.server_capabilities.document_range_formatting then
-    vim.api.nvim_buf_set_keymap(bufnr, 'v', '<leader>lf',
-        '<cmd>lua vim.lsp.buf.format({async = true})<CR>',
+    vim.api.nvim_buf_set_keymap(bufnr, "v", "<leader>lf",
+        "<cmd>lua vim.lsp.buf.format({async = true})<CR>",
         opts)
     -- end
 
     -- The below command will highlight the current variable and its usages in the buffer.
     if client.server_capabilities.document_highlight then
-        vim.fn.execute('hi! link LspReferenceRead Visual')
-        vim.fn.execute('hi! link LspReferenceText Visual')
-        vim.fn.execute('hi! link LspReferenceWrite Visual')
-        vim.api.nvim_create_augroup('lsp_document_highlight', { clear = true })
-        vim.api.nvim_create_autocmd('CursorHold', {
+        vim.fn.execute("hi! link LspReferenceRead Visual")
+        vim.fn.execute("hi! link LspReferenceText Visual")
+        vim.fn.execute("hi! link LspReferenceWrite Visual")
+        vim.api.nvim_create_augroup("lsp_document_highlight", { clear = true, })
+        vim.api.nvim_create_autocmd("CursorHold", {
             buffer = bufnr,
-            callback = vim.lsp.buf.document_highlight
+            callback = vim.lsp.buf.document_highlight,
         })
-        vim.api.nvim_create_autocmd('CursorMoved', {
+        vim.api.nvim_create_autocmd("CursorMoved", {
             buffer = bufnr,
-            callback = vim.lsp.buf.clear_references
+            callback = vim.lsp.buf.clear_references,
         })
     end
     -- Auto show current line diagnostics after 300 ms
@@ -223,11 +223,11 @@ function P.reload_server_buf(self, name)
     end
     for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
         if vim.api.nvim_buf_is_loaded(bufnr) then
-            local buf_ft = vim.api.nvim_get_option_value('filetype', { buf = bufnr })
+            local buf_ft = vim.api.nvim_get_option_value("filetype", { buf = bufnr, })
             if ft_map[buf_ft] then
                 vim.api.nvim_buf_call(
                     bufnr,
-                    function() vim.cmd('e') end
+                    function () vim.cmd("e") end
                 )
             end
         end
@@ -263,9 +263,9 @@ function P.language_servers(self)
 end
 
 function P.setup_server(self, server)
-    local lspconfig = require('lspconfig')
+    local lspconfig = require("lspconfig")
     local server_spec = self.spec[server]
-    local cfg = require('lsp.config.' .. server)
+    local cfg = require("lsp.config." .. server)
     cfg.filetypes = server_spec.filetypes
     cfg.root_dir = lspconfig.util.find_git_ancestor
     cfg.capabilities = self.capabilities
@@ -275,12 +275,12 @@ end
 
 function P.setup(self)
     self._setup_diagnostic()
-    P.capabilities = require('cmp_nvim_lsp').default_capabilities()
+    P.capabilities = require("cmp_nvim_lsp").default_capabilities()
     require("mason-lspconfig").setup_handlers({
-        function(name)
+        function (name)
             self:setup_server(name)
             self:reload_server_buf(name)
-        end
+        end,
     })
 end
 

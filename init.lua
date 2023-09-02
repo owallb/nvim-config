@@ -14,7 +14,7 @@
     limitations under the License.
 ]]
 
-local files = { 'globals', 'options', 'autocommands', 'mappings' }
+local files = { "globals", "options", "autocommands", "mappings", }
 
 for _, file in ipairs(files) do
     local pkg = "core." .. file
@@ -29,14 +29,14 @@ end
 if vim.g.vscode then
     -- VSCode extension
 else
-    local ok, err = pcall(require, 'bootstrap')
+    local ok, err = pcall(require, "bootstrap")
     if not ok then
         print("Error during bootstrap")
         print(err:gsub("\t", "  "))
         return
     end
 
-    ok, err = pcall(require, 'plugins')
+    ok, err = pcall(require, "plugins")
     if not ok then
         print("Error while loading plugins")
         print(err:gsub("\t", "  "))

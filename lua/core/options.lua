@@ -35,7 +35,7 @@ vim.opt.foldlevelstart = 99
 vim.opt.foldmethod = "indent"
 vim.opt.foldignore = ""
 vim.opt.guifont = "JetBrains Mono:11"
-vim.opt.completeopt:append({ "menu", "menuone", "preview", "noinsert" })
+vim.opt.completeopt:append({ "menu", "menuone", "preview", "noinsert", })
 -- Max number of items
 vim.opt.pumheight = 20
 -- pseudo transparency for completion menu
@@ -44,7 +44,7 @@ vim.opt.pumblend = 10
 vim.opt.winblend = 5
 -- set nowrap
 vim.opt.clipboard:append("unnamedplus")
-vim.opt.matchpairs:append({ "<:>", "':'", "\":\"" })
+vim.opt.matchpairs:append({ "<:>", "':'", "\":\"", })
 vim.opt.fileencoding = "utf-8"
 -- Only relevant with wrap enabled (default)
 vim.opt.linebreak = true
@@ -61,7 +61,7 @@ vim.opt.undofile = true
 -- kspell is only relevant if ':set spell' is toggled on, e.g. when editing
 -- documents
 vim.opt.complete:append("kspell")
-vim.opt.complete:remove({ "w", "b", "u", "t" })
+vim.opt.complete:remove({ "w", "b", "u", "t", })
 vim.opt.spelllang = "en"
 -- Align indent to next multiple value of shiftwidth.
 -- E.g., only insert as many spaces necessary for reaching the next shiftwidth
@@ -83,7 +83,7 @@ vim.opt.diffopt:append("closeoff")
 vim.opt.diffopt:append("internal")
 -- These make diffs easier to read, please see the following:
 -- https://vimways.org/2018/the-power-of-diff/
-vim.opt.diffopt:append({ "indent-heuristic", "algorithm:histogram" })
+vim.opt.diffopt:append({ "indent-heuristic", "algorithm:histogram", })
 vim.fn.execute("filetype plugin on")
 vim.opt.hlsearch = false
 vim.opt.laststatus = 3

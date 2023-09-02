@@ -15,8 +15,8 @@
 ]]
 
 return {
-    cmd = { "golangci-lint-langserver" },
+    cmd = { "golangci-lint-langserver", },
     init_options = {
-        command = { "golangci-lint", "run", "--out-format", "json" }
-    }
+        command = { "golangci-lint", "run", "--out-format", "json", },
+    },
 }

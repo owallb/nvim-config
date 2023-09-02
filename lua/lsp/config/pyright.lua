@@ -15,7 +15,7 @@
 ]]
 
 return {
-    cmd = { 'pyright-langserver', '--stdio' },
+    cmd = { "pyright-langserver", "--stdio", },
     single_file_support = true,
     -- see https://github.com/microsoft/pyright/blob/main/docs/configuration.md
     -- and https://github.com/fannheyward/coc-pyright
@@ -26,14 +26,14 @@ return {
             analysis = {
                 autoImportCompletions = true,
                 autoSearchPaths = true,
-                diagnosticMode = 'workspace',
-                stubPath = 'typings',
+                diagnosticMode = "workspace",
+                stubPath = "typings",
                 typeschedPaths = {},
                 diagnosticSeverityOverrides = {},
-                typeCheckingMode = 'off',
-                useLibraryCodeForTypes = true
+                typeCheckingMode = "off",
+                useLibraryCodeForTypes = true,
             },
-            completion = { importSupport = true, snippetSupport = true }
-        }
-    }
+            completion = { importSupport = true, snippetSupport = true, },
+        },
+    },
 }

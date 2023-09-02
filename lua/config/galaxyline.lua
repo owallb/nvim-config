@@ -14,6 +14,6 @@
     limitations under the License.
 ]]
 
-local gl = require('galaxyline')
+local gl = require("galaxyline")
 
 -- maybe some other day

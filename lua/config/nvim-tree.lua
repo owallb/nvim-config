@@ -14,7 +14,7 @@
     limitations under the License.
 ]]
 
-local nvim_tree = require('nvim-tree')
+local nvim_tree = require("nvim-tree")
 
 nvim_tree.setup({
     auto_reload_on_write = true,
@@ -121,7 +121,7 @@ nvim_tree.setup({
                 },
             },
         },
-        special_files = { "Cargo.toml", "Makefile", "README.md", "readme.md" },
+        special_files = { "Cargo.toml", "Makefile", "README.md", "readme.md", },
         symlink_destination = true,
     },
     hijack_directories = {
@@ -132,7 +132,7 @@ nvim_tree.setup({
         enable = true,
         update_root = true,
         ignore_list = {
-            'help'
+            "help",
         },
     },
     -- ignore_ft_on_setup = {},
@@ -193,8 +193,8 @@ nvim_tree.setup({
                 enable = true,
                 chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
                 exclude = {
-                    filetype = { "notify", "packer", "qf", "diff", "fugitive", "fugitiveblame" },
-                    buftype = { "nofile", "terminal", "help" },
+                    filetype = { "notify", "packer", "qf", "diff", "fugitive", "fugitiveblame", },
+                    buftype = { "nofile", "terminal", "help", },
                 },
             },
         },
@@ -226,5 +226,5 @@ nvim_tree.setup({
     },
 })
 
-local opts = { remap = false, silent = true }
-vim.keymap.set('n', "<leader>tt", function() nvim_tree.toggle(false, true) end, opts)
+local opts = { remap = false, silent = true, }
+vim.keymap.set("n", "<leader>tt", function () nvim_tree.toggle(false, true) end, opts)

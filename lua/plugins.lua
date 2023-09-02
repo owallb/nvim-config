@@ -18,43 +18,43 @@ vim.loader.enable()
 
 local plugins = {
     {
-        'Mofiqul/vscode.nvim',
+        "Mofiqul/vscode.nvim",
         priority = 1000,
         lazy = false,
-        config = function() require('config.vscode') end
+        config = function () require("config.vscode") end,
     },
     {
-        'rafamadriz/friendly-snippets',
+        "rafamadriz/friendly-snippets",
     },
     {
-        'L3MON4D3/LuaSnip',
-        config = function() require('config.luasnip') end,
+        "L3MON4D3/LuaSnip",
+        config = function () require("config.luasnip") end,
         -- dependencies = { 'rafamadriz/friendly-snippets' },
         -- comment out on windows and install jsregexp manually
         build = "make install_jsregexp",
         version = "2.*",
     },
     {
-        'windwp/nvim-autopairs',
-        config = function() require('config.nvim-autopairs') end
+        "windwp/nvim-autopairs",
+        config = function () require("config.nvim-autopairs") end,
     },
     {
-        'saadparwaiz1/cmp_luasnip',
+        "saadparwaiz1/cmp_luasnip",
     },
     {
-        'hrsh7th/cmp-buffer',
+        "hrsh7th/cmp-buffer",
     },
     {
-        'hrsh7th/cmp-path',
+        "hrsh7th/cmp-path",
     },
     {
-        'hrsh7th/cmp-cmdline',
+        "hrsh7th/cmp-cmdline",
     },
     {
-        'onsails/lspkind-nvim',
+        "onsails/lspkind-nvim",
     },
     {
-        'hrsh7th/nvim-cmp',
+        "hrsh7th/nvim-cmp",
         -- dependencies = {
         --     'L3MON4D3/LuaSnip',
         --     'windwp/nvim-autopairs',
@@ -64,33 +64,33 @@ local plugins = {
         --     'hrsh7th/cmp-cmdline',
         --     'onsails/lspkind-nvim',
         -- },
-        config = function() require('config.nvim-cmp') end
+        config = function () require("config.nvim-cmp") end,
     },
     {
-        'hrsh7th/cmp-nvim-lsp',
+        "hrsh7th/cmp-nvim-lsp",
         -- dependencies = {
         --     'hrsh7th/nvim-cmp'
         -- },
     },
     {
         "williamboman/mason.nvim",
-        config = function() require('config.mason') end
+        config = function () require("config.mason") end,
     },
     {
-        'williamboman/mason-lspconfig.nvim',
-        config = function() require('config.mason-lspconfig') end,
+        "williamboman/mason-lspconfig.nvim",
+        config = function () require("config.mason-lspconfig") end,
         -- dependencies = { 'williamboman/mason.nvim' },
     },
     {
-        'ray-x/lsp_signature.nvim',
+        "ray-x/lsp_signature.nvim",
         event = "VeryLazy",
-        config = function() require('config.lsp_signature') end
+        config = function () require("config.lsp_signature") end,
     },
     {
-        'neovim/nvim-lspconfig',
-        config = function() require('lsp'):setup() end,
+        "neovim/nvim-lspconfig",
+        config = function () require("lsp"):setup() end,
         lazy = true,
-        ft = require('lsp'):filetypes(),
+        ft = require("lsp"):filetypes(),
         -- dependencies = {
         --     'williamboman/mason-lspconfig.nvim',
         --     'ray-x/lsp_signature.nvim',
@@ -98,110 +98,110 @@ local plugins = {
         -- },
     },
     {
-        'nvim-treesitter/nvim-treesitter',
-        config = function() require('config.nvim-treesitter') end,
+        "nvim-treesitter/nvim-treesitter",
+        config = function () require("config.nvim-treesitter") end,
         lazy = true,
-        event = 'VimEnter',
-        build = ':TSUpdate'
+        event = "VimEnter",
+        build = ":TSUpdate",
     },
     {
-        'mfussenegger/nvim-dap',
-        config = function() require('config.nvim-dap') end,
+        "mfussenegger/nvim-dap",
+        config = function () require("config.nvim-dap") end,
         lazy = true,
-        ft = require('lsp'):filetypes(),
+        ft = require("lsp"):filetypes(),
     },
     {
-        'rcarriga/nvim-dap-ui',
+        "rcarriga/nvim-dap-ui",
         -- dependencies = { 'mfussenegger/nvim-dap' },
-        config = function() require('config.nvim-dap-ui') end
+        config = function () require("config.nvim-dap-ui") end,
     },
     {
-        'kyazdani42/nvim-web-devicons'
+        "kyazdani42/nvim-web-devicons",
     },
     {
-        'tpope/vim-fugitive',
-        config = function() require('config.fugitive') end,
+        "tpope/vim-fugitive",
+        config = function () require("config.fugitive") end,
         lazy = true,
-        event = 'VimEnter'
+        event = "VimEnter",
     },
     {
-        'rbong/vim-flog',
+        "rbong/vim-flog",
         -- dependencies = { 'tpope/vim-fugitive' },
-        config = function() require('config.flog') end
+        config = function () require("config.flog") end,
     },
     {
-        'nvim-lualine/lualine.nvim',
+        "nvim-lualine/lualine.nvim",
         -- dependencies = { 'kyazdani42/nvim-web-devicons', 'vim-fugitive' },
-        config = function() require('config.lualine') end,
+        config = function () require("config.lualine") end,
         lazy = true,
-        event = 'VimEnter'
+        event = "VimEnter",
     },
     {
-        'akinsho/bufferline.nvim',
+        "akinsho/bufferline.nvim",
         -- dependencies = { 'kyazdani42/nvim-web-devicons' },
-        config = function() require('config.bufferline') end,
+        config = function () require("config.bufferline") end,
         lazy = true,
-        event = 'VimEnter'
+        event = "VimEnter",
     },
     {
-        'nvim-lua/plenary.nvim'
+        "nvim-lua/plenary.nvim",
     },
     {
-        'lewis6991/gitsigns.nvim',
+        "lewis6991/gitsigns.nvim",
         -- dependencies = { 'nvim-lua/plenary.nvim' },
-        config = function() require('config.gitsigns') end,
+        config = function () require("config.gitsigns") end,
         lazy = true,
-        event = 'VimEnter'
+        event = "VimEnter",
     },
     {
-        'nvim-telescope/telescope.nvim',
+        "nvim-telescope/telescope.nvim",
         -- dependencies = { 'nvim-lua/plenary.nvim' },
-        config = function() require('config.telescope') end,
+        config = function () require("config.telescope") end,
         lazy = true,
-        event = 'VimEnter'
+        event = "VimEnter",
     },
     {
-        'numToStr/Comment.nvim',
-        config = function() require('config.comment') end,
+        "numToStr/Comment.nvim",
+        config = function () require("config.comment") end,
         lazy = true,
-        event = 'VimEnter'
+        event = "VimEnter",
     },
     {
-        'Yggdroot/indentLine',
-        config = function() require('config.indentLine') end,
+        "Yggdroot/indentLine",
+        config = function () require("config.indentLine") end,
         lazy = true,
-        event = 'VimEnter'
+        event = "VimEnter",
     },
     {
-        'simeji/winresizer',
-        config = function() require('config.winresizer') end,
+        "simeji/winresizer",
+        config = function () require("config.winresizer") end,
         lazy = true,
-        keys = { '<C-W>r' }
+        keys = { "<C-W>r", },
     },
     {
-        'sindrets/winshift.nvim',
-        config = function() require('config.winshift') end,
+        "sindrets/winshift.nvim",
+        config = function () require("config.winshift") end,
         lazy = true,
-        keys = { '<C-W>m' }
+        keys = { "<C-W>m", },
     },
     {
-        'martinda/Jenkinsfile-vim-syntax',
+        "martinda/Jenkinsfile-vim-syntax",
         lazy = true,
-        ft = { 'jenkinsfile', 'Jenkinsfile' }
+        ft = { "jenkinsfile", "Jenkinsfile", },
     },
     {
-        'kyazdani42/nvim-tree.lua',
-        config = function() require('config.nvim-tree') end
+        "kyazdani42/nvim-tree.lua",
+        config = function () require("config.nvim-tree") end,
     },
     {
-        'dstein64/vim-startuptime',
+        "dstein64/vim-startuptime",
         lazy = true,
-        event = 'VimEnter'
+        event = "VimEnter",
     },
     {
-        'stevearc/aerial.nvim',
-        config = function() require('config.aerial') end
-    }
+        "stevearc/aerial.nvim",
+        config = function () require("config.aerial") end,
+    },
 }
 
 local opts = {
@@ -210,4 +210,4 @@ local opts = {
     -- }
 }
 
-require('lazy').setup(plugins, opts)
+require("lazy").setup(plugins, opts)

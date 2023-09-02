@@ -16,8 +16,8 @@
 
 return {
     cmd = {
-        'java', '-jar',
-        '/usr/share/java/groovy-language-server/groovy-language-server-all.jar'
+        "java", "-jar",
+        "/usr/share/java/groovy-language-server/groovy-language-server-all.jar",
     },
-    single_file_support = true
+    single_file_support = true,
 }

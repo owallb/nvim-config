@@ -17,14 +17,14 @@
 require("aerial").setup({
     -- Priority list of preferred backends for aerial.
     -- This can be a filetype map (see :help aerial-filetype-map)
-    backends = { "treesitter", "lsp", "markdown" },
+    backends = { "treesitter", "lsp", "markdown", },
 
     layout = {
         -- These control the width of the aerial window.
         -- They can be integers or a float between 0 and 1 (e.g. 0.4 for 40%)
         -- min_width and max_width can be a list of mixed types.
         -- max_width = {40, 0.2} means "the lesser of 40 columns or 20% of total"
-        max_width = { 40, 0.2 },
+        max_width = { 40, 0.2, },
         width = nil,
         min_width = 40,
 
@@ -159,15 +159,15 @@ require("aerial").setup({
 
     -- Call this function when aerial attaches to a buffer.
     -- Useful for setting keymaps. Takes a single `bufnr` argument.
-    on_attach = function(bufnr)
+    on_attach = function (bufnr)
         -- Toggle the aerial window with <leader>a
-        vim.api.nvim_buf_set_keymap(bufnr, 'n', '<leader>at', '<cmd>AerialToggle!<CR>', {})
+        vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>at", "<cmd>AerialToggle!<CR>", {})
         -- Jump forwards/backwards with '{' and '}'
-        vim.api.nvim_buf_set_keymap(bufnr, 'n', '{', '<cmd>AerialPrev<CR>', {})
-        vim.api.nvim_buf_set_keymap(bufnr, 'n', '}', '<cmd>AerialNext<CR>', {})
+        vim.api.nvim_buf_set_keymap(bufnr, "n", "{", "<cmd>AerialPrev<CR>", {})
+        vim.api.nvim_buf_set_keymap(bufnr, "n", "}", "<cmd>AerialNext<CR>", {})
         -- Jump up the tree with '[[' or ']]'
-        vim.api.nvim_buf_set_keymap(bufnr, 'n', '[[', '<cmd>AerialPrevUp<CR>', {})
-        vim.api.nvim_buf_set_keymap(bufnr, 'n', ']]', '<cmd>AerialNextUp<CR>', {})
+        vim.api.nvim_buf_set_keymap(bufnr, "n", "[[", "<cmd>AerialPrevUp<CR>", {})
+        vim.api.nvim_buf_set_keymap(bufnr, "n", "]]", "<cmd>AerialNextUp<CR>", {})
     end,
 
     -- Call this function when aerial first sets symbols on a buffer.
@@ -219,9 +219,9 @@ require("aerial").setup({
         -- min_height = {8, 0.1} means "the greater of 8 rows or 10% of total"
         max_height = 0.9,
         height = nil,
-        min_height = { 8, 0.1 },
+        min_height = { 8, 0.1, },
 
-        override = function(conf, source_winid)
+        override = function (conf, source_winid)
             -- This is the config that will be passed to nvim_open_win.
             -- Change values here to customize the layout
             return conf

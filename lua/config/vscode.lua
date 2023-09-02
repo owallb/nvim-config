@@ -24,8 +24,8 @@
 -- vim.fn.execute("colorscheme vscode")
 
 -- local c = require('vscode.colors')
-require('vscode').setup({
-    style = 'dark',
+require("vscode").setup({
+    style = "dark",
 
     -- Enable transparent background
     transparent = false,
@@ -46,7 +46,7 @@ require('vscode').setup({
         -- this supports the same val table as vim.api.nvim_set_hl
         -- use colors from this colorscheme by requiring vscode.colors!
         -- Cursor = { fg=c.vscDarkBlue, bg=c.vscLightGreen, bold=true },
-    }
+    },
 })
 
-require('vscode').load()
+require("vscode").load()

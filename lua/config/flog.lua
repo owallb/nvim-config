@@ -14,4 +14,4 @@
     limitations under the License.
 ]]
 
-vim.keymap.set('n', "<leader>gl", ":Flog<CR>", { remap = false, silent = true })
+vim.keymap.set("n", "<leader>gl", ":Flog<CR>", { remap = false, silent = true, })

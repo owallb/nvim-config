@@ -15,7 +15,7 @@
 ]]
 
 return {
-    cmd = { "gopls", "serve" },
+    cmd = { "gopls", "serve", },
     -- https://github.com/golang/tools/blob/master/gopls/doc/settings.md
     settings = {
         gopls = {
@@ -27,7 +27,7 @@ return {
                 run_vulncheck_exp = true,
                 tidy = true,
                 upgrade_dependency = true,
-                vendor = true
+                vendor = true,
             },
             usePlaceholders = true,
             analyses = {
@@ -77,8 +77,8 @@ return {
                 undeclaredname = true,
                 unusedvariable = true,
                 fillstruct = true,
-                stubmethods = true
-            }
-        }
-    }
+                stubmethods = true,
+            },
+        },
+    },
 }

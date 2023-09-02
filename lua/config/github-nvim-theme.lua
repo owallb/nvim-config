@@ -14,9 +14,9 @@
     limitations under the License.
 ]]
 
-require('github-theme').setup(
+require("github-theme").setup(
     {
-        theme_style = 'dimmed',
+        theme_style = "dimmed",
         transparent = false,
         hide_end_of_buffer = false,
         hide_inactive_statusline = false,
@@ -24,20 +24,20 @@ require('github-theme').setup(
         dev = false,
 
         -- styles
-        comment_style = 'italic',
-        function_style = 'NONE',
-        keyword_style = 'NONE',
-        msg_area_style = 'NONE',
-        variable_style = 'NONE',
+        comment_style = "italic",
+        function_style = "NONE",
+        keyword_style = "NONE",
+        msg_area_style = "NONE",
+        variable_style = "NONE",
 
         -- sidebars
         sidebars = {
-            'qf',
-            'vista_kind',
-            'terminal',
-            'packer',
-            'aerial',
-            'NvimTree'
+            "qf",
+            "vista_kind",
+            "terminal",
+            "packer",
+            "aerial",
+            "NvimTree",
         },
 
         -- Change the "hint" color to the "orange" color, and make the "error" color bright red

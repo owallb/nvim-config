@@ -15,8 +15,8 @@
 ]]
 
 -- more options at https://www.jetbrains.com/lp/mono/
-vim.g.indentLine_char = '▏'
+vim.g.indentLine_char = "▏"
 -- Disable conceal for some syntax plugins
 vim.g.vim_json_conceal = 0
 vim.g.markdown_syntax_conceal = 0
-vim.g.indentLine_fileTypeExclude = { 'NvimTree' }
+vim.g.indentLine_fileTypeExclude = { "NvimTree", }

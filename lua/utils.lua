@@ -29,7 +29,7 @@ function M.exec(cmd)
     local out = vim.fn.system(cmd)
     local rc = vim.v.shell_error
 
-    return { out = out, rc = rc }
+    return { out = out, rc = rc, }
 end
 
 function M.get_color(group, attr)
@@ -39,8 +39,8 @@ end
 function M.get_hl(name)
     local ok, hl = pcall(vim.api.nvim_get_hl_by_name, name, true)
     if not ok then return end
-    for _, key in pairs({ 'foreground', 'background', 'special' }) do
-        if hl[key] then hl[key] = string.format('#%06x', hl[key]) end
+    for _, key in pairs({ "foreground", "background", "special", }) do
+        if hl[key] then hl[key] = string.format("#%06x", hl[key]) end
     end
     return hl
 end
@@ -79,7 +79,7 @@ end
 --- @param exes table: Array of exes
 function M.assert_any_available(exes)
     if not M.any_available(exes) then
-        error('At least one of the following is required:\n' .. table.concat(exes, ', '))
+        error("At least one of the following is required:\n" .. table.concat(exes, ", "))
     end
 end
 

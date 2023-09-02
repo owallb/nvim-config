@@ -15,7 +15,7 @@
 ]]
 
 return {
-    cmd = { 'pylsp' },
+    cmd = { "pylsp", },
     single_file_support = true,
     -- Reference: https://github.com/python-lsp/python-lsp-server/blob/develop/CONFIGURATION.md
     settings = {
@@ -23,11 +23,11 @@ return {
             -- configurationSources = { "flake8", "jedi_completion", "jedi_definition", "jedi_hover", "jedi_references", "jedi_signature_help", "jedi_symbols" },
             plugins = {
                 flake8 = {
-                    config = 'tox.ini',
-                    enabled = true
+                    config = "tox.ini",
+                    enabled = true,
                     -- executable = "flake8"
                 },
-                pyls_isort = { enabled = true },
+                pyls_isort = { enabled = true, },
                 jedi_completion = {
                     enabled = true,
                     include_params = false,
@@ -36,26 +36,26 @@ return {
                     eager = true,
                     resolve_at_most = 25,
                     cache_for = {
-                        'pandas',
-                        'numpy',
-                        'tensorflow',
-                        'matplotlib'
-                    }
+                        "pandas",
+                        "numpy",
+                        "tensorflow",
+                        "matplotlib",
+                    },
                 },
                 jedi_definition = {
                     enabled = true,
                     follow_imports = true,
-                    follow_builtin_imports = true
+                    follow_builtin_imports = true,
                 },
-                jedi_hover = { enabled = true },
-                jedi_references = { enabled = true },
-                jedi_signature_help = { enabled = true },
+                jedi_hover = { enabled = true, },
+                jedi_references = { enabled = true, },
+                jedi_signature_help = { enabled = true, },
                 jedi_symbols = {
                     enabled = true,
                     all_scopes = true,
-                    include_import_symbols = true
-                }
-            }
-        }
-    }
+                    include_import_symbols = true,
+                },
+            },
+        },
+    },
 }

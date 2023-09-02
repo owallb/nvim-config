@@ -17,7 +17,7 @@
 -- requires shellcheck also (for linting)
 
 return {
-    cmd = { 'bash-language-server', 'start' },
-    cmd_env = { GLOB_PATTERN = '*@(.sh|.inc|.bash|.command)' },
-    single_file_support = true
+    cmd = { "bash-language-server", "start", },
+    cmd_env = { GLOB_PATTERN = "*@(.sh|.inc|.bash|.command)", },
+    single_file_support = true,
 }

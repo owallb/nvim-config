@@ -16,10 +16,10 @@
 
 return {
     cmd = {
-        'clangd',
-        '--clang-tidy',
-        '--enable-config',
-        '--log=verbose'
+        "clangd",
+        "--clang-tidy",
+        "--enable-config",
+        "--log=verbose",
     },
     single_file_support = true,
 }

@@ -20,42 +20,43 @@
 --- @param no_ellipsis boolean whether to disable adding '...' at end after truncation
 --- return function that can format the component accordingly
 local function trunc(trunc_width, trunc_len, hide_width, no_ellipsis)
-  return function(str)
-    local win_width = vim.fn.winwidth(0)
-    if hide_width and win_width < hide_width then return ''
-    elseif trunc_width and trunc_len and win_width < trunc_width and #str > trunc_len then
-       return str:sub(1, trunc_len) .. (no_ellipsis and '' or '...')
+    return function (str)
+        local win_width = vim.fn.winwidth(0)
+        if hide_width and win_width < hide_width then
+            return ""
+        elseif trunc_width and trunc_len and win_width < trunc_width and #str > trunc_len then
+            return str:sub(1, trunc_len) .. (no_ellipsis and "" or "...")
+        end
+        return str
     end
-    return str
-  end
 end
 
 --- @param trunc_len number truncates component to trunc_len number of chars
 --- @param no_ellipsis boolean whether to disable adding '...' at start before truncation
 --- return function that can format the component accordingly
 local function l_trunc(trunc_len, no_ellipsis)
-  return function(str)
-    if #str > trunc_len then
-       return (no_ellipsis and '' or '...') .. str:sub(-trunc_len, -1)
+    return function (str)
+        if #str > trunc_len then
+            return (no_ellipsis and "" or "...") .. str:sub(-trunc_len, -1)
+        end
+        return str
     end
-    return str
-  end
 end
 
 --- @param trunc_len number truncates component to trunc_len number of chars
 --- @param no_ellipsis boolean whether to disable adding '...' at start before truncation
 --- return function that can format the component accordingly
 local function r_trunc(trunc_len, no_ellipsis)
-  return function(str)
-    if #str > trunc_len then
-       return str:sub(1, trunc_len) .. (no_ellipsis and '' or '...')
+    return function (str)
+        if #str > trunc_len then
+            return str:sub(1, trunc_len) .. (no_ellipsis and "" or "...")
+        end
+        return str
     end
-    return str
-  end
 end
 
 local function short_path(len)
-    return function(str)
+    return function (str)
         if #str > len then
             return vim.fn.pathshorten(str, 1)
         end
@@ -66,39 +67,39 @@ end
 local function header()
     local text = short_path(40)(vim.fn.getcwd())
     local branch = r_trunc(15, false)(vim.fn.FugitiveHead())
-    if branch ~= '' then
-        text = text .. '  ' .. branch
+    if branch ~= "" then
+        text = text .. "  " .. branch
     end
     return text
 end
 
-require('lualine').setup ({
+require("lualine").setup({
     options = {
         icons_enabled = true,
         -- theme = require('config.nightfox_lualine_custom'),
-        theme = 'auto',
+        theme = "auto",
         -- theme = "catppuccin",
-        component_separators = { left = '', right = '' },
-        section_separators = { left = '', right = '' },
-        disabled_filetypes = { 'NvimTree', 'fugitive' },
+        component_separators = { left = "", right = "", },
+        section_separators = { left = "", right = "", },
+        disabled_filetypes = { "NvimTree", "fugitive", },
         always_divide_middle = true,
-        globalstatus = true
+        globalstatus = true,
     },
     sections = {
-        lualine_a = { },
-        lualine_b = { 'mode' },
-        lualine_c = { { 'filename', path = 1 }, 'diff', {'diagnostics', sources = {'nvim_lsp'}}},
-        lualine_x = { 'filetype', 'encoding', 'fileformat', 'progress' },
-        lualine_y = { 'location' },
-        lualine_z = { }
+        lualine_a = {},
+        lualine_b = { "mode", },
+        lualine_c = { { "filename", path = 1, }, "diff", { "diagnostics", sources = { "nvim_lsp", }, }, },
+        lualine_x = { "filetype", "encoding", "fileformat", "progress", },
+        lualine_y = { "location", },
+        lualine_z = {},
     },
     inactive_sections = {
-        lualine_a = { },
-        lualine_b = { },
-        lualine_c = { 'filename' },
-        lualine_x = { 'location' },
-        lualine_y = { },
-        lualine_z = { }
+        lualine_a = {},
+        lualine_b = {},
+        lualine_c = { "filename", },
+        lualine_x = { "location", },
+        lualine_y = {},
+        lualine_z = {},
     },
     -- tabline = {
     --     lualine_a = { { header } },
@@ -108,6 +109,5 @@ require('lualine').setup ({
     --     lualine_y = {},
     --     lualine_z = {}
     -- },
-    extensions = { }
+    extensions = {},
 })
-

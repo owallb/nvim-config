@@ -17,71 +17,71 @@
 return {
     clangd = {
         filetypes = {
-            'c',
-            'cpp',
-            'objc',
-            'objcpp',
-            'cuda',
-            'proto',
-        }
+            "c",
+            "cpp",
+            "objc",
+            "objcpp",
+            "cuda",
+            "proto",
+        },
     },
     cmake = {
         filetypes = {
-            'cmake'
-        }
+            "cmake",
+        },
     },
     diagnosticls = {
         filetypes = {
-            'python',
-            'lua',
-            'sh',
-        }
+            "python",
+            "lua",
+            "sh",
+        },
     },
     lua_ls = {
         filetypes = {
-            'lua'
-        }
+            "lua",
+        },
     },
     lemminx = {
         filetypes = {
-            'xml',
-            'xsd',
-            'xsl',
-            'xslt',
-            'svg',
-        }
+            "xml",
+            "xsd",
+            "xsl",
+            "xslt",
+            "svg",
+        },
     },
     bashls = {
         filetypes = {
-            'sh'
-        }
+            "sh",
+        },
     },
     groovyls = {
         filetypes = {
-            'groovy'
-        }
+            "groovy",
+        },
     },
     rust_analyzer = {
         filetypes = {
-            'rust'
-        }
+            "rust",
+        },
     },
     gopls = {
         filetypes = {
             "go",
-            "gomod"
-        }
+            "gomod",
+        },
     },
     golangci_lint_ls = {
         filetypes = {
             "go",
-            "gomod"
-        }
+            "gomod",
+        },
     },
     jedi_language_server = {
         filetypes = {
-            'python'
-        }
+            "python",
+        },
     },
     -- pyright = { 'python' },
     -- pylsp = { 'python' },

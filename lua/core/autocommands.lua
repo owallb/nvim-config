@@ -18,11 +18,11 @@ local function term_close()
     -- Split previous buffer, switching to it
     vim.fn.execute("split " .. vim.fn.expand("#"))
     -- Close previous window (terminal)
-    vim.fn.execute(vim.fn.winnr("#") .. "wincmd q") 
+    vim.fn.execute(vim.fn.winnr("#") .. "wincmd q")
 end
 vim.api.nvim_create_autocmd("TermClose", {
     pattern = "term://*",
-    callback = term_close
+    callback = term_close,
 })
 
 local function my_hl()
@@ -47,19 +47,19 @@ local function my_hl()
     -- highlight  semshiErrorChar       ctermfg=231 guifg=#ffffff ctermbg=160 guibg=#d70000
     -- sign define semshiError text=E> texthl=semshiErrorSign
 end
-vim.api.nvim_create_augroup("my_colors", { clear = true })
+vim.api.nvim_create_augroup("my_colors", { clear = true, })
 vim.api.nvim_create_autocmd("ColorScheme", {
     pattern = "*",
     callback = my_hl,
-    group = "my_colors"
+    group = "my_colors",
 })
 
 vim.api.nvim_create_autocmd("FileType", {
     pattern = "go",
-    callback = function()
+    callback = function ()
         vim.opt_local.tabstop = 4
         vim.opt_local.expandtab = false
-        vim.opt_local.listchars = 'tab:▏ '
+        vim.opt_local.listchars = "tab:▏ "
         vim.opt_local.list = true
-    end
+    end,
 })

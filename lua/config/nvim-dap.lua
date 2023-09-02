@@ -26,7 +26,7 @@ vim.fn.execute("nnoremap <silent> <leader>db :lua require'dap'.toggle_breakpoint
 vim.fn.execute("nnoremap <silent> <leader>dr :lua require'dap'.repl.open()<CR>")
 -- vim.fn.execute("nnoremap <silent> <leader>dl :lua require'dap'.run_last()<CR>")
 
-local utils = require('utils')
+local utils = require("utils")
 
 M = {}
 
@@ -34,14 +34,14 @@ local env_ok = false
 local dap = nil
 
 local function check_env()
-    local debugpy = utils.exec('python -m debugpy --version')
-    assert(debugpy.rc == 0, 'Python module debugpy is required')
+    local debugpy = utils.exec("python -m debugpy --version")
+    assert(debugpy.rc == 0, "Python module debugpy is required")
     env_ok = true
 end
 
 local function load_dap()
-    local ok, p = pcall(require, 'dap')
-    assert(ok, 'nvim-dap is required')
+    local ok, p = pcall(require, "dap")
+    assert(ok, "nvim-dap is required")
     return p
 end
 
@@ -52,44 +52,44 @@ local function start(config)
     if not dap then
         dap = load_dap()
         dap.adapters.python = {
-            type = 'executable';
-            command = 'python';
-            args = { '-m', 'debugpy.adapter' };
-            cwd = vim.fn.getcwd();
+            type = "executable",
+            command = "python",
+            args = { "-m", "debugpy.adapter", },
+            cwd = vim.fn.getcwd(),
         }
     end
     dap.run(config)
     -- List of events described at https://microsoft.github.io/debug-adapter-protocol/specification#Events
     -- Also see :h dap-extensions
-    dap.listeners.after['event_initialized']['nvim-dap.lua'] = function()
-        dap.set_exception_breakpoints({ 'userUnhandled' })
+    dap.listeners.after["event_initialized"]["nvim-dap.lua"] = function ()
+        dap.set_exception_breakpoints({ "userUnhandled", })
     end
 end
 
 function M.launch(args)
-    assert(type(args) == 'table', 'Args not specified or of wrong type')
+    assert(type(args) == "table", "Args not specified or of wrong type")
     local config = {
-        name = 'Launch file',
-        type = 'python',
-        request = 'launch',
-        program = "${file}";
+        name = "Launch file",
+        type = "python",
+        request = "launch",
+        program = "${file}",
         -- python = 'python';
         -- program = vim.fn.getcwd() .. '/.venv/bin/pytest';
         console = "integratedTerminal",
-        args = args
+        args = args,
     }
     start(config)
 end
 
 function M.pytest(args)
-    assert(type(args) == 'table', 'Args not specified or of wrong type')
+    assert(type(args) == "table", "Args not specified or of wrong type")
     local config = {
-        name = 'pytest ' .. table.concat(args, ' '),
-        type = 'python',
-        request = 'launch',
+        name = "pytest " .. table.concat(args, " "),
+        type = "python",
+        request = "launch",
 
         -- pythonPath = vim.fn.getcwd() .. '/.venv/bin/python',
-        module = 'pytest',
+        module = "pytest",
         -- python = 'python';
         -- program = vim.fn.getcwd() .. '/.venv/bin/pytest';
         args = args,

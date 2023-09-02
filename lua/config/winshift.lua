@@ -14,4 +14,4 @@
     limitations under the License.
 ]]
 
-vim.keymap.set('n', '<C-W>m', ':WinShift<CR>', { remap = false })
+vim.keymap.set("n", "<C-W>m", ":WinShift<CR>", { remap = false, })

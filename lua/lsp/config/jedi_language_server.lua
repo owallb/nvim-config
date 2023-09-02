@@ -15,7 +15,7 @@
 ]]
 
 return {
-    cmd = { 'jedi-language-server' },
+    cmd = { "jedi-language-server", },
     single_file_support = true,
     -- For more info see https://github.com/pappasam/jedi-language-server#configurationSources
     -- and https://github.com/pappasam/coc-jedi#configuration (good descriptions)
@@ -41,7 +41,7 @@ return {
             -- That said, there are situations where IDE developers,
             -- or some programmers in some code bases, may want to filter some completions by name.
             -- This flexible interface is provided to accommodate these advanced use cases.
-            ignorePatterns = {}
+            ignorePatterns = {},
         },
         -- Built-in diagnostics seem to be very basic,
         -- to the point where you are wondering if it's even active.
@@ -63,7 +63,7 @@ return {
             -- When diagnostics are enabled, run on document save (to disk)
             -- type: boolean
             -- default: true
-            didSave = true
+            didSave = true,
         },
         hover = {
             -- Enable (or disable) all hover text.
@@ -87,17 +87,17 @@ return {
             --      type: string[]
             --      default: []
             disable = {
-                class = { all = false, names = {}, fullNames = {} },
+                class = { all = false, names = {}, fullNames = {}, },
                 -- Need to escape lua keyword
-                ['function'] = { all = false, names = {}, fullNames = {} },
-                instance = { all = false, names = {}, fullNames = {} },
-                keyword = { all = false, names = {}, fullNames = {} },
-                module = { all = false, names = {}, fullNames = {} },
-                param = { all = false, names = {}, fullNames = {} },
-                path = { all = false, names = {}, fullNames = {} },
-                property = { all = false, names = {}, fullNames = {} },
-                statement = { all = false, names = {}, fullNames = {} }
-            }
+                ["function"] = { all = false, names = {}, fullNames = {}, },
+                instance = { all = false, names = {}, fullNames = {}, },
+                keyword = { all = false, names = {}, fullNames = {}, },
+                module = { all = false, names = {}, fullNames = {}, },
+                param = { all = false, names = {}, fullNames = {}, },
+                path = { all = false, names = {}, fullNames = {}, },
+                property = { all = false, names = {}, fullNames = {}, },
+                statement = { all = false, names = {}, fullNames = {}, },
+            },
         },
         jediSettings = {
             -- Modules that jedi will directly import without analyzing.
@@ -117,7 +117,7 @@ return {
             -- Print jedi debugging messages to stderr.
             -- type: boolean
             -- default: false
-            debug = false
+            debug = false,
         },
         -- The preferred MarkupKind for all jedi-language-server messages that take MarkupContent.
         -- type: string
@@ -154,18 +154,18 @@ return {
                 -- If you manually set this option, it overrides the default.
                 -- Setting it to an empty array will result in no ignored folders.
                 ignoreFolders = {
-                    '.nox', '.tox', '.venv', '__pycache__', 'venv',
-                    'artifacts', 'config', '.vscode', '.pytest_cache',
-                    'build', 'scripts', 'incoax_tests.egg-info',
-                    'node_modules'
+                    ".nox", ".tox", ".venv", "__pycache__", "venv",
+                    "artifacts", "config", ".vscode", ".pytest_cache",
+                    "build", "scripts", "incoax_tests.egg-info",
+                    "node_modules",
                 },
                 -- Maximum number of symbols returned by a call to workspace/symbols.
                 -- type: number
                 -- default: 20
                 -- A value less than or equal to zero removes the maximum
                 -- and allows jedi-language-server to return all workplace symbols found by jedi.
-                maxSymbols = 20
-            }
-        }
-    }
+                maxSymbols = 20,
+            },
+        },
+    },
 }

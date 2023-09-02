@@ -19,6 +19,6 @@ local function git_status_tab()
     vim.fn.execute("leftabove vertical G | vertical resize 60 | set wfw")
 end
 
-vim.keymap.set('n', '<leader>gd', ':Gdiffsplit<CR>', { remap = false })
-vim.keymap.set('n', '<leader>gg', git_status_tab, { silent = true, remap = false })
-vim.keymap.set('n', '<leader>gc', ':G commit<CR>', { remap = false })
+vim.keymap.set("n", "<leader>gd", ":Gdiffsplit<CR>", { remap = false, })
+vim.keymap.set("n", "<leader>gg", git_status_tab, { silent = true, remap = false, })
+vim.keymap.set("n", "<leader>gc", ":G commit<CR>", { remap = false, })

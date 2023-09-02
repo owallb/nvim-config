@@ -15,9 +15,9 @@
 ]]
 
 return {
-    cmd = { 'cmake-language-server' },
+    cmd = { "cmake-language-server", },
     single_file_support = true,
     init_options = {
-        buildDirectory = "build"
-    }
+        buildDirectory = "build",
+    },
 }

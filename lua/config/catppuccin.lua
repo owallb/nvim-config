@@ -15,7 +15,7 @@
 ]]
 
 local colors = require("catppuccin.palettes").get_palette() -- fetch colors from g:catppuccin_flavour palette
-vim.g.catppuccin_flavour = "mocha" -- latte, frappe, macchiato, mocha
+vim.g.catppuccin_flavour = "mocha"                          -- latte, frappe, macchiato, mocha
 require("catppuccin").setup({
     compile_path = vim.fn.stdpath("cache") .. "/catppuccin",
     transparent_background = false,
@@ -49,16 +49,16 @@ require("catppuccin").setup({
         native_lsp = {
             enabled = true,
             virtual_text = {
-                errors = { "italic" },
-                hints = { "italic" },
-                warnings = { "italic" },
-                information = { "italic" },
+                errors = { "italic", },
+                hints = { "italic", },
+                warnings = { "italic", },
+                information = { "italic", },
             },
             underlines = {
-                errors = { "underline" },
-                hints = { "underline" },
-                warnings = { "underline" },
-                information = { "underline" },
+                errors = { "underline", },
+                hints = { "underline", },
+                warnings = { "underline", },
+                information = { "underline", },
             },
         },
         -- For more plugins integrations please see https://github.com/catppuccin/nvim#integrations
@@ -69,8 +69,8 @@ require("catppuccin").setup({
         -- TSConstBuiltin = { fg = colors.peach, style = {} },
         -- TSConstant = { fg = colors.sky },
         -- TSComment = { fg = colors.surface2, style = { "italic" } }
-        ['@parameter'] = { style = {} }
-    }
+        ["@parameter"] = { style = {}, },
+    },
 })
 
 vim.cmd("colorscheme catppuccin")
