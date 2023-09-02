@@ -20,12 +20,6 @@ return {
     init_options = {
         settings = {
             xml = {
-                trace = { server = "verbose", },
-                catalogs = {},
-                logs = {
-                    client = false,
-                    file = "/home/oscar/lsp4xml.log",
-                },
                 format = {
                     splitAttributes = true,
                     joinCDATALines = false,
