@@ -52,13 +52,6 @@ vim.keymap.set("n", "<C-Home>", ":BufferLineCyclePrev<CR>", opts)
 vim.keymap.set("n", "<leader>q", ":bp<bar>sp<bar>bn<bar>bd<CR>", opts)
 
 --- General mappings ---
--- Remap some swedish keys for easier use
-vim.keymap.set("n", "ö", "}", { remap = true, })
-vim.keymap.set("v", "ö", "}", { remap = true, })
-vim.keymap.set("n", "ä", "{", { remap = true, })
-vim.keymap.set("v", "ä", "{", { remap = true, })
-vim.keymap.set("n", ",", "]", { remap = true, })
-vim.keymap.set("n", ".", "[", { remap = true, })
 -- yank/put using named register
 vim.keymap.set("n", "<leader>y", '"0y', opts)
 vim.keymap.set("v", "<leader>y", '"0y', opts)
