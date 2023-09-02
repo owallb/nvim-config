@@ -14,8 +14,9 @@
     limitations under the License.
 ]]
 
-return {
+local servers = {
     clangd = {
+        enabled = true,
         filetypes = {
             "c",
             "cpp",
@@ -24,25 +25,36 @@ return {
             "cuda",
             "proto",
         },
+        config = {},
     },
     cmake = {
+        enabled = true,
         filetypes = {
             "cmake",
         },
+        config = {},
     },
     diagnosticls = {
+        enabled = true,
         filetypes = {
             "python",
             "lua",
             "sh",
         },
+        dependencies = {
+            "npm",
+        },
+        config = {},
     },
     lua_ls = {
+        enabled = true,
         filetypes = {
             "lua",
         },
+        config = {},
     },
     lemminx = {
+        enabled = true,
         filetypes = {
             "xml",
             "xsd",
@@ -50,39 +62,32 @@ return {
             "xslt",
             "svg",
         },
+        config = {},
     },
     bashls = {
+        enabled = true,
         filetypes = {
             "sh",
         },
+        dependencies = {
+            "npm",
+        },
+        config = {},
     },
     groovyls = {
+        enabled = true,
         filetypes = {
             "groovy",
         },
-    },
-    rust_analyzer = {
-        filetypes = {
-            "rust",
-        },
-    },
-    gopls = {
-        filetypes = {
-            "go",
-            "gomod",
-        },
-    },
-    golangci_lint_ls = {
-        filetypes = {
-            "go",
-            "gomod",
-        },
+        config = {},
     },
     jedi_language_server = {
+        enabled = true,
         filetypes = {
             "python",
         },
+        config = {},
     },
-    -- pyright = { 'python' },
-    -- pylsp = { 'python' },
 }
+
+return servers

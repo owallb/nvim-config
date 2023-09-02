@@ -43,7 +43,7 @@ end
 --- @param exe string: Array to look for
 function M.assert_available(exe)
     if not M.is_available(exe) then
-        error("Missing executable '" .. exe .. "'.")
+        M.notify("Missing executable '" .. exe .. "'.")
     end
 end
 
@@ -63,6 +63,29 @@ function M.assert_python3_module(mod)
     if not resp.code == 0 then
         error("Python3 module " .. mod .. " not installed:\n" .. resp.stdout .. "\n" .. resp.stderr)
     end
+end
+
+function M.notify(msg, title, level)
+    if title and not pcall(require, "notify") then
+        msg = "[" .. title .. "] " .. msg
+    end
+    vim.notify(msg, level, { title = title, })
+end
+
+function M.debug(msg, title)
+    M.notify(msg, title, vim.log.levels.DEBUG)
+end
+
+function M.info(msg, title)
+    M.notify(msg, title, vim.log.levels.INFO)
+end
+
+function M.warn(msg, title)
+    M.notify(msg, title, vim.log.levels.WARN)
+end
+
+function M.err(msg, title)
+    M.notify(msg, title, vim.log.levels.ERROR)
 end
 
 return M

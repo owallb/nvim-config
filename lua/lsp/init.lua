@@ -14,6 +14,9 @@
     limitations under the License.
 ]]
 
+local module_name = "lsp"
+local utils = require("utils")
+
 local P = {}
 
 P._filetypes = nil
@@ -21,7 +24,7 @@ P._language_servers = nil
 
 P.capabilities = {}
 
-P.spec = require("lsp.spec")
+P.servers = require("lsp.servers")
 
 function P._setup_diagnostic()
     vim.diagnostic.config({
@@ -216,9 +219,9 @@ function P.on_attach(client, bufnr)
 end
 
 function P.reload_server_buf(self, name)
-    local server_spec = self.spec[name]
+    local server = self.servers[name]
     local ft_map = {}
-    for _, ft in ipairs(server_spec.filetypes) do
+    for _, ft in ipairs(server.filetypes) do
         ft_map[ft] = true
     end
     for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
@@ -238,8 +241,8 @@ function P.filetypes(self)
     if not self._filetypes then
         self._filetypes = {}
         local unique = {}
-        for _, server_spec in pairs(self.spec) do
-            for _, ft in ipairs(server_spec.filetypes) do
+        for _, cfg in pairs(self.servers) do
+            for _, ft in ipairs(cfg.filetypes) do
                 if not unique[ft] then
                     table.insert(self._filetypes, ft)
                     unique[ft] = true
@@ -254,23 +257,41 @@ end
 function P.language_servers(self)
     if not self._language_servers then
         self._language_servers = {}
-        for server, _ in pairs(self.spec) do
-            table.insert(self._language_servers, server)
+        for name, opts in pairs(self.servers) do
+            if opts.dependencies ~= nil then
+                for _, dep in ipairs(opts.dependencies) do
+                    if not utils.is_available(dep) then
+                        utils.warn("Disabling " .. name .. " because " .. dep .. " is required but not installed",
+                            module_name)
+                        opts.enabled = false
+                    end
+                end
+            end
+
+            if opts.enabled == true then
+                opts.config = require("lsp.config." .. name)
+                table.insert(self._language_servers, name)
+            end
         end
     end
 
     return self._language_servers
 end
 
-function P.setup_server(self, server)
+function P.setup_server(self, name)
+    local opts = self.servers[name]
+
+    if opts.enabled ~= true then
+        return
+    end
+
     local lspconfig = require("lspconfig")
-    local server_spec = self.spec[server]
-    local cfg = require("lsp.config." .. server)
-    cfg.filetypes = server_spec.filetypes
-    cfg.root_dir = lspconfig.util.find_git_ancestor
-    cfg.capabilities = self.capabilities
-    cfg.on_attach = self.on_attach
-    lspconfig[server].setup(cfg)
+    opts.config.filetypes = opts.filetypes
+    opts.config.root_dir = lspconfig.util.find_git_ancestor
+    opts.config.capabilities = self.capabilities
+    opts.config.on_attach = self.on_attach
+    lspconfig[name].setup(opts.config)
+    self:reload_server_buf(name)
 end
 
 function P.setup(self)
@@ -279,7 +300,6 @@ function P.setup(self)
     require("mason-lspconfig").setup_handlers({
         function (name)
             self:setup_server(name)
-            self:reload_server_buf(name)
         end,
     })
 end

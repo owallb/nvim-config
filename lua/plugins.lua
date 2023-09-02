@@ -24,6 +24,11 @@ local plugins = {
         config = function () require("config.vscode") end,
     },
     {
+        "rcarriga/nvim-notify",
+        priority = 900,
+        config = function () require("config.nvim-notify") end,
+    },
+    {
         "rafamadriz/friendly-snippets",
     },
     {
