@@ -14,36 +14,9 @@
     limitations under the License.
 ]]
 
-M = {}
+local M = {}
 
 M.os_name = vim.loop.os_uname().sysname
-
-function M.has_value(tab, val)
-    for _, value in ipairs(tab) do if value == val then return true end end
-
-    return false
-end
-
----@param cmd table: Array of executable + args
-function M.exec(cmd)
-    local out = vim.fn.system(cmd)
-    local rc = vim.v.shell_error
-
-    return { out = out, rc = rc, }
-end
-
-function M.get_color(group, attr)
-    return vim.fn.synIDattr(vim.fn.synIDtrans(vim.fn.hlID(group)), attr)
-end
-
-function M.get_hl(name)
-    local ok, hl = pcall(vim.api.nvim_get_hl_by_name, name, true)
-    if not ok then return end
-    for _, key in pairs({ "foreground", "background", "special", }) do
-        if hl[key] then hl[key] = string.format("#%06x", hl[key]) end
-    end
-    return hl
-end
 
 --- Check that an executable is available
 --- @param exe string: Array to look for
@@ -80,6 +53,15 @@ end
 function M.assert_any_available(exes)
     if not M.any_available(exes) then
         error("At least one of the following is required:\n" .. table.concat(exes, ", "))
+    end
+end
+
+--- Asserts that a python module is installed
+---@param mod string: The python module to check
+function M.assert_python3_module(mod)
+    local resp = vim.system({ "python3", "-m", "pip", "show", mod, }):wait()
+    if not resp.code == 0 then
+        error("Python3 module " .. mod .. " not installed:\n" .. resp.stdout .. "\n" .. resp.stderr)
     end
 end
 

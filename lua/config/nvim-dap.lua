@@ -28,21 +28,15 @@ vim.fn.execute("nnoremap <silent> <leader>dr :lua require'dap'.repl.open()<CR>")
 
 local utils = require("utils")
 
-M = {}
+local M = {}
 
 local env_ok = false
 local dap = nil
 
 local function check_env()
-    local debugpy = utils.exec("python -m debugpy --version")
-    assert(debugpy.rc == 0, "Python module debugpy is required")
+    utils.assert_available("python3")
+    utils.assert_python3_module("debugpy")
     env_ok = true
-end
-
-local function load_dap()
-    local ok, p = pcall(require, "dap")
-    assert(ok, "nvim-dap is required")
-    return p
 end
 
 local function start(config)
@@ -50,7 +44,7 @@ local function start(config)
         check_env()
     end
     if not dap then
-        dap = load_dap()
+        dap = require("dap")
         dap.adapters.python = {
             type = "executable",
             command = "python",

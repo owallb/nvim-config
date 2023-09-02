@@ -16,23 +16,17 @@
 
 local utils = require("utils")
 
-M = {}
+local M = {}
 
 local env_ok = false
 local dap = nil
 
 local function check_env()
-    local debugpy = utils.exec("python -m debugpy --version")
-    assert(debugpy.rc == 0, "Python module debugpy is required")
-    local pytest = utils.exec("python -m pytest --version")
-    assert(pytest.rc == 0, "Python module pytest is required")
+    utils.exec("Asdf")
+    utils.assert_available("python3")
+    utils.assert_python3_module("debugpy")
+    utils.assert_python3_module("pytest")
     env_ok = true
-end
-
-local function load_dap()
-    local ok, dap = pcall(require, "dap")
-    assert(ok, "nvim-dap is required")
-    return dap
 end
 
 function M.run(args)
@@ -41,10 +35,10 @@ function M.run(args)
         check_env()
     end
     if not dap then
-        dap = load_dap()
+        dap = require("dap")
         dap.adapters.python = {
             type = "executable",
-            command = "python",
+            command = "python3",
             args = { "-m", "debugpy.adapter", },
             cwd = vim.fn.getcwd(),
         }
