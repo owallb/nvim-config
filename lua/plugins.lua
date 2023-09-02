@@ -29,7 +29,6 @@ local plugins = {
     {
         "L3MON4D3/LuaSnip",
         config = function () require("config.luasnip") end,
-        -- dependencies = { 'rafamadriz/friendly-snippets' },
         -- comment out on windows and install jsregexp manually
         build = "make install_jsregexp",
         version = "2.*",
@@ -55,22 +54,10 @@ local plugins = {
     },
     {
         "hrsh7th/nvim-cmp",
-        -- dependencies = {
-        --     'L3MON4D3/LuaSnip',
-        --     'windwp/nvim-autopairs',
-        --     'saadparwaiz1/cmp_luasnip',
-        --     'hrsh7th/cmp-buffer',
-        --     'hrsh7th/cmp-path',
-        --     'hrsh7th/cmp-cmdline',
-        --     'onsails/lspkind-nvim',
-        -- },
         config = function () require("config.nvim-cmp") end,
     },
     {
         "hrsh7th/cmp-nvim-lsp",
-        -- dependencies = {
-        --     'hrsh7th/nvim-cmp'
-        -- },
     },
     {
         "williamboman/mason.nvim",
@@ -79,7 +66,6 @@ local plugins = {
     {
         "williamboman/mason-lspconfig.nvim",
         config = function () require("config.mason-lspconfig") end,
-        -- dependencies = { 'williamboman/mason.nvim' },
     },
     {
         "ray-x/lsp_signature.nvim",
@@ -91,11 +77,6 @@ local plugins = {
         config = function () require("lsp"):setup() end,
         lazy = true,
         ft = require("lsp"):filetypes(),
-        -- dependencies = {
-        --     'williamboman/mason-lspconfig.nvim',
-        --     'ray-x/lsp_signature.nvim',
-        --     'hrsh7th/cmp-nvim-lsp'
-        -- },
     },
     {
         "nvim-treesitter/nvim-treesitter",
@@ -112,7 +93,6 @@ local plugins = {
     },
     {
         "rcarriga/nvim-dap-ui",
-        -- dependencies = { 'mfussenegger/nvim-dap' },
         config = function () require("config.nvim-dap-ui") end,
     },
     {
@@ -126,19 +106,16 @@ local plugins = {
     },
     {
         "rbong/vim-flog",
-        -- dependencies = { 'tpope/vim-fugitive' },
         config = function () require("config.flog") end,
     },
     {
         "nvim-lualine/lualine.nvim",
-        -- dependencies = { 'kyazdani42/nvim-web-devicons', 'vim-fugitive' },
         config = function () require("config.lualine") end,
         lazy = true,
         event = "VimEnter",
     },
     {
         "akinsho/bufferline.nvim",
-        -- dependencies = { 'kyazdani42/nvim-web-devicons' },
         config = function () require("config.bufferline") end,
         lazy = true,
         event = "VimEnter",
@@ -148,14 +125,12 @@ local plugins = {
     },
     {
         "lewis6991/gitsigns.nvim",
-        -- dependencies = { 'nvim-lua/plenary.nvim' },
         config = function () require("config.gitsigns") end,
         lazy = true,
         event = "VimEnter",
     },
     {
         "nvim-telescope/telescope.nvim",
-        -- dependencies = { 'nvim-lua/plenary.nvim' },
         config = function () require("config.telescope") end,
         lazy = true,
         event = "VimEnter",
@@ -204,10 +179,6 @@ local plugins = {
     },
 }
 
-local opts = {
-    -- defaults = {
-    --     lazy = true
-    -- }
-}
+local opts = {}
 
 require("lazy").setup(plugins, opts)
