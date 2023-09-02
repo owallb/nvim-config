@@ -41,13 +41,15 @@ if not vim.loop.fs_stat(lazypath) then
     utils.assert_available("git")
     utils.assert_available("tar")
 
-    vim.fn.system({
+    local resp = vim.system({
         "git",
         "clone",
         "--filter=blob:none",
         "https://github.com/folke/lazy.nvim.git",
-        "--branch=stable", -- latest stable release
+        "--branch=stable",
         lazypath,
-    })
+    }):wait()
+
+    assert(resp.code == 0, "Failed to download lazy")
 end
 vim.opt.rtp:prepend(lazypath)
