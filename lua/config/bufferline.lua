@@ -14,112 +14,12 @@
     limitations under the License.
 ]]
 
-local utils = require "utils"
-
-local hl_CustomHeader
-local head_cache
---- @param trunc_width number trunctates component when screen width is less then trunc_width
---- @param trunc_len number truncates component to trunc_len number of chars
---- @param hide_width number hides component when window width is smaller then hide_width
---- @param no_ellipsis boolean whether to disable adding '...' at end after truncation
---- return function that can format the component accordingly
-local function trunc(trunc_width, trunc_len, hide_width, no_ellipsis)
-    return function (str)
-        local win_width = vim.fn.winwidth(0)
-        if hide_width and win_width < hide_width then
-            return ""
-        elseif trunc_width and trunc_len and win_width < trunc_width and #str >
-            trunc_len then
-            return str:sub(1, trunc_len) .. (no_ellipsis and "" or "...")
-        end
-        return str
-    end
-end
-
---- @param trunc_len number truncates component to trunc_len number of chars
---- @param no_ellipsis boolean whether to disable adding '...' at start before truncation
---- return function that can format the component accordingly
-local function l_trunc(trunc_len, no_ellipsis)
-    return function (str)
-        if #str > trunc_len then
-            if no_ellipsis then
-                return str:sub(#str - trunc_len)
-            else
-                return "..." .. str:sub(#str - trunc_len + 3)
-            end
-        else
-            return str
-        end
-    end
-end
-
---- @param trunc_len number truncates component to trunc_len number of chars
---- @param no_ellipsis boolean whether to disable adding '...' at start before truncation
---- return function that can format the component accordingly
-local function r_trunc(trunc_len, no_ellipsis)
-    return function (str)
-        if #str > trunc_len then
-            if no_ellipsis then
-                return str:sub(1, trunc_len)
-            elseif #str < trunc_len then
-                return str
-            else
-                return str:sub(1, trunc_len - 3) ..
-                    (no_ellipsis and "" or "...")
-            end
-        end
-        return str
-    end
-end
-
-local function short_path(len)
-    return function (str)
-        if #str > len then return vim.fn.pathshorten(str, 1) end
-        return str
-    end
-end
-
-local function header()
-    if hl_CustomHeader == nil then
-        local header_hl = require("utils").get_hl("NvimTreeNormal")
-        if header_hl ~= nil then
-            hl_CustomHeader = "gui=bold guifg=" .. header_hl.foreground ..
-                " guibg=" .. header_hl.background
-            vim.api.nvim_command("hi CustomHeader " .. hl_CustomHeader)
-        end
-    end
-    -- local header = short_path(40)(vim.fn.getcwd())
-    -- NOTE: Decided not to use this. Probably doesn't work.
-    local gitdir = vim.fn.FugitiveExtractGitDir(vim.fn.getcwd())
-    local text = ""
-    if gitdir == "" then
-        text = vim.fn.fnamemodify(vim.fn.getcwd(), ":~")
-    else
-        text = vim.fn.fnamemodify(gitdir, ":~:h")
-        -- text = vim.fn.fnamemodify(vim.fn.FugitiveWorkTree(), ':~')
-        -- local branch = r_trunc(15, false)(vim.fn.FugitiveHead())
-        local head = vim.fn.FugitiveHead(8, gitdir)
-        if head == "" then
-            if head_cache[gitdir] ~= nil then
-                head = head_cache[gitdir]
-            else
-                local f = io.open(gitdir, "r")
-                if f then
-                    io.input(f)
-                    local line = io.read("*l")
-                    local head = line:gsub(
-                        "ref: /refs/(heads/|remotes/|tags/)", ""
-                    )
-                    head_cache[gitdir] = head
-                end
-            end
-        end
-        if head ~= "" then text = text .. "  " .. head end
-    end
-
-    -- return l_trunc(40-2, false)(short_path(40-2)(text))
-    return l_trunc(40 - 2, false)(text)
-end
+--- Define what filetypes should be ignored by bufferline.
+--- Filetypes not listed are enabled by default.
+local ft_map = {
+    NvimTree = false,
+    fugitive = false,
+}
 
 require("bufferline").setup(
     {
@@ -162,13 +62,13 @@ require("bufferline").setup(
             end,
             -- NOTE: this will be called a lot so don't do any heavy processing here
             custom_filter = function (buf, _)
-                local disabled_ft = { "NvimTree", "fugitive", }
+                local buf_ft = vim.bo[buf].filetype
 
-                if utils.has_value(disabled_ft, vim.bo[buf].filetype) then
-                    return false
+                if ft_map[buf_ft] == nil then
+                    ft_map[buf_ft] = true -- enable by default
                 end
 
-                return true
+                return ft_map[buf_ft]
             end,
             offsets = {
                 {
