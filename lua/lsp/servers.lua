@@ -71,6 +71,7 @@ local servers = {
         },
         dependencies = {
             "npm",
+            "shellcheck"
         },
         config = {},
     },
