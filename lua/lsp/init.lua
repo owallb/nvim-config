@@ -261,9 +261,12 @@ function P.language_servers(self)
             if opts.dependencies ~= nil then
                 for _, dep in ipairs(opts.dependencies) do
                     if not utils.is_available(dep) then
-                        utils.warn("Disabling " .. name .. " because " .. dep .. " is required but not installed",
-                            module_name)
+                        utils.warn(
+                            "Disabling " .. name .. " because " .. dep .. " is required but not installed",
+                            module_name
+                        )
                         opts.enabled = false
+                        goto next_server
                     end
                 end
             end
@@ -272,6 +275,7 @@ function P.language_servers(self)
                 opts.config = require("lsp.config." .. name)
                 table.insert(self._language_servers, name)
             end
+            ::next_server::
         end
     end
 
