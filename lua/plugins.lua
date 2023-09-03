@@ -26,7 +26,7 @@ local plugins = {
     {
         "rcarriga/nvim-notify",
         priority = 900,
-        config = function () require("config.nvim-notify") end,
+        config = function () require("config.notify") end,
     },
     {
         "rafamadriz/friendly-snippets",
@@ -40,7 +40,7 @@ local plugins = {
     },
     {
         "windwp/nvim-autopairs",
-        config = function () require("config.nvim-autopairs") end,
+        config = function () require("config.autopairs") end,
     },
     {
         "saadparwaiz1/cmp_luasnip",
@@ -59,7 +59,7 @@ local plugins = {
     },
     {
         "hrsh7th/nvim-cmp",
-        config = function () require("config.nvim-cmp") end,
+        config = function () require("config.cmp") end,
     },
     {
         "hrsh7th/cmp-nvim-lsp",
@@ -70,7 +70,7 @@ local plugins = {
     },
     {
         "williamboman/mason-lspconfig.nvim",
-        config = function () require("config.mason-lspconfig") end,
+        config = function () require("config.mason_lspconfig") end,
     },
     {
         "ray-x/lsp_signature.nvim",
@@ -85,20 +85,20 @@ local plugins = {
     },
     {
         "nvim-treesitter/nvim-treesitter",
-        config = function () require("config.nvim-treesitter") end,
+        config = function () require("config.treesitter") end,
         lazy = true,
         event = "VimEnter",
         build = ":TSUpdate",
     },
     {
         "mfussenegger/nvim-dap",
-        config = function () require("config.nvim-dap") end,
+        config = function () require("config.dap") end,
         lazy = true,
         ft = require("lsp"):filetypes(),
     },
     {
         "rcarriga/nvim-dap-ui",
-        config = function () require("config.nvim-dap-ui") end,
+        config = function () require("config.dap_ui") end,
     },
     {
         "kyazdani42/nvim-web-devicons",
@@ -171,7 +171,7 @@ local plugins = {
     },
     {
         "kyazdani42/nvim-tree.lua",
-        config = function () require("config.nvim-tree") end,
+        config = function () require("config.tree") end,
     },
     {
         "dstein64/vim-startuptime",
