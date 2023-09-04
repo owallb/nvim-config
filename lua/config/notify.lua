@@ -16,5 +16,10 @@
 
 -- https://github.com/rcarriga/nvim-notify
 
+local telescope = require("telescope")
+
 vim.notify = require("notify")
-require("telescope").load_extension("notify")
+telescope.load_extension("notify")
+vim.keymap.set(
+    "n", "<leader>fn", function () telescope.extensions.notify.notify() end
+)
