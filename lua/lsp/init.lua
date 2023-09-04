@@ -258,9 +258,12 @@ function P.language_servers(self)
     if not self._language_servers then
         self._language_servers = {}
         for name, server in pairs(self.servers) do
+            if server.enabled ~= true then
+                goto next_server
+            end
             if server.dependencies ~= nil then
                 for _, dep in ipairs(server.dependencies) do
-                    if not utils.is_available(dep) then
+                    if not utils.is_installed(dep) then
                         utils.warn(
                             "Disabling " .. name .. " because " .. dep .. " is required but not installed",
                             module_name
@@ -271,9 +274,8 @@ function P.language_servers(self)
                 end
             end
 
-            if server.enabled == true then
-                table.insert(self._language_servers, name)
-            end
+            table.insert(self._language_servers, name)
+
             ::next_server::
         end
     end
