@@ -182,6 +182,11 @@ local plugins = {
         "stevearc/aerial.nvim",
         config = function () require("config.aerial") end,
     },
+    {
+        "nvim-neorg/neorg",
+        build = ":Neorg sync-parsers",
+        config = function () require("config.neorg") end,
+    },
 }
 
 local opts = {}
