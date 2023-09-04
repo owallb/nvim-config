@@ -187,6 +187,10 @@ local plugins = {
         build = ":Neorg sync-parsers",
         config = function () require("config.neorg") end,
     },
+    {
+        "RubixDev/mason-update-all",
+        config = function () require("config.mason_update_all") end,
+    },
 }
 
 local opts = {}
