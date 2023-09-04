@@ -23,41 +23,42 @@ local ft_map = {
     fugitive = false,
 }
 
-require("bufferline").setup(
-    {
-        options = {
-            diagnostics = "nvim_lsp",
-            diagnostics_update_in_insert = false,
-            custom_filter = function (buf, _)
-                local buf_ft = vim.bo[buf].filetype
+require("bufferline").setup({
+    options = {
+        close_command = "Bwipeout %d",
+        right_mouse_command = nil,
+        middle_mouse_command = "Bwipeout %d",
+        diagnostics = "nvim_lsp",
+        diagnostics_update_in_insert = false,
+        custom_filter = function (buf, _)
+            local buf_ft = vim.bo[buf].filetype
 
-                if ft_map[buf_ft] == nil then
-                    ft_map[buf_ft] = true -- enable by default
-                end
+            if ft_map[buf_ft] == nil then
+                ft_map[buf_ft] = true -- enable by default
+            end
 
-                return ft_map[buf_ft]
-            end,
-            offsets = {
-                {
-                    filetype = "NvimTree",
-                    text = "File Explorer",
-                    text_align = "center",
-                    seperator = true,
-                },
-                {
-                    filetype = "fugitive",
-                    text = "Fugitive",
-                    text_align = "center",
-                    seperator = true,
-                },
-                {
-                    filetype = "aerial",
-                    text = "Aerial",
-                    text_align = "center",
-                    seperator = true,
-                },
+            return ft_map[buf_ft]
+        end,
+        offsets = {
+            {
+                filetype = "NvimTree",
+                text = "File Explorer",
+                text_align = "center",
+                seperator = true,
             },
-            sort_by = "id",
+            {
+                filetype = "fugitive",
+                text = "Fugitive",
+                text_align = "center",
+                seperator = true,
+            },
+            {
+                filetype = "aerial",
+                text = "Aerial",
+                text_align = "center",
+                seperator = true,
+            },
         },
-    }
-)
+        sort_by = "id",
+    },
+})

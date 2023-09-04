@@ -48,8 +48,6 @@ vim.keymap.set("n", "<C-s>", ":w<CR>", opts)
 -- Cycle buffers
 vim.keymap.set("n", "<C-End>", ":BufferLineCycleNext<CR>", opts)
 vim.keymap.set("n", "<C-Home>", ":BufferLineCyclePrev<CR>", opts)
--- Close buffer without closing window
-vim.keymap.set("n", "<leader>q", ":bp<bar>sp<bar>bn<bar>bd<CR>", opts)
 
 --- General mappings ---
 -- yank/put using named register

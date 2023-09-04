@@ -191,6 +191,10 @@ local plugins = {
         "RubixDev/mason-update-all",
         config = function () require("config.mason_update_all") end,
     },
+    {
+        "famiu/bufdelete.nvim",
+        config = function () require("config.bufdelete") end,
+    },
 }
 
 local opts = {}
