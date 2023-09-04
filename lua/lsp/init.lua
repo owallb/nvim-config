@@ -262,15 +262,23 @@ function P.language_servers(self)
                 goto next_server
             end
             if server.dependencies ~= nil then
+                local not_installed = {}
                 for _, dep in ipairs(server.dependencies) do
                     if not utils.is_installed(dep) then
-                        utils.warn(
-                            "Disabling " .. name .. " because " .. dep .. " is required but not installed",
-                            module_name
-                        )
-                        server.enabled = false
-                        goto next_server
+                        table.insert(not_installed, dep)
                     end
+                end
+
+                if #not_installed > 0 then
+                    utils.warn(
+                        ("Disabling %s because the following required package(s) is not installed: %s"):format(
+                            name,
+                            table.concat(not_installed, ", ")
+                        ),
+                        module_name
+                    )
+                    server.enabled = false
+                    goto next_server
                 end
             end
 
