@@ -20,8 +20,13 @@ local function term_close()
     -- Close previous window (terminal)
     vim.fn.execute(vim.fn.winnr("#") .. "wincmd q")
 end
+
+local function open_file_tree()
+    require("nvim-tree.api").tree.open()
+end
+
 vim.api.nvim_create_autocmd("TermClose", {
     pattern = "term://*",
     callback = term_close,
 })
-
+vim.api.nvim_create_autocmd("VimEnter", { callback = open_file_tree, })
