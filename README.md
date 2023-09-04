@@ -1,13 +1,13 @@
 # System Reqiurements
 These are the requirements to make use of this neovim configuration. Currently only supports GNU/Linux.
-    
-*Note: You may try using windows, but last time I checked there was a problem with the completion engine (nvim-cmp) that makes it impossible to traverse the drop-down list.*
 
 - curl or wget
 - unzip
 - gzip
 - git
 - tar
+    
+*Note: You may try using windows, but last time I checked there was a problem with the completion engine (nvim-cmp) that makes it impossible to traverse the drop-down list.*
 
 ## Optional
 
