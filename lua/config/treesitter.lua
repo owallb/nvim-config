@@ -17,53 +17,72 @@
 -- https://github.com/nvim-treesitter/nvim-treesitter
 
 require("nvim-treesitter.configs").setup({
-    -- One of "all", "maintained" (parsers with maintainers), or a list of languages
     ensure_installed = {
         "bash",
         "c",
-        "cpp",
         "cmake",
+        "comment",
+        "cpp",
         "css",
+        "csv",
+        -- "d", -- requires treesitter cli?
+        "diff",
         "dockerfile",
-        "go",
+        "doxygen",
+        "dtd",
+        "git_config",
+        "git_rebase",
+        "gitattributes",
+        "gitcommit",
+        "gitignore",
+        "groovy",
+        "hare",
         "html",
+        "ini",
         "java",
         "javascript",
         "json",
+        "json5",
+        "jsonc",
+        "latex",
         "lua",
+        "luadoc",
+        "luap",
         "make",
+        "markdown",
+        "markdown_inline",
+        "meson",
         "ninja",
+        "norg",
+        "odin",
+        "perl",
+        "php",
+        "phpdoc",
+        "pymanifest",
         "python",
+        "regex",
+        "requirements",
+        "robot",
+        "rst",
         "rust",
+        "sql",
         "toml",
+        "typescript",
         "vim",
+        "vimdoc",
+        "xml",
         "yaml",
         "yang",
+        "zig",
     },
 
+    -- Indentation based on treesitter for the = operator.
+    -- NOTE: This is an experimental feature.
     indent = {
         enable = true,
     },
-
-    -- Install languages synchronously (only applied to `ensure_installed`)
-    sync_install = false,
-
-    -- List of parsers to ignore installing
-    ignore_install = {},
-
-    highlight = {
-        -- `false` will disable the whole extension
-        enable = true,
-
-        -- list of language that will be disabled
-        disable = {},
-
-        -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-        -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-        -- Using this option may slow down your editor, and you may see some duplicate highlights.
-        -- Instead of true it can also be a list of languages
-        additional_vim_regex_highlighting = false,
-    },
 })
--- vim.opt.foldmethod = "expr"
--- vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+
+vim.opt.foldmethod = "expr"
+vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
+vim.opt.foldenable = false

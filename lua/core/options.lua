@@ -28,9 +28,7 @@ vim.opt.softtabstop = 4
 vim.opt.expandtab = true
 vim.opt.shiftwidth = 4
 vim.opt.smarttab = false
--- Folds are configured in nvim-treesitter, but this needs to be set before
--- loading the first buffer which is not possible in nvim-treesitter.lua due to
--- lazy loading (I think)
+-- Folds are configured in nvim-treesitter, so this is only for fallback
 vim.opt.foldlevelstart = 99
 vim.opt.foldmethod = "indent"
 vim.opt.foldignore = ""
