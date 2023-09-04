@@ -15,9 +15,15 @@
 ]]
 
 return {
-    cmd = {
-        "java", "-jar",
-        "/usr/share/java/groovy-language-server/groovy-language-server-all.jar",
+    enabled = true,
+    lspconfig = {
+        filetypes = {
+            "groovy",
+        },
+        cmd = {
+            "java", "-jar",
+            "/usr/share/java/groovy-language-server/groovy-language-server-all.jar",
+        },
+        single_file_support = true,
     },
-    single_file_support = true,
 }

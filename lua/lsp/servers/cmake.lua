@@ -15,7 +15,15 @@
 ]]
 
 return {
-    cmd = { "bash-language-server", "start", },
-    cmd_env = { GLOB_PATTERN = "*@(.sh|.inc|.bash|.command)", },
-    single_file_support = true,
+    enabled = true,
+    lspconfig = {
+        filetypes = {
+            "cmake",
+        },
+        cmd = { "cmake-language-server", },
+        single_file_support = true,
+        init_options = {
+            buildDirectory = "build",
+        },
+    },
 }

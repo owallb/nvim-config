@@ -14,26 +14,18 @@
     limitations under the License.
 ]]
 
-local runtime_path = vim.split(package.path, ";")
-table.insert(runtime_path, "lua/?.lua")
-table.insert(runtime_path, "lua/?/init.lua")
-
--- spec: https://luals.github.io/wiki/settings/
-
 return {
-    cmd = { "lua-language-server", },
-    single_file_support = true,
-    settings = {
-        Lua = {
-            runtime = {
-                version = "LuaJIT",
-                path = runtime_path,
-            },
-            workspace = {
-                library = vim.api.nvim_get_runtime_file("", true),
-                checkThirdParty = false,
-            },
-            telemetry = { enable = false, },
+    enabled = true,
+    dependencies = {
+        "npm",
+        "shellcheck",
+    },
+    lspconfig = {
+        filetypes = {
+            "sh",
         },
+        cmd = { "bash-language-server", "start", },
+        cmd_env = { GLOB_PATTERN = "*@(.sh|.inc|.bash|.command)", },
+        single_file_support = true,
     },
 }

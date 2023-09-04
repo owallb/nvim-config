@@ -15,18 +15,28 @@
 ]]
 
 return {
-    cmd = { "lemminx", },
-    single_file_support = true,
-    init_options = {
-        settings = {
-            xml = {
-                format = {
-                    splitAttributes = true,
-                    joinCDATALines = false,
-                    joinContentLines = true,
-                    joinCommentLines = false,
-                    spaceBeforeEmptyCloseLine = false,
-                    enabled = true,
+    enabled = true,
+    lspconfig = {
+        filetypes = {
+            "xml",
+            "xsd",
+            "xsl",
+            "xslt",
+            "svg",
+        },
+        cmd = { "lemminx", },
+        single_file_support = true,
+        init_options = {
+            settings = {
+                xml = {
+                    format = {
+                        splitAttributes = true,
+                        joinCDATALines = false,
+                        joinContentLines = true,
+                        joinCommentLines = false,
+                        spaceBeforeEmptyCloseLine = false,
+                        enabled = true,
+                    },
                 },
             },
         },

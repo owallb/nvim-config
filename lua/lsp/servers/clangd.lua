@@ -15,11 +15,22 @@
 ]]
 
 return {
-    cmd = {
-        "clangd",
-        "--clang-tidy",
-        "--enable-config",
-        "--log=verbose",
+    enabled = true,
+    lspconfig = {
+        filetypes = {
+            "c",
+            "cpp",
+            "objc",
+            "objcpp",
+            "cuda",
+            "proto",
+        },
+        cmd = {
+            "clangd",
+            "--clang-tidy",
+            "--enable-config",
+            "--log=verbose",
+        },
+        single_file_support = true,
     },
-    single_file_support = true,
 }
