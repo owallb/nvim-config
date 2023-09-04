@@ -9,8 +9,21 @@ These are the requirements to make use of this neovim configuration. Currently o
 - git
 - tar
 
-## Language Server dependencies
-Some language servers included in this config requires some additional software. Without these installed, you will get a warning and the servers will not be enabled. If you don't need them, and want to get rid of the warning, you may either remove them in `lua/lsp/servers/init.lua` or disable them in `lua/lsp/servers/<server>.lua`.
+## Optional
+
+The following are optional but provides additional features.
+
+### Language Server dependencies
+Some language servers included in this config requires some additional software. Without these installed, you will get a warning and the servers will not be enabled. If you don't need them, and want to get rid of the warning, you may either remove them from `lua/lsp/servers/init.lua` or disable them in `lua/lsp/servers/<server>.lua`.
 
 - **bashls**: npm, shellcheck
 - **diagnosticls**: npm
+
+### treesitter
+The treesitter CLI executable might be needed for installing some parsers. You will encounter an error if you try to install one that requires it and you don't have treesitter CLI utility installed.
+
+### Clipboard
+see `:checkhealth` and `:h clipboard`.
+
+# License
+See the included [LICENSE](LICENSE) file.
