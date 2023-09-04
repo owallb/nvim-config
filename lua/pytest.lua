@@ -23,8 +23,8 @@ local dap = nil
 
 local function check_env()
     utils.assert_installed("python3")
-    utils.python3_module_installed("debugpy")
-    utils.python3_module_installed("pytest")
+    utils.assert_python3_module_installed("debugpy")
+    utils.assert_python3_module_installed("pytest")
     env_ok = true
 end
 

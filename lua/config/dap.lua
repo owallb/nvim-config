@@ -20,8 +20,8 @@ vim.fn.execute("nnoremap <silent> <F5> :lua require'dap'.continue()<CR>")
 vim.fn.execute("nnoremap <silent> <F10> :lua require'dap'.step_over()<CR>")
 vim.fn.execute("nnoremap <silent> <F11> :lua require'dap'.step_into()<CR>")
 vim.fn.execute("nnoremap <silent> <F12> :lua require'dap'.step_out()<CR>")
-vim.fn.execute("nnoremap <leader>dt :lua require'config.nvim-dap'.pytest({'-k', ''})<left><left><left>")
-vim.fn.execute("nnoremap <leader>dl :lua require'config.nvim-dap'.launch({''})<left><left><left>")
+vim.fn.execute("nnoremap <leader>dt :lua require'config.dap'.pytest({'-k', ''})<left><left><left>")
+vim.fn.execute("nnoremap <leader>dl :lua require'config.dap'.launch({''})<left><left><left>")
 vim.fn.execute("nnoremap <silent> <leader>db :lua require'dap'.toggle_breakpoint()<CR>")
 -- vim.fn.execute("nnoremap <silent> <leader>B :lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>")
 -- vim.fn.execute("nnoremap <silent> <leader>lp :lua require'dap'.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))<CR>")
@@ -36,8 +36,8 @@ local env_ok = false
 local dap = nil
 
 local function check_env()
-    utils.assert_available("python3")
-    utils.assert_python3_module("debugpy")
+    utils.assert_installed("python3")
+    utils.assert_python3_module_installed("debugpy")
     env_ok = true
 end
 
