@@ -16,48 +16,23 @@
 
 -- https://github.com/lewis6991/gitsigns.nvim
 
-require("gitsigns").setup(
-    {
-        on_attach = function (bufnr)
-            local gs = package.loaded.gitsigns
-            local function map(mode, l, r, opts)
-                opts = opts or {}
-                opts.buffer = bufnr
-                vim.keymap.set(mode, l, r, opts)
-            end
+local function map(bufnr, mode, l, r, opts)
+    opts = opts or {}
+    opts.buffer = bufnr
+    vim.keymap.set(mode, l, r, opts)
+end
 
-            -- map('n', ']c',
-            --     function()
-            --         gs.next_hunk{
-            --             wrap=false,
-            --             navigation_message=true,
-            --             foldopen=true
-            --         }
-            --     end
-            -- )
-            -- map('n', '[c',
-            --     function()
-            --         gs.prev_hunk{
-            --             wrap=false,
-            --             navigation_message=true,
-            --             foldopen=true
-            --         }
-            --     end
-            -- )
-            map("n", "<leader>gv", gs.select_hunk)
-            -- map('n', '<C-j>', "&diff ? '<C-j>' : '<cmd>Gitsigns next_hunk<CR>'", {expr=true})
-            -- map('n', '<C-k>', "&diff ? '<C-k>' : '<cmd>Gitsigns prev_hunk<CR>'", {expr=true})
-            map({ "n", "v", }, "<leader>gr", ":Gitsigns reset_hunk<CR>") -- gs.reset_hunk() doesn't work with selected lines
-            map("n", "<leader>g?", gs.preview_hunk)
-            map("n", "<leader>gb", function ()
-                gs.blame_line { full = true, }
-            end)
-            -- map('n', '<leader>gd', gs.diffthis)
-        end,
-        signs = {
-            -- default
-            -- untracked = { text = '┆' }
-            untracked = { text = "│", },
-        },
-    }
-)
+require("gitsigns").setup({
+    on_attach = function (bufnr)
+        local gs = package.loaded.gitsigns
+        map(bufnr, "n", "<leader>gv", gs.select_hunk)
+        map(bufnr, { "n", "v", }, "<leader>gr", ":Gitsigns reset_hunk<CR>") -- gs.reset_hunk() doesn't work with selected lines
+        map(bufnr, "n", "<leader>g?", gs.preview_hunk)
+        map(bufnr, "n", "<leader>gb", function ()
+            gs.blame_line { full = true, }
+        end)
+    end,
+    signs = {
+        untracked = { text = "│", },
+    },
+})
