@@ -41,26 +41,15 @@ cmp.setup({
     completion = { keyword_length = 3, },
     snippet = {
         expand = function (args)
-            -- vim.fn["vsnip#anonymous"](args.body) -- For `vsnip` users.
-            luasnip.lsp_expand(args.body) -- For `luasnip` users.
-            -- require('snippy').expand_snippet(args.body) -- For `snippy` users.
-            -- vim.fn["UltiSnips#Anon"](args.body) -- For `ultisnips` users.
+            luasnip.lsp_expand(args.body)
         end,
     },
     formatting = {
         format = function (entry, vim_item)
             vim_item = lspkind.cmp_format({
-                mode = "text", -- show only symbol annotations
-                maxwidth = 50, -- prevent the popup from showing more than provided characters (e.g 50 will not show more than 50 characters)
-                ellipsis_char =
-                "...",         -- when popup menu exceed maxwidth, the truncated part would show ellipsis_char instead (must define maxwidth first)
-
-                -- The function below will be called before any actual modifications from lspkind
-                -- so that you can provide more controls on popup customization. (See [#30](https://github.com/onsails/lspkind-nvim/pull/30))
-                --[[ before = function(entry, vim_item)
-                        ...
-                        return vim_item
-                    end ]]
+                mode = "text",
+                maxwidth = 50,
+                ellipsis_char = "...",
             })(entry, vim_item)
 
             vim_item.dup = 0
@@ -85,41 +74,15 @@ cmp.setup({
                             select = true,
                         }
                     )
-                    -- vim.api.nvim_feedkeys('(', 'i', true)
                 else
                     fallback()
                 end
             end, { "i", "s", }
         ),
-        -- ['<Down>'] = cmp.mapping(
-        --     function(fallback)
-        --         if cmp.visible() then
-        --             cmp.select_next_item()
-        --         elseif luasnip.expand_or_jumpable() then
-        --             luasnip.expand_or_jump()
-        --         else
-        --             fallback()
-        --         end
-        --     end, { 'i', 's' }
-        -- ),
-
-        -- ['<Up>'] = cmp.mapping(
-        --     function(fallback)
-        --         if cmp.visible() then
-        --             cmp.select_prev_item()
-        --         elseif luasnip.jumpable(-1) then
-        --             luasnip.jump(-1)
-        --         else
-        --             fallback()
-        --         end
-        --     end, { 'i', 's' }
-        -- ),
         ["<Tab>"] = cmp.mapping(
             function (fallback)
                 if cmp.visible() then
                     cmp.select_next_item()
-                    -- You could replace the expand_or_jumpable() calls within expand_or_locally_jumpable()
-                    -- they way you will only jump inside the snippet region
                 elseif luasnip.expand_or_jumpable() then
                     luasnip.expand_or_jump()
                 elseif has_words_before() then
@@ -148,29 +111,9 @@ cmp.setup({
         { name = "nvim_lsp", },
         -- { name = 'nvim_lsp_signature_help' },
         -- { name = 'nvim_lua' },
-        -- { name = 'vsnip' }, -- For vsnip users.
-        { name = "luasnip", }, -- For luasnip users.
-        -- { name = 'ultisnips' }, -- For ultisnips users.
-        -- { name = 'snippy' }, -- For snippy users.
+        { name = "luasnip", },
     },
 })
---  see https://github.com/hrsh7th/nvim-cmp/wiki/Menu-Appearance#how-to-add-visual-studio-code-dark-theme-colors-to-the-menu
--- -- gray
--- vim.fn.execute("highlight! CmpItemAbbrDeprecated guibg=NONE gui=strikethrough guifg=#808080")
--- -- blue
--- vim.fn.execute("highlight! CmpItemAbbrMatch guibg=NONE guifg=#569CD6")
--- vim.fn.execute("highlight! CmpItemAbbrMatchFuzzy guibg=NONE guifg=#569CD6")
--- -- light blue
--- vim.fn.execute("highlight! CmpItemKindVariable guibg=NONE guifg=#9CDCFE")
--- vim.fn.execute("highlight! CmpItemKindInterface guibg=NONE guifg=#9CDCFE")
--- vim.fn.execute("highlight! CmpItemKindText guibg=NONE guifg=#9CDCFE")
--- -- pink
--- vim.fn.execute("highlight! CmpItemKindFunction guibg=NONE guifg=#C586C0")
--- vim.fn.execute("highlight! CmpItemKindMethod guibg=NONE guifg=#C586C0")
--- -- front
--- vim.fn.execute("highlight! CmpItemKindKeyword guibg=NONE guifg=#D4D4D4")
--- vim.fn.execute("highlight! CmpItemKindProperty guibg=NONE guifg=#D4D4D4")
--- vim.fn.execute("highlight! CmpItemKindUnit guibg=NONE guifg=#D4D4D4")
 
 cmp.setup.cmdline(
     "/",
