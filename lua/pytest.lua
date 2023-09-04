@@ -22,10 +22,9 @@ local env_ok = false
 local dap = nil
 
 local function check_env()
-    utils.exec("Asdf")
-    utils.assert_available("python3")
-    utils.assert_python3_module("debugpy")
-    utils.assert_python3_module("pytest")
+    utils.assert_installed("python3")
+    utils.python3_module_installed("debugpy")
+    utils.python3_module_installed("pytest")
     env_ok = true
 end
 
