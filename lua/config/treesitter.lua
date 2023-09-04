@@ -76,6 +76,10 @@ require("nvim-treesitter.configs").setup({
         "zig",
     },
 
+    highlight = {
+        enable = true,
+    },
+
     -- Indentation based on treesitter for the = operator.
     -- NOTE: This is an experimental feature.
     indent = {
