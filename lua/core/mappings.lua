@@ -29,9 +29,9 @@ vim.keymap.set("n", "<A-j>", ":wincmd j<CR>", opts)
 vim.keymap.set("n", "<A-k>", ":wincmd k<CR>", opts)
 vim.keymap.set("n", "<A-l>", ":wincmd l<CR>", opts)
 -- Open new window in horizontal split
-vim.keymap.set("n", "<C-w>h", ":new<CR>", opts)
+vim.keymap.set("n", "<C-w>\"", ":new<CR>", opts)
 -- Open new window in vertical split
-vim.keymap.set("n", "<C-w>v", ":vnew<CR>", opts)
+vim.keymap.set("n", "<C-w>%", ":vnew<CR>", opts)
 -- Open new window in horizontal split at bottom
 vim.keymap.set("n", "<C-w><leader>", ":bo new<CR>", opts)
 -- Close buffer and window
