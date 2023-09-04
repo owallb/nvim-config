@@ -18,7 +18,7 @@ local module_name = "base"
 
 local utils = require("utils")
 
-local files = { "globals", "options", "autocommands", "mappings", }
+local files = { "globals", "options", "autocommands", "mappings", "user_commands", }
 
 for _, file in ipairs(files) do
     local pkg = "core." .. file
