@@ -14,6 +14,8 @@
     limitations under the License.
 ]]
 
+-- https://github.com/Mofiqul/vscode.nvim
+
 local vscode = require("vscode")
 
 vscode.setup({

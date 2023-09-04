@@ -14,6 +14,8 @@
     limitations under the License.
 ]]
 
+-- https://github.com/L3MON4D3/LuaSnip
+
 -- local ls = require"luasnip"
 -- local s = ls.snippet
 -- local sn = ls.snippet_node

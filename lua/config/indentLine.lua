@@ -14,6 +14,8 @@
     limitations under the License.
 ]]
 
+-- https://github.com/Yggdroot/indentLine
+
 -- more options at https://www.jetbrains.com/lp/mono/
 vim.g.indentLine_char = "▏"
 -- Disable conceal for some syntax plugins

@@ -14,4 +14,6 @@
     limitations under the License.
 ]]
 
+-- https://github.com/sindrets/winshift.nvim
+
 vim.keymap.set("n", "<C-W>m", ":WinShift<CR>", { remap = false, })

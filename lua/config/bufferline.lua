@@ -14,6 +14,8 @@
     limitations under the License.
 ]]
 
+-- https://github.com/akinsho/bufferline.nvim
+
 --- Define what filetypes should be ignored by bufferline.
 --- Filetypes not listed are enabled by default.
 local ft_map = {

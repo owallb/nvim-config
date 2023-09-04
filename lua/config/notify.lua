@@ -14,5 +14,7 @@
     limitations under the License.
 ]]
 
+-- https://github.com/rcarriga/nvim-notify
+
 vim.notify = require("notify")
 require("telescope").load_extension("notify")

@@ -14,6 +14,8 @@
     limitations under the License.
 ]]
 
+-- https://github.com/rcarriga/nvim-dap-ui
+
 require("dapui").setup({
     icons = { expanded = "▾", collapsed = "▸", },
     mappings = {

@@ -14,6 +14,8 @@
     limitations under the License.
 ]]
 
+-- https://github.com/mfussenegger/nvim-dap
+
 vim.fn.execute("nnoremap <silent> <F5> :lua require'dap'.continue()<CR>")
 vim.fn.execute("nnoremap <silent> <F10> :lua require'dap'.step_over()<CR>")
 vim.fn.execute("nnoremap <silent> <F11> :lua require'dap'.step_into()<CR>")

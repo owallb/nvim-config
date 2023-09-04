@@ -14,6 +14,8 @@
     limitations under the License.
 ]]
 
+-- https://github.com/tpope/vim-fugitive
+
 local function git_status_tab()
     vim.fn.execute("tabnew")
     vim.fn.execute("leftabove vertical G | vertical resize 60 | set wfw")

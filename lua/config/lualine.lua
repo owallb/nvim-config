@@ -14,6 +14,8 @@
     limitations under the License.
 ]]
 
+-- https://github.com/nvim-lualine/lualine.nvim
+
 --- @param trunc_width number trunctates component when screen width is less then trunc_width
 --- @param trunc_len number truncates component to trunc_len number of chars
 --- @param hide_width number hides component when window width is smaller then hide_width

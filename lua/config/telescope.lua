@@ -14,6 +14,8 @@
     limitations under the License.
 ]]
 
+-- https://github.com/nvim-telescope/telescope.nvim
+
 local builtin = require("telescope.builtin")
 
 vim.keymap.set(

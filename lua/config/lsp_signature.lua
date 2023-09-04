@@ -14,4 +14,6 @@
     limitations under the License.
 ]]
 
+-- https://github.com/ray-x/lsp_signature.nvim
+
 require("lsp_signature").setup()
