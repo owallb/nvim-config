@@ -16,6 +16,9 @@
 
 return {
     enabled = true,
+    dependencies = {
+        "python3",
+    },
     py_module_deps = {
         "venv",
     },
