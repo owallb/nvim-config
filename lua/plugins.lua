@@ -88,7 +88,6 @@ local plugins = {
         config = function () require("config.treesitter") end,
         lazy = true,
         event = "VimEnter",
-        build = ":TSUpdate",
     },
     {
         "mfussenegger/nvim-dap",
