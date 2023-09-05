@@ -18,7 +18,6 @@ return {
     enabled = true,
     dependencies = {
         "npm",
-        "shellcheck",
     },
     lspconfig = {
         filetypes = {

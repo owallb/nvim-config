@@ -16,6 +16,9 @@
 
 return {
     enabled = true,
+    py_module_deps = {
+        "venv",
+    },
     lspconfig = {
         filetypes = {
             "cmake",

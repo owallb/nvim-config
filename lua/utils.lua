@@ -58,9 +58,15 @@ end
 
 --- Asserts that a python module is installed
 ---@param mod string: The python module to check
-function M.assert_python3_module_installed(mod)
+function M.python3_module_is_installed(mod)
     local resp = vim.system({ "python3", "-m", "pip", "show", mod, }):wait()
-    if not resp.code == 0 then
+    return resp.code == 0
+end
+
+--- Asserts that a python module is installed
+---@param mod string: The python module to check
+function M.assert_python3_module_installed(mod)
+    if not M.python3_module_is_installed(mod) then
         error("Python3 module " .. mod .. " not installed:\n" .. resp.stdout .. "\n" .. resp.stderr)
     end
 end

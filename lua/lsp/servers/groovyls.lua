@@ -16,6 +16,9 @@
 
 return {
     enabled = true,
+    dependencies = {
+        "java",
+    },
     lspconfig = {
         filetypes = {
             "groovy",
