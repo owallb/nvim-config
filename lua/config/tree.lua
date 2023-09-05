@@ -27,15 +27,13 @@ require("nvim-tree").setup({
         group_empty = true,
         highlight_git = true,
         highlight_opened_files = "name",
+        indent_markers = {
+            enable = true,
+        },
         icons = {
-            web_devicons = {
-                folder = {
-                    enable = true,
-                },
-            },
             git_placement = "after",
             show = {
-                folder_arrow = false,
+                folder_arrow = true,
             },
         },
     },
