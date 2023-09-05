@@ -58,6 +58,9 @@ require("nvim-tree").setup({
             resize_window = true,
         },
     },
+    filters = {
+        custom = { "^\\.git$" }
+    }
 })
 
 local opts = { remap = false, silent = true, }
