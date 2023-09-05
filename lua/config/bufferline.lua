@@ -23,7 +23,8 @@ local ft_map = {
     fugitive = false,
 }
 
-require("bufferline").setup({
+local bufferline = require("bufferline")
+bufferline.setup({
     options = {
         close_command = "Bwipeout %d",
         right_mouse_command = nil,
@@ -39,6 +40,7 @@ require("bufferline").setup({
 
             return ft_map[buf_ft]
         end,
+        style_preset = bufferline.style_preset.no_italic,
         offsets = {
             {
                 filetype = "NvimTree",
