@@ -1,6 +1,7 @@
 # System Reqiurements
 These are the requirements to make use of this neovim configuration. Currently only supports GNU/Linux.
 
+- Neovim 0.10 or later
 - curl or wget
 - unzip
 - gzip
