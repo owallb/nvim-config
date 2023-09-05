@@ -63,7 +63,7 @@ function M.python3_module_is_installed(mod)
         return false
     end
 
-    local resp = vim.system({ "python3", "-m", "pip", "show", mod, }):wait()
+    local resp = vim.system({ "python3", "-c", "import " .. mod, }):wait()
     return resp.code == 0
 end
 
