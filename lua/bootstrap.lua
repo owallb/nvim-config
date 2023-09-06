@@ -26,7 +26,7 @@ local utils = require("utils")
 
 -- Install lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
+if not vim.uv.fs_stat(lazypath) then
     if utils.os_name == "Linux" then
         utils.assert_any_installed({ "curl", "wget", })
         utils.assert_installed("unzip")

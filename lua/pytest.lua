@@ -59,7 +59,7 @@ function M.run(args)
     dap.run(config)
     -- List of events described at https://microsoft.github.io/debug-adapter-protocol/specification#Events
     -- Also see :h dap-extensions
-    dap.listeners.after["event_initialized"]["pytest.lua"] = function (session, body)
+    dap.listeners.after["event_initialized"]["pytest.lua"] = function (_, _)
         dap.set_exception_breakpoints({ "userUnhandled", })
     end
 end

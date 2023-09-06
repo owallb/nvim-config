@@ -16,7 +16,7 @@
 
 local M = {}
 
-M.os_name = vim.loop.os_uname().sysname
+M.os_name = vim.uv.os_uname().sysname
 
 --- Check that an executable is available
 --- @param exe string: Array to look for
