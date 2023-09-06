@@ -20,6 +20,14 @@ require("neorg").setup({
     load = {
         ["core.defaults"] = {},
         ["core.concealer"] = {},
+        ["core.keybinds"] = {
+            config = {
+                hook = function (keybinds)
+                    keybinds.unmap("norg", "n", "<C-Space>")
+                    keybinds.remap_event("norg", "n", keybinds.leader .. "tt", "core.qol.todo_items.todo.task_cycle")
+                end,
+            },
+        },
         ["core.dirman"] = {
             config = {
                 workspaces = {
