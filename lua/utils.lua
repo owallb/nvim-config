@@ -71,7 +71,7 @@ end
 ---@param mod string: The python module to check
 function M.assert_python3_module_installed(mod)
     if not M.python3_module_is_installed(mod) then
-        error("Python3 module " .. mod .. " not installed:\n" .. resp.stdout .. "\n" .. resp.stderr)
+        error("Python3 module " .. mod .. " not installed")
     end
 end
 
