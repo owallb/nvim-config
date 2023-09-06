@@ -42,7 +42,7 @@ Some servers have additional runtime dependencies:
 
 - **bash-language-server**: shellcheck (optional, used for linting)
 
-If you don't need some specific language server, and want to get rid of any warning messages, you may either remove them from `lua/lsp/servers/init.lua` or disable them in `lua/lsp/servers/<server>.lua`.
+If you don't need some specific language server, and want to get rid of any warning messages, you may either remove them from the top of `lua/lsp/init.lua` or disable them in `lua/lsp/config/<server>.lua`.
 
 ### Clipboard
 see `:checkhealth` and `:h clipboard`.

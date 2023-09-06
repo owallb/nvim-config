@@ -14,7 +14,7 @@
     limitations under the License.
 ]]
 
-local module_name = "lsp"
+local package_name = "lsp"
 local utils = require("utils")
 
 local P = {}
@@ -24,7 +24,20 @@ P._language_servers = nil
 
 P.capabilities = {}
 
-P.servers = require("lsp.servers")
+P.servers = {
+    bashls = {},
+    clangd = {},
+    cmake = {},
+    diagnosticls = {},
+    groovyls = {},
+    jedi_language_server = {},
+    lemminx = {},
+    lua_ls = {},
+}
+
+for name, _ in pairs(P.servers) do
+    P.servers[name] = require("lsp.config." .. name)
+end
 
 function P._setup_diagnostic()
     vim.diagnostic.config({
@@ -275,7 +288,7 @@ function P.language_servers(self)
                             name,
                             table.concat(not_installed, ", ")
                         ),
-                        module_name
+                        package_name
                     )
                     server.enabled = false
                     goto next_server
@@ -296,7 +309,7 @@ function P.language_servers(self)
                             name,
                             table.concat(not_installed, ", ")
                         ),
-                        module_name
+                        package_name
                     )
                     server.enabled = false
                     goto next_server
