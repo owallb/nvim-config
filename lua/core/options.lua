@@ -68,7 +68,7 @@ vim.opt.shiftround = true
 vim.opt.virtualedit = "block"
 -- True color support. Avoid if terminal does not support it.
 vim.opt.termguicolors = true
-vim.opt.signcolumn = "auto"
+vim.opt.signcolumn = "yes:2"
 -- Diff options
 vim.opt.diffopt = {}
 -- Use vertical split by default
