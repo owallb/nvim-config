@@ -14,11 +14,10 @@
     limitations under the License.
 ]]
 
--- https://github.com/Yggdroot/indentLine
-
--- more options at https://www.jetbrains.com/lp/mono/
-vim.g.indentLine_char = "▏"
--- Disable conceal for some syntax plugins
-vim.g.vim_json_conceal = 0
-vim.g.markdown_syntax_conceal = 0
-vim.g.indentLine_fileTypeExclude = { "NvimTree", }
+require("indent_blankline").setup {
+    use_treesitter = true,
+    show_first_indent_level = false,
+    show_trailing_blankline_indent = false,
+    show_current_context = true,
+    max_indent_increase = 1
+}

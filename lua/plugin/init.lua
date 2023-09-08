@@ -146,8 +146,8 @@ local plugins = {
         event = "VimEnter",
     },
     {
-        "Yggdroot/indentLine",
-        config = function () require("plugin.config.indentLine") end,
+        "lukas-reineke/indent-blankline.nvim",
+        config = function () require("plugin.config.indent-blankline") end,
         lazy = true,
         event = "VimEnter",
     },
