@@ -39,6 +39,20 @@ for name, _ in pairs(P.servers) do
     P.servers[name] = require("lsp.config." .. name)
 end
 
+local function ca_rename()
+    local old = vim.fn.expand("<cword>")
+    local new
+    vim.ui.input(
+        { prompt = ("Rename `%s` to: "):format(old), },
+        function (input)
+            new = input
+        end
+    )
+    if new and new ~= "" then
+        vim.lsp.buf.rename(new)
+    end
+end
+
 function P._setup_diagnostic()
     vim.diagnostic.config({
         underline = true,
@@ -157,52 +171,25 @@ function P.on_attach(client, bufnr)
     }, bufnr)
     -- Mappings.
     -- See `:help vim.lsp.*` for documentation on any of the below functions
-    local opts = { noremap = true, silent = true, }
-    vim.api.nvim_buf_set_keymap(bufnr, "n", "L",
-        "<cmd>lua vim.diagnostic.open_float()<CR>", opts)
-    vim.api.nvim_buf_set_keymap(bufnr, "n", "[d",
-        "<cmd>lua vim.diagnostic.goto_prev()<CR>", opts)
-    vim.api.nvim_buf_set_keymap(bufnr, "n", "]d",
-        "<cmd>lua vim.diagnostic.goto_next()<CR>", opts)
-    vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>ll",
-        "<cmd>lua vim.diagnostic.setloclist()<CR>", opts)
-    vim.api.nvim_buf_set_keymap(bufnr, "n", "gD",
-        "<cmd>lua vim.lsp.buf.declaration()<CR>", opts)
-    vim.api.nvim_buf_set_keymap(bufnr, "n", "gd",
-        "<cmd>lua vim.lsp.buf.definition()<CR>", opts)
-    vim.api.nvim_buf_set_keymap(bufnr, "n", "K",
-        "<cmd>lua vim.lsp.buf.hover()<CR>", opts)
-    vim.api.nvim_buf_set_keymap(bufnr, "n", "gi",
-        "<cmd>lua vim.lsp.buf.implementation()<CR>",
-        opts)
-    vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>s",
-        "<cmd>lua vim.lsp.buf.signature_help()<CR>",
-        opts)
-    vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>wa",
-        "<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>",
-        opts)
-    vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>wr",
-        "<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>",
-        opts)
-    vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>wl",
-        "<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>",
-        opts)
-    vim.api.nvim_buf_set_keymap(bufnr, "n", "gt",
-        "<cmd>lua vim.lsp.buf.type_definition()<CR>",
-        opts)
-    vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>rn",
-        "<cmd>lua vim.lsp.buf.rename()<CR>", opts)
-    vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>ca",
-        "<cmd>lua vim.lsp.buf.code_action()<CR>", opts)
-    vim.api.nvim_buf_set_keymap(bufnr, "n", "gr",
-        "<cmd>lua vim.lsp.buf.references()<CR>", opts)
-    vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>lf",
-        "<cmd>lua vim.lsp.buf.format({async = true})<CR>",
-        opts)
+    local opts = { silent = true, buffer = bufnr, }
+    vim.keymap.set("n", "L", vim.diagnostic.open_float, opts)
+    vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
+    vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
+    vim.keymap.set("n", "<leader>ll", vim.diagnostic.setloclist, opts)
+    vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
+    vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
+    vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
+    vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
+    vim.keymap.set("n", "<leader>s", vim.lsp.buf.signature_help, opts)
+    vim.keymap.set("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, opts)
+    vim.keymap.set("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder, opts)
+    vim.keymap.set("n", "<leader>wl", function () print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end, opts)
+    -- vim.keymap.set("n", "gt", vim.lsp.buf.type_definition, opts)
+    vim.keymap.set("n", "<leader>rn", ca_rename, opts)
+    vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
+    vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+    vim.keymap.set({ "n", "v", }, "<leader>lf", function () vim.lsp.buf.format({ async = true, }) end, opts)
     -- if client.server_capabilities.document_range_formatting then
-    vim.api.nvim_buf_set_keymap(bufnr, "v", "<leader>lf",
-        "<cmd>lua vim.lsp.buf.format({async = true})<CR>",
-        opts)
     -- end
 
     -- The below command will highlight the current variable and its usages in the buffer.
