@@ -119,12 +119,6 @@ local plugins = {
         event = "VimEnter",
     },
     {
-        "akinsho/bufferline.nvim",
-        config = function () require("plugin.config.bufferline") end,
-        lazy = true,
-        event = "VimEnter",
-    },
-    {
         "nvim-lua/plenary.nvim",
     },
     {
