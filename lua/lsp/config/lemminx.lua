@@ -30,13 +30,19 @@ return {
             settings = {
                 xml = {
                     format = {
-                        splitAttributes = true,
-                        joinCDATALines = false,
-                        joinContentLines = true,
-                        joinCommentLines = false,
-                        spaceBeforeEmptyCloseLine = false,
-                        enabled = true,
+                        enabled = true, -- is able to format document
+                        splitAttributes = false, -- each attribute is formatted onto new line
+                        joinCDATALines = false, -- normalize content inside CDATA
+                        joinCommentLines = false, -- normalize content inside comments
+                        formatComments = true, -- keep comment in relative position
+                        joinContentLines = false, -- normalize content inside elements
+                        spaceBeforeEmptyCloseLine = true, -- insert whitespace before self closing tag end bracket
                     },
+                    validation = {
+                        noGrammar = "hint",
+                        enabled = true,
+                        schema = true,
+                    }
                 },
             },
         },
