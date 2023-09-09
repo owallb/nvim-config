@@ -23,26 +23,9 @@ vim.keymap.set("n", "tn", ":tabnew<CR>", opts)
 vim.keymap.set("n", "tq", ":tabclose<CR>", opts)
 -- switch tabs with Ctrl+PgUp/Ctrl+PgDwn (default vim mapping)
 
---- Window mappings ---
-vim.keymap.set("n", "<A-h>", ":wincmd h<CR>", opts)
-vim.keymap.set("n", "<A-j>", ":wincmd j<CR>", opts)
-vim.keymap.set("n", "<A-k>", ":wincmd k<CR>", opts)
-vim.keymap.set("n", "<A-l>", ":wincmd l<CR>", opts)
--- Open new window in horizontal split
-vim.keymap.set("n", "<C-w>\"", ":new<CR>", opts)
--- Open new window in vertical split
-vim.keymap.set("n", "<C-w>%", ":vnew<CR>", opts)
--- Open new window in horizontal split at bottom
-vim.keymap.set("n", "<C-w><leader>", ":bo new<CR>", opts)
--- Close buffer and window
-vim.keymap.set("n", "<C-w>q", ":bd<CR>", opts)
-
 --- Buffer mappings ---
--- Navigate up/down half a screen
-vim.keymap.set({ "n", "v", }, "<C-j>", "<C-d>", opts)
-vim.keymap.set({ "n", "v", }, "<C-k>", "<C-u>", opts)
 -- Center cursorline
-vim.keymap.set("n", "<C-Space>", "zz", opts)
+vim.keymap.set("n", "<leader><leader>", "zz", opts)
 -- Save buffer
 vim.keymap.set("n", "<C-s>", ":w<CR>", opts)
 -- Cycle buffers
