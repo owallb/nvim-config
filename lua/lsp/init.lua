@@ -24,7 +24,7 @@ P._language_servers = nil
 
 P.capabilities = {}
 
-P.servers = {
+P.config = {
     bashls = {},
     clangd = {},
     cmake = {},
@@ -35,8 +35,8 @@ P.servers = {
     lua_ls = {},
 }
 
-for name, _ in pairs(P.servers) do
-    P.servers[name] = require("lsp.config." .. name)
+for server, _ in pairs(P.config) do
+    P.config[server] = require("lsp.config." .. server)
 end
 
 local function ca_rename()
@@ -219,7 +219,7 @@ function P.on_attach(client, bufnr)
 end
 
 function P.reload_server_buf(self, name)
-    local server = self.servers[name]
+    local server = self.config[name]
     local ft_map = {}
     for _, ft in ipairs(server.lspconfig.filetypes) do
         ft_map[ft] = true
@@ -241,7 +241,7 @@ function P.filetypes(self)
     if not self._filetypes then
         self._filetypes = {}
         local unique = {}
-        for _, server in pairs(self.servers) do
+        for _, server in pairs(self.config) do
             for _, ft in ipairs(server.lspconfig.filetypes) do
                 if not unique[ft] then
                     table.insert(self._filetypes, ft)
@@ -257,13 +257,13 @@ end
 function P.language_servers(self)
     if not self._language_servers then
         self._language_servers = {}
-        for name, server in pairs(self.servers) do
-            if server.enabled ~= true then
+        for server, opts in pairs(self.config) do
+            if opts.enabled ~= true then
                 goto next_server
             end
-            if server.dependencies ~= nil then
+            if opts.dependencies ~= nil then
                 local not_installed = {}
-                for _, dep in ipairs(server.dependencies) do
+                for _, dep in ipairs(opts.dependencies) do
                     if not utils.is_installed(dep) then
                         table.insert(not_installed, dep)
                     end
@@ -272,19 +272,19 @@ function P.language_servers(self)
                 if #not_installed > 0 then
                     utils.warn(
                         ("Disabling %s because the following required package(s) are not installed: %s"):format(
-                            name,
+                            server,
                             table.concat(not_installed, ", ")
                         ),
                         package_name
                     )
-                    server.enabled = false
+                    opts.enabled = false
                     goto next_server
                 end
             end
 
-            if server.py_module_deps ~= nil then
+            if opts.py_module_deps ~= nil then
                 local not_installed = {}
-                for _, mod in ipairs(server.py_module_deps) do
+                for _, mod in ipairs(opts.py_module_deps) do
                     if not utils.python3_module_is_installed(mod) then
                         table.insert(not_installed, mod)
                     end
@@ -293,17 +293,17 @@ function P.language_servers(self)
                 if #not_installed > 0 then
                     utils.warn(
                         ("Disabling %s because the following required python3 module(s) are not installed: %s"):format(
-                            name,
+                            server,
                             table.concat(not_installed, ", ")
                         ),
                         package_name
                     )
-                    server.enabled = false
+                    opts.enabled = false
                     goto next_server
                 end
             end
 
-            table.insert(self._language_servers, name)
+            table.insert(self._language_servers, server)
 
             ::next_server::
         end
@@ -313,7 +313,7 @@ function P.language_servers(self)
 end
 
 function P.setup_server(self, name)
-    local server = self.servers[name]
+    local server = self.config[name]
 
     if server.enabled ~= true then
         return
