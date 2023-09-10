@@ -26,7 +26,7 @@ require("gitsigns").setup({
     on_attach = function (bufnr)
         local gs = package.loaded.gitsigns
         map(bufnr, "n", "<leader>gv", gs.select_hunk)
-        map(bufnr, { "n", "v", }, "<leader>gr", ":Gitsigns reset_hunk<CR>") -- gs.reset_hunk() doesn't work with selected lines
+        map(bufnr, { "n", "x", }, "<leader>gr", ":Gitsigns reset_hunk<CR>") -- gs.reset_hunk() doesn't work with selected lines
         map(bufnr, "n", "<leader>g?", gs.preview_hunk)
         map(bufnr, "n", "<leader>gb", function ()
             gs.blame_line { full = true, }

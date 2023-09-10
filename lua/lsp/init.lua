@@ -188,7 +188,7 @@ function P.on_attach(client, bufnr)
     vim.keymap.set("n", "<leader>rn", ca_rename, opts)
     vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, opts)
     vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
-    vim.keymap.set({ "n", "v", }, "<leader>lf", function () vim.lsp.buf.format({ async = true, }) end, opts)
+    vim.keymap.set({ "n", "x", }, "<leader>lf", function () vim.lsp.buf.format({ async = true, }) end, opts)
     -- if client.server_capabilities.document_range_formatting then
     -- end
 
