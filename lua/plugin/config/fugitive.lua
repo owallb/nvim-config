@@ -18,7 +18,8 @@
 
 local function git_status_tab()
     vim.fn.execute("tabnew")
-    vim.fn.execute("leftabove vertical G | vertical resize 60 | set wfw")
+    vim.fn.execute("leftabove vertical G")
+    vim.fn.execute("vertical resize 60 | set wfw")
 end
 
 vim.keymap.set("n", "<leader>gd", ":Gdiffsplit<CR>", { remap = false, })
