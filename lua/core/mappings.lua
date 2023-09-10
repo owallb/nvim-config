@@ -42,10 +42,8 @@ vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", opts)
 vim.keymap.set("n", "<C-l>", "<C-i>", opts)
 vim.keymap.set("n", "<C-h>", "<C-o>", opts)
 -- Use :diffput/get instead of normal one to allow staging visual selection
-vim.keymap.set("n", "<leader>dp", "&diff ? ':diffput<CR>' : '<leader>dp'", opts_expr)
-vim.keymap.set("x", "<leader>dp", "&diff ? ':diffput<CR>' : '<leader>dp'", opts_expr)
-vim.keymap.set("n", "<leader>do", "&diff ? ':diffget<CR>' : '<leader>do'", opts_expr)
-vim.keymap.set("x", "<leader>do", "&diff ? ':diffget<CR>' : '<leader>do'", opts_expr)
+vim.keymap.set({"n", "x"}, "<leader>dp", "&diff ? ':diffput<CR>' : '<leader>dp'", opts_expr)
+vim.keymap.set({"n", "x"}, "<leader>do", "&diff ? ':diffget<CR>' : '<leader>do'", opts_expr)
 
 -- Remove default mappings
 vim.keymap.set("", "<C-LeftMouse>", "")
