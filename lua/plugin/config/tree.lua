@@ -26,7 +26,6 @@ require("nvim-tree").setup({
         add_trailing = true,
         group_empty = true,
         highlight_git = true,
-        highlight_opened_files = "name",
         indent_markers = {
             enable = true,
         },
