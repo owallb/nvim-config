@@ -41,7 +41,6 @@ vim.opt.pumblend = 10
 -- pseudo transparency for floating window
 vim.opt.winblend = 5
 -- set nowrap
-vim.opt.clipboard:append("unnamedplus")
 vim.opt.matchpairs:append({ "<:>", "':'", "\":\"", })
 vim.opt.fileencoding = "utf-8"
 -- Only relevant with wrap enabled (default)

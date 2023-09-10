@@ -34,10 +34,8 @@ vim.keymap.set("n", "<C-Home>", ":BufferLineCyclePrev<CR>", opts)
 
 --- General mappings ---
 -- yank/put using named register
-vim.keymap.set("n", "<leader>y", '"0y', opts)
-vim.keymap.set("x", "<leader>y", '"0y', opts)
-vim.keymap.set("n", "<leader>p", '"0p', opts)
-vim.keymap.set("x", "<leader>p", '"0p', opts)
+vim.keymap.set({"n", "x"}, "<leader>y", '"+y', opts)
+vim.keymap.set({"n", "x"}, "<leader>p", '"+p', opts)
 -- Allow exiting insert mode in terminal by hitting <ESC>
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", opts)
 -- Navigate forward/backwards
