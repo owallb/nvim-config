@@ -29,7 +29,6 @@ P.config = {
     clangd = {},
     cmake = {},
     diagnosticls = {},
-    groovyls = {},
     jedi_language_server = {},
     lemminx = {},
     lua_ls = {},
