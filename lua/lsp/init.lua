@@ -314,7 +314,7 @@ end
 function P.setup_server(self, name)
     local server = self.config[name]
 
-    if server.enabled ~= true then
+    if not server or server.enabled ~= true then
         return
     end
 
