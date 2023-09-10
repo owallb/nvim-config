@@ -27,15 +27,13 @@ local utils = require("utils")
 -- Install lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.uv.fs_stat(lazypath) then
-    if utils.os_name == "Linux" then
-        utils.assert_any_installed({ "curl", "wget", })
-        utils.assert_installed("unzip")
-        utils.assert_installed("gzip")
-    elseif utils.os_name == "Windows_NT" then
+    if utils.os_name == "Windows_NT" then
         utils.assert_any_installed({ "pwsh", "powershell", })
         utils.assert_any_installed({ "7z", "peazip", "arc", "wzzip", "rar", })
     else
-        error("OS not supported: " .. utils.os_name)
+        utils.assert_any_installed({ "curl", "wget", })
+        utils.assert_installed("unzip")
+        utils.assert_installed("gzip")
     end
 
     utils.assert_installed("git")

@@ -1,14 +1,25 @@
 # System Reqiurements
-These are the requirements to make use of this neovim configuration. Currently only supports GNU/Linux.
+These are the requirements to make use of this neovim configuration.
 
 - Neovim 0.10 or later
+- git
+- tar
+
+## Platform specific requirements
+
+Windows:
+- powershell
+- One of the following executables needs to be available:
+    - 7z
+    - peazip
+    - arc
+    - wzszip
+    - rar
+
+Linux, macOS and other BSD variants:
 - curl or wget
 - unzip
 - gzip
-- git
-- tar
-    
-*Note: You may try using windows, but last time I checked there was a problem with the completion engine (nvim-cmp) that makes it impossible to traverse the drop-down list.*
 
 ## Optional
 
