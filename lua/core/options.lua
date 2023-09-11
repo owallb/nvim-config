@@ -84,3 +84,5 @@ vim.opt.diffopt:append({ "indent-heuristic", "algorithm:histogram", })
 vim.fn.execute("filetype plugin on")
 vim.opt.hlsearch = false
 vim.opt.laststatus = 3
+vim.opt.textwidth = 80
+vim.opt.colorcolumn = '+1'
