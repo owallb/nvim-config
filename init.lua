@@ -40,7 +40,7 @@ else
         return
     end
 
-    ok, err = pcall(require, "plugin")
+    ok, err = pcall(require, "plugins")
     if not ok then
         utils.err("Error while loading plugins", module_name)
         utils.err(err:gsub("\t", "  "), module_name)
