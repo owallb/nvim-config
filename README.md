@@ -29,7 +29,7 @@ The following are optional but provides additional features:
 - gcc and g++
 - npm
 - python3 with venv
-- java JDK
+- java runtime
 - shellcheck
 - jsregexp
 
