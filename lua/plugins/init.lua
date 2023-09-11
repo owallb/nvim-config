@@ -35,7 +35,11 @@ local plugins = {
         "L3MON4D3/LuaSnip",
         config = function () require("plugins.config.luasnip") end,
         -- comment out on windows and install jsregexp manually
-        build = "make install_jsregexp",
+        build = (
+            require("utils").os_name ~= "Windows_NT"
+            and "make install_jsregexp"
+            or nil
+        ),
         version = "2.*",
     },
     {
