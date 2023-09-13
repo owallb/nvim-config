@@ -65,4 +65,8 @@ require("nvim-tree").setup({
 })
 
 local opts = { remap = false, silent = true, }
-vim.keymap.set("n", "<leader>tt", function () require("nvim-tree.api").tree.toggle() end, opts)
+vim.keymap.set(
+    "n", "<leader>tt",
+    function () require("nvim-tree.api").tree.toggle() end,
+    opts
+)
