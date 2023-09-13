@@ -32,6 +32,8 @@ The following are optional but provides additional features:
 - java runtime
 - shellcheck
 - jsregexp
+- php
+- composer
 
 The sections below describes this in more detail.
 
@@ -51,6 +53,8 @@ Language servers are installed automatically to the nvim data directory (`:echo 
 - **cmake-language-server**: python3 with venv
 - **jedi-language-server**: python3 with venv
 - **groovy-language-server**: java
+- **intelephense**: npm
+- **phpactor**: php and composer
 
 Some servers have additional runtime dependencies:
 
