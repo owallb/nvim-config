@@ -58,6 +58,10 @@ require("nvim-tree").setup({
     filters = {
         custom = { "^\\.git$", },
     },
+    notify = {
+        threshold = vim.log.levels.WARN,
+        absolute_path = false,
+    },
 })
 
 local opts = { remap = false, silent = true, }
