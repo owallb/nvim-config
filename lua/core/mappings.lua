@@ -38,9 +38,6 @@ vim.keymap.set({"n", "x"}, "<leader>y", '"+y', opts)
 vim.keymap.set({"n", "x"}, "<leader>p", '"+p', opts)
 -- Allow exiting insert mode in terminal by hitting <ESC>
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", opts)
--- Navigate forward/backwards
-vim.keymap.set("n", "<C-l>", "<C-i>", opts)
-vim.keymap.set("n", "<C-h>", "<C-o>", opts)
 -- Use :diffput/get instead of normal one to allow staging visual selection
 vim.keymap.set({"n", "x"}, "<leader>dp", "&diff ? ':diffput<CR>' : '<leader>dp'", opts_expr)
 vim.keymap.set({"n", "x"}, "<leader>do", "&diff ? ':diffget<CR>' : '<leader>do'", opts_expr)

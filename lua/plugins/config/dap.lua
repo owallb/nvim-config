@@ -20,13 +20,6 @@ vim.fn.execute("nnoremap <silent> <F5> :lua require'dap'.continue()<CR>")
 vim.fn.execute("nnoremap <silent> <F10> :lua require'dap'.step_over()<CR>")
 vim.fn.execute("nnoremap <silent> <F11> :lua require'dap'.step_into()<CR>")
 vim.fn.execute("nnoremap <silent> <F12> :lua require'dap'.step_out()<CR>")
-vim.fn.execute("nnoremap <leader>dt :lua require'plugin.config.dap'.pytest({'-k', ''})<left><left><left>")
-vim.fn.execute("nnoremap <leader>dl :lua require'plugin.config.dap'.launch({''})<left><left><left>")
-vim.fn.execute("nnoremap <silent> <leader>db :lua require'dap'.toggle_breakpoint()<CR>")
--- vim.fn.execute("nnoremap <silent> <leader>B :lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>")
--- vim.fn.execute("nnoremap <silent> <leader>lp :lua require'dap'.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))<CR>")
-vim.fn.execute("nnoremap <silent> <leader>dr :lua require'dap'.repl.open()<CR>")
--- vim.fn.execute("nnoremap <silent> <leader>dl :lua require'dap'.run_last()<CR>")
 
 local utils = require("utils")
 
