@@ -204,6 +204,10 @@ local plugins = {
         "nvim-treesitter/nvim-treesitter-context",
         config = function () require("plugins.config.treesitter-context") end,
     },
+    {
+        'fedepujol/move.nvim',
+        config = function () require("plugins.config.move") end,
+    }
 }
 
 local opts = {}
