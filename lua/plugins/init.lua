@@ -18,11 +18,12 @@ vim.loader.enable()
 
 local plugins = {
     {
-        "Mofiqul/vscode.nvim",
+        "catppuccin/nvim",
         priority = 1000,
         lazy = false,
+        name = "catppuccin",
         config = function ()
-            require("plugins.config.vscode")
+            require("plugins.config.catppuccin")
         end,
     },
     {

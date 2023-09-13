@@ -88,4 +88,13 @@ function M.pytest(args)
     start(config)
 end
 
+--[[
+    TODO: Add this after loading dap for integrating catppuccin:
+    local sign = vim.fn.sign_define
+
+    sign("DapBreakpoint", { text = "●", texthl = "DapBreakpoint", linehl = "", numhl = ""})
+    sign("DapBreakpointCondition", { text = "●", texthl = "DapBreakpointCondition", linehl = "", numhl = ""})
+    sign("DapLogPoint", { text = "◆", texthl = "DapLogPoint", linehl = "", numhl = ""})
+--]]
+
 return M
