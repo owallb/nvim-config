@@ -14,6 +14,12 @@
     limitations under the License.
 ]]
 
+-- For more info see:
+-- https://github.com/iamcco/diagnostic-languageserver
+
+-- More examples at:
+-- https://github.com/iamcco/coc-diagnostic/blob/master/src/config.ts
+
 return {
     enabled = true,
     dependencies = {
@@ -22,14 +28,16 @@ return {
     lspconfig = {
         filetypes = {
             "python",
-            "lua",
             "sh",
+            "php",
         },
         cmd = { "diagnostic-languageserver", "--stdio", },
         single_file_support = true,
-        -- For more info see https://github.com/iamcco/diagnostic-languageserver
         init_options = {
-            filetypes = { python = "flake8", lua = "luaFormatter", },
+            filetypes = {
+                python = "flake8",
+                php = "phpcs",
+            },
             linters = {
                 -- some help from this:
                 -- https://github.com/creativenull/diagnosticls-configs-nvim/blob/main/lua/diagnosticls-configs/linters/flake8.lua
@@ -63,10 +71,60 @@ return {
                         D = "info",
                     },
                 },
+                phpcs = {
+                    command = "./vendor/bin/phpcs",
+                    args = {
+                        "--report=json",
+                        "-s",
+                        "-",
+                    },
+                    rootPatterns = {
+                        "composer.json",
+                        "composer.lock",
+                        "vendor",
+                        ".git",
+                    },
+                    isStdout = true,
+                    isStderr = false,
+                    debounce = 100,
+                    offsetLine = 0,
+                    offsetColumn = 0,
+                    sourceName = "phpcs",
+
+                    -- Alternative to JSON parsing,
+                    -- requires --report=emacs
+                    -- formatLines = 1,
+                    -- formatPattern = {
+                    --     [[^.*:(\d+):(\d+): (.*) [-] (.*)$]],
+                    --     {
+                    --         line = 1,
+                    --         column = 2,
+                    --         security = 3,
+                    --         message = { 4, },
+                    --     },
+                    -- },
+                    -- securities = {
+                    --     error = "error",
+                    --     warning = "warning",
+                    -- },
+
+                    parseJson = {
+                        errorsRoot = "files.STDIN.messages",
+                        line = "line",
+                        column = "column",
+                        security = "type",
+                        message = "${message} (${source})",
+                    },
+                    securities = {
+                        ERROR = "error",
+                        WARNING = "warning",
+                    },
+                },
             },
             formatFiletypes = {
                 python = { "black", "isort", },
                 sh = { "shfmt", },
+                php = { "php_cs_fixer", },
             },
             formatters = {
                 black = {
@@ -102,6 +160,44 @@ return {
                     isStdout = true,
                     isStderr = false,
                     ignoreExitCode = false,
+                },
+                php_cs_fixer = {
+                    sourceName = "php-cs-fixer",
+                    command = "./vendor/bin/php-cs-fixer",
+                    args = {
+                        "fix",
+                        "--no-ansi",
+                        "--using-cache=no",
+                        "--quiet",
+                        "--no-interaction",
+                        "%file",
+                    },
+                    isStdout = false,
+                    isStderr = false,
+                    doesWriteToFile = true,
+                    ignoreExitCode = false,
+                    rootPatterns = {
+                        "composer.json",
+                        "composer.lock",
+                        "vendor",
+                        ".git",
+                    },
+                },
+                phpcbf = {
+                    command = "./vendor/bin/phpcbf",
+                    args = {
+                        "--standard=PSR12",
+                        "-",
+                    },
+                    rootPatterns = {
+                        "composer.json",
+                        "composer.lock",
+                        "vendor",
+                        ".git",
+                    },
+                    isStdout = true,
+                    isStderr = false,
+                    ignoreExitCode = true,
                 },
             },
         },
