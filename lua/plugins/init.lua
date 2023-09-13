@@ -200,6 +200,10 @@ local plugins = {
         "famiu/bufdelete.nvim",
         config = function () require("plugins.config.bufdelete") end,
     },
+    {
+        "nvim-treesitter/nvim-treesitter-context",
+        config = function () require("plugins.config.treesitter-context") end,
+    },
 }
 
 local opts = {}
