@@ -32,6 +32,7 @@ P.config = {
     jedi_language_server = {},
     lemminx = {},
     lua_ls = {},
+    intelephense = {},
 }
 
 for server, _ in pairs(P.config) do
