@@ -17,10 +17,20 @@
 -- https://github.com/nvim-treesitter/nvim-treesitter
 
 require("nvim-treesitter.configs").setup({
+    ensure_installed = {
+        "c",
+        "lua",
+        "vim",
+        "vimdoc",
+        "query",
+        "luadoc",
+        "phpdoc",
+    },
     auto_install = true,
 
     highlight = {
         enable = true,
+        disable = {},
     },
 
     -- Indentation based on treesitter for the = operator.
@@ -28,6 +38,7 @@ require("nvim-treesitter.configs").setup({
     indent = {
         enable = true,
     },
+
 })
 
 vim.opt.foldmethod = "expr"
