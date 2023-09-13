@@ -86,3 +86,4 @@ vim.opt.hlsearch = true
 vim.opt.laststatus = 3
 vim.opt.textwidth = 80
 vim.opt.colorcolumn = '+1'
+vim.opt.cmdheight = 0
