@@ -21,7 +21,9 @@ local plugins = {
         "Mofiqul/vscode.nvim",
         priority = 1000,
         lazy = false,
-        config = function () require("plugins.config.vscode") end,
+        config = function ()
+            require("plugins.config.vscode")
+        end,
     },
     {
         "rcarriga/nvim-notify",
@@ -59,14 +61,25 @@ local plugins = {
         "hrsh7th/cmp-cmdline",
     },
     {
-        "onsails/lspkind-nvim",
+        "hrsh7th/cmp-nvim-lua",
     },
+    {
+        "hrsh7th/cmp-nvim-lsp",
+    },
+    {
+        "ray-x/lsp_signature.nvim",
+        event = "VeryLazy",
+        config = function () require("plugins.config.lsp_signature") end,
+    },
+    --[[ {
+        "hrsh7th/cmp-nvim-lsp-signature-help",
+    }, ]]
     {
         "hrsh7th/nvim-cmp",
         config = function () require("plugins.config.cmp") end,
     },
     {
-        "hrsh7th/cmp-nvim-lsp",
+        "onsails/lspkind-nvim",
     },
     {
         "williamboman/mason.nvim",
@@ -75,11 +88,6 @@ local plugins = {
     {
         "williamboman/mason-lspconfig.nvim",
         config = function () require("plugins.config.mason_lspconfig") end,
-    },
-    {
-        "ray-x/lsp_signature.nvim",
-        event = "VeryLazy",
-        config = function () require("plugins.config.lsp_signature") end,
     },
     {
         "neovim/nvim-lspconfig",
