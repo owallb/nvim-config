@@ -27,7 +27,16 @@ vim.keymap.set(
 vim.keymap.set(
     "n", "<leader>fg", function ()
         builtin.live_grep(
-            { additional_args = function (_) return { "--hidden", } end, }
+            {
+                additional_args = function (_)
+                    return {
+                        "--hidden",
+                        "--iglob=!.venv",
+                        "--iglob=!vendor",
+                        "--iglob=!.git",
+                    }
+                end,
+            }
         )
     end
 )
