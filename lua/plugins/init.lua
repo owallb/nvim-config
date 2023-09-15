@@ -189,11 +189,6 @@ local plugins = {
         config = function () require("plugins.config.aerial") end,
     },
     {
-        "nvim-neorg/neorg",
-        build = ":Neorg sync-parsers",
-        config = function () require("plugins.config.neorg") end,
-    },
-    {
         "RubixDev/mason-update-all",
         config = function () require("plugins.config.mason_update_all") end,
     },
