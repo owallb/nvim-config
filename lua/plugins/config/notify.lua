@@ -18,7 +18,12 @@
 
 local telescope = require("telescope")
 
-vim.notify = require("notify")
+local notify = require("notify")
+notify.setup({
+    render = "default",
+    stages = "fade",
+})
+vim.notify = notify
 telescope.load_extension("notify")
 vim.keymap.set(
     "n", "<leader>fn", function () telescope.extensions.notify.notify() end
