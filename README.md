@@ -5,6 +5,13 @@ These are the requirements to make use of this neovim configuration.
 - git
 - tar
 
+If you are coming from a previous neovim configuration, it's probably also a
+good idea to delete your neovim data directory. To check where it is you can
+run:
+```sh
+nvim --headless --clean -c 'echo stdpath("data") .. "\n"|q'
+```
+
 ## Platform specific requirements
 
 Windows:
