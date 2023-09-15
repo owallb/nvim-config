@@ -34,12 +34,6 @@ vim.opt.foldmethod = "indent"
 vim.opt.foldignore = ""
 vim.opt.guifont = "JetBrains Mono:11"
 vim.opt.completeopt:append({ "menu", "menuone", "preview", "noinsert", })
--- Max number of items
-vim.opt.pumheight = 20
--- pseudo transparency for completion menu
-vim.opt.pumblend = 10
--- pseudo transparency for floating window
-vim.opt.winblend = 5
 -- set nowrap
 vim.opt.matchpairs:append({ "<:>", "':'", "\":\"", })
 vim.opt.fileencoding = "utf-8"
