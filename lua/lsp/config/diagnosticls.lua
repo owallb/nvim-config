@@ -124,7 +124,6 @@ return {
             formatFiletypes = {
                 python = { "black", "isort", },
                 sh = { "shfmt", },
-                php = { "php_cs_fixer", },
             },
             formatters = {
                 black = {
@@ -160,28 +159,6 @@ return {
                     isStdout = true,
                     isStderr = false,
                     ignoreExitCode = false,
-                },
-                php_cs_fixer = {
-                    sourceName = "php-cs-fixer",
-                    command = "./vendor/bin/php-cs-fixer",
-                    args = {
-                        "fix",
-                        "--no-ansi",
-                        "--using-cache=no",
-                        "--quiet",
-                        "--no-interaction",
-                        "%file",
-                    },
-                    isStdout = false,
-                    isStderr = false,
-                    doesWriteToFile = true,
-                    ignoreExitCode = false,
-                    rootPatterns = {
-                        "composer.json",
-                        "composer.lock",
-                        "vendor",
-                        ".git",
-                    },
                 },
                 phpcbf = {
                     command = "./vendor/bin/phpcbf",
