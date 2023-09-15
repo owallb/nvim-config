@@ -222,6 +222,10 @@ local plugins = {
         },
         config = function () require("plugins.config.noice") end,
     },
+    {
+        "nvim-orgmode/orgmode",
+        config = function () require("plugins.config.orgmode") end,
+    },
 }
 
 local opts = {}
