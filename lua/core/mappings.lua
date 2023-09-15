@@ -45,3 +45,7 @@ vim.keymap.set({"n", "x"}, "<leader>do", "&diff ? ':diffget<CR>' : '<leader>do'"
 -- Remove default mappings
 vim.keymap.set("", "<C-LeftMouse>", "")
 vim.keymap.set("", "q", "")
+
+-- Remove right-click menu items
+vim.cmd.aunmenu({'PopUp.-1-'})
+vim.cmd.aunmenu({'PopUp.How-to\\ disable\\ mouse'})
