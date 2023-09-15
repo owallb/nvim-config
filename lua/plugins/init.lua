@@ -103,6 +103,7 @@ local plugins = {
     {
         "nvim-treesitter/nvim-treesitter",
         config = function () require("plugins.config.treesitter") end,
+        build = ":TSUpdate",
         lazy = true,
         event = "VimEnter",
     },
