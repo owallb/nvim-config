@@ -18,7 +18,7 @@ vim.opt.cursorline = true
 vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.mouse = "a"
-vim.opt.mousemodel = "extend"
+vim.opt.mousemodel = "popup"
 vim.opt.fillchars:append("diff: ")
 vim.opt.splitbelow = true
 vim.opt.splitright = true
