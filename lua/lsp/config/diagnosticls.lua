@@ -67,7 +67,7 @@ return {
                         E = "error",
                         W = "warning",
                         B = "hint",
-                        F = "error",
+                        F = "hint",
                         D = "info",
                     },
                 },
