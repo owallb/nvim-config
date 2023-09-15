@@ -85,10 +85,14 @@ local plugins = {
     {
         "williamboman/mason.nvim",
         config = function () require("plugins.config.mason") end,
+        lazy = true,
+        event = "VimEnter",
     },
     {
         "williamboman/mason-lspconfig.nvim",
         config = function () require("plugins.config.mason_lspconfig") end,
+        lazy = true,
+        event = "VimEnter",
     },
     {
         "neovim/nvim-lspconfig",
