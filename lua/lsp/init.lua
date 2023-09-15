@@ -137,13 +137,7 @@ function P.on_attach(client, bufnr)
         { "n", "x", },
         "<leader>lf",
         function ()
-            if vim.bo.filetype == "php" then
-                vim.cmd("w")
-                vim.lsp.buf.format({ async = false, })
-                vim.cmd("e!")
-            else
-                vim.lsp.buf.format({ async = false, })
-            end
+            vim.lsp.buf.format({ async = false, })
         end,
         opts
     )
