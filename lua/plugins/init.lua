@@ -68,14 +68,6 @@ local plugins = {
         "hrsh7th/cmp-nvim-lsp",
     },
     {
-        "ray-x/lsp_signature.nvim",
-        event = "VeryLazy",
-        config = function () require("plugins.config.lsp_signature") end,
-    },
-    --[[ {
-        "hrsh7th/cmp-nvim-lsp-signature-help",
-    }, ]]
-    {
         "hrsh7th/nvim-cmp",
         config = function () require("plugins.config.cmp") end,
     },
