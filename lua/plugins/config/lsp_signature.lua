@@ -16,4 +16,12 @@
 
 -- https://github.com/ray-x/lsp_signature.nvim
 
-require("lsp_signature").setup()
+require("lsp_signature").setup({
+    doc_lines = 20,
+    toggle_key = "<C-e>",
+    hint_enable = false,
+    floating_window = true,
+    floating_window_above_cur_line = true,
+    floating_window_off_x = 0,
+    floating_window_off_y = 0,
+})

@@ -117,15 +117,6 @@ function P.on_attach(client, bufnr)
     -- Disabled in favor of nvim-cmp
     -- vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
 
-    local ok, lsp_signature = pcall(require, "lsp_signature")
-    if ok then
-        lsp_signature.on_attach({
-            doc_lines = 20,
-            hint_enable = false,
-            toggle_key = "<C-e>",
-        }, bufnr)
-    end
-
     -- Mappings.
     -- See `:help vim.lsp.*` for documentation on any of the below functions
     local opts = { silent = true, buffer = bufnr, }
