@@ -33,7 +33,7 @@ return {
                     phpVersion = "7.4",
                 },
                 format = {
-                    enable = false,
+                    enable = true,
                     braces = "psr12",
                 },
             },
