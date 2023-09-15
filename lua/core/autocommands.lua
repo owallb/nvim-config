@@ -14,13 +14,6 @@
     limitations under the License.
 ]]
 
-local function term_close()
-    -- Split previous buffer, switching to it
-    vim.fn.execute("split " .. vim.fn.expand("#"))
-    -- Close previous window (terminal)
-    vim.fn.execute(vim.fn.winnr("#") .. "wincmd q")
-end
-
 local function open_file_tree()
     local ok, mod = pcall(require, "nvim-tree.api")
     if ok then
@@ -33,8 +26,4 @@ local function open_file_tree()
     end
 end
 
-vim.api.nvim_create_autocmd("TermClose", {
-    pattern = "term://*",
-    callback = term_close,
-})
 vim.api.nvim_create_autocmd("VimEnter", { callback = open_file_tree, })
