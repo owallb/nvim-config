@@ -30,6 +30,9 @@ return {
         single_file_support = true,
         settings = {
             Lua = {
+                completion = {
+                    showWord = "Disable",
+                },
                 runtime = {
                     version = "LuaJIT",
                     path = runtime_path,
