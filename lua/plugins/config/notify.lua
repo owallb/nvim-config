@@ -21,7 +21,7 @@ local has_telescope, telescope = pcall(require, "telescope")
 local notify = require("notify")
 notify.setup({
     render = "default",
-    stages = "fade",
+    stages = "static",
 })
 
 vim.notify = notify
