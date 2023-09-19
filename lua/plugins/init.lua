@@ -212,6 +212,9 @@ local plugins = {
         "nvim-orgmode/orgmode",
         config = function () require("plugins.config.orgmode") end,
     },
+    {
+        "farmergreg/vim-lastplace",
+    },
 }
 
 local opts = {}
