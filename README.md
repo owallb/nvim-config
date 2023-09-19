@@ -22,8 +22,8 @@ enough to simply install the symbols-only nerd font and it should get picked up
 automatically.
 
 ### [Kitty](https://sw.kovidgoyal.net/kitty/)
-[Kitty should pick up the fallback font automatically, and it also supports
-mapping specific symbols to a font].(https://sw.kovidgoyal.net/kitty/faq/#kitty-is-not-able-to-use-my-favorite-font)
+Kitty should pick up the fallback font automatically, and it also supports
+mapping specific symbols to a font](https://sw.kovidgoyal.net/kitty/faq/#kitty-is-not-able-to-use-my-favorite-font).
 
 To map it explicitly you will probably need to change the `symbol_map` for v3 to the following:
 ```conf
