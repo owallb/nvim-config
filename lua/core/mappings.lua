@@ -39,18 +39,20 @@ vim.keymap.set("n", "<C-Home>", ":BufferLineCyclePrev<CR>", opts)
 
 --- General mappings ---
 -- yank/put using named register
-vim.keymap.set({"n", "x"}, "<leader>y", '"+y', opts)
-vim.keymap.set({"n", "x"}, "<leader>p", '"+p', opts)
+vim.keymap.set({ "n", "x", }, "<leader>y", '"+y', opts)
+vim.keymap.set({ "n", "x", }, "<leader>p", '"+p', opts)
 -- Allow exiting insert mode in terminal by hitting <ESC>
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", opts)
 -- Use :diffput/get instead of normal one to allow staging visual selection
-vim.keymap.set({"n", "x"}, "<leader>dp", "&diff ? ':diffput<CR>' : '<leader>dp'", opts_expr)
-vim.keymap.set({"n", "x"}, "<leader>do", "&diff ? ':diffget<CR>' : '<leader>do'", opts_expr)
+vim.keymap.set({ "n", "x", }, "<leader>dp",
+    "&diff ? ':diffput<CR>' : '<leader>dp'", opts_expr)
+vim.keymap.set({ "n", "x", }, "<leader>do",
+    "&diff ? ':diffget<CR>' : '<leader>do'", opts_expr)
 
 -- Remove default mappings
 vim.keymap.set("", "<C-LeftMouse>", "")
 vim.keymap.set("", "q", "")
 
 -- Remove right-click menu items
-vim.cmd.aunmenu({'PopUp.-1-'})
-vim.cmd.aunmenu({'PopUp.How-to\\ disable\\ mouse'})
+vim.cmd.aunmenu({ "PopUp.-1-", })
+vim.cmd.aunmenu({ "PopUp.How-to\\ disable\\ mouse", })
