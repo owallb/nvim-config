@@ -36,6 +36,7 @@ require("nvim-treesitter.configs").setup({
     highlight = {
         enable = true,
         disable = {},
+        additional_vim_regex_highlighting = { "org", },
     },
 
     -- Indentation based on treesitter for the = operator.
@@ -43,7 +44,6 @@ require("nvim-treesitter.configs").setup({
     indent = {
         enable = true,
     },
-    additional_vim_regex_highlighting = { "org", },
 })
 
 vim.opt.foldmethod = "expr"
