@@ -18,9 +18,14 @@
 
 local catppuccin = require("catppuccin")
 
+-- Sometimes requires running :CatppuccinCompile,
+-- like when switching to a font that supports italics.
 catppuccin.setup({
     flavour = "mocha", -- latte, frappe, macchiato, mocha
-    no_italic = true,
+    no_italic = false,
+    styles = {
+        comments = { "italic", },
+    },
     integrations = {
         cmp = true,
         gitsigns = true,
@@ -42,10 +47,10 @@ catppuccin.setup({
         native_lsp = {
             enabled = true,
             virtual_text = {
-                errors = {},
-                hints = {},
-                warnings = {},
-                information = {},
+                errors = { "italic", },
+                hints = { "italic", },
+                warnings = { "italic", },
+                information = { "italic", },
             },
             underlines = {
                 errors = { "underline", },
