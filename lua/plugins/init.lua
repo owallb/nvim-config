@@ -204,7 +204,8 @@ local plugins = {
     },
     {
         "folke/noice.nvim",
-        event = "VeryLazy",
+        -- see issue https://github.com/folke/lazy.nvim/issues/1038
+        -- event = "VeryLazy",
         dependencies = {
             "MunifTanjim/nui.nvim",
         },
