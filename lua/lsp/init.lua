@@ -37,7 +37,11 @@ P.config = {
 }
 
 for server, _ in pairs(P.config) do
-    P.config[server] = require("lsp.config." .. server)
+    local ok, resp = pcall(require, "lsp.config." .. server)
+    if not ok then
+        return
+    end
+    P.config[server] = resp
 end
 
 local function ca_rename()
@@ -280,29 +284,46 @@ function P.setup_server(self, name)
         return
     end
 
-    local lspconfig = require("lspconfig")
+    local ok, lspconfig = pcall(require, "lspconfig")
+    if not ok then
+        utils.err("Missing required plugin lspconfig", package_name)
+        return
+    end
+
     server.lspconfig.root_dir = lspconfig.util.find_git_ancestor
     server.lspconfig.capabilities = self.capabilities
     server.lspconfig.on_attach = function (...)
-        local ok, resp = pcall(self.on_attach, ...)
+        local resp
+        ok, resp = pcall(self.on_attach, ...)
         if not ok then
             utils.err(
                 ("Failed to load on_attach for %s:\n%s"):format(name, resp)
             )
         end
     end
-    lspconfig[name].setup(server.lspconfig)
+
+    if not pcall(lspconfig[name].setup, server.lspconfig) then
+        utils.err("Unknown LSP server for lspconfig: " .. name, package_name)
+        return
+    end
+
     self:reload_server_buf(name)
 end
 
 function P.setup(self)
     self._setup_diagnostic()
-    P.capabilities = require("cmp_nvim_lsp").default_capabilities()
-    require("mason-lspconfig").setup_handlers({
-        function (name)
-            self:setup_server(name)
-        end,
-    })
+
+    utils.try_require("cmp_nvim_lsp", package_name, function (mod)
+        P.capabilities = mod.default_capabilities()
+    end)
+
+    utils.try_require("mason-lspconfig", package_name, function (mod)
+        mod.setup_handlers({
+            function (name)
+                self:setup_server(name)
+            end,
+        })
+    end)
 end
 
 return P

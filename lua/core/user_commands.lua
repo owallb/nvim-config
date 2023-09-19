@@ -14,16 +14,39 @@
     limitations under the License.
 ]]
 
+local module_name = "core.user_commands"
+local utils = require("utils")
+
 vim.api.nvim_create_user_command(
     "Update",
     function (_)
-        require("lazy").update()
-        vim.fn.execute(":TSUpdateSync")
-        vim.fn.execute(":Neorg sync-parsers")
-        vim.fn.execute(":MasonUpdateAll")
+        utils.try_require(
+            "lazy",
+            module_name,
+            function (lazy)
+                lazy.update()
+            end
+        )
+
+        utils.try_require(
+            "nvim-treesitter.install",
+            module_name,
+            function (treesitter_install)
+                treesitter_install.update({ with_sync = true, })("all")
+            end
+        )
+
+        utils.try_require(
+            "mason-update-all",
+            module_name,
+            function (mason_update_all)
+                mason_update_all.update_all()
+            end
+        )
     end,
     {
-        desc = "Update lazy plugins, treesitter parsers and mason language servers",
+        desc =
+        "Update lazy plugins, treesitter parsers and mason language servers",
         force = false,
     }
 )

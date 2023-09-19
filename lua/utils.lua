@@ -52,7 +52,8 @@ end
 --- @param exes table: Array of exes
 function M.assert_any_installed(exes)
     if not M.any_installed(exes) then
-        error("At least one of the following is required:\n" .. table.concat(exes, ", "))
+        error("At least one of the following is required:\n" ..
+            table.concat(exes, ", "))
     end
 end
 
@@ -96,6 +97,20 @@ end
 
 function M.err(msg, title)
     M.notify(msg, title, vim.log.levels.ERROR)
+end
+
+function M.try_require(module, err_title, on_success)
+    local has_module, resp = pcall(require, module)
+
+    if has_module then
+        if not on_success then
+            return
+        end
+
+        return on_success(resp)
+    end
+
+    M.err(("Failed to load module %s"):format(module), err_title)
 end
 
 return M

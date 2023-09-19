@@ -16,6 +16,8 @@
 
 -- https://github.com/hrsh7th/nvim-cmp
 
+local module_name = "plugins.config.cmp"
+
 local has_words_before = function ()
     unpack = unpack or table.unpack
     local line, col = unpack(vim.api.nvim_win_get_cursor(0))
@@ -25,9 +27,14 @@ local has_words_before = function ()
         :match("%s") == nil
 end
 
+local utils = require("utils")
 local cmp = require("cmp")
 local luasnip = require("luasnip")
-local lspkind = require("lspkind")
+
+local lspkind
+utils.try_require("lspkind", module_name, function (module)
+    lspkind = module
+end)
 
 cmp.setup({
     enabled = function ()
@@ -49,13 +56,17 @@ cmp.setup({
     },
     formatting = {
         format = function (entry, vim_item)
-            vim_item = lspkind.cmp_format({
-                mode = "text",
-                maxwidth = 50,
-                ellipsis_char = "...",
-            })(entry, vim_item)
-
-            vim_item.dup = 0
+            if lspkind then
+                vim_item = lspkind.cmp_format({
+                    mode = "symbol",
+                    maxwidth = 50,
+                    ellipsis_char = "...",
+                    before = function (_, item)
+                        item.dup = 0 -- remove duplicates, see nvim-cmp #511
+                        return item
+                    end,
+                })(entry, vim_item)
+            end
 
             return vim_item
         end,
@@ -153,8 +164,13 @@ cmp.setup.cmdline(
     }
 )
 
-local cmp_autopairs = require("nvim-autopairs.completion.cmp")
-cmp.event:on(
-    "confirm_done",
-    cmp_autopairs.on_confirm_done()
+utils.try_require(
+    "nvim-autopairs.completion.cmp",
+    module_name,
+    function (cmp_autopairs)
+        cmp.event:on(
+            "confirm_done",
+            cmp_autopairs.on_confirm_done()
+        )
+    end
 )
