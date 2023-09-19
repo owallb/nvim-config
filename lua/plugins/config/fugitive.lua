@@ -22,6 +22,10 @@ local function git_status_tab()
     vim.fn.execute("vertical resize 60 | set wfw")
 end
 
-vim.keymap.set("n", "<leader>gd", ":Gdiffsplit<CR>", { remap = false, })
-vim.keymap.set("n", "<leader>gg", git_status_tab, { silent = true, remap = false, })
-vim.keymap.set("n", "<leader>gc", ":G commit<CR>", { remap = false, })
+local opts = { silent = true, remap = false, }
+vim.keymap.set("n", "<leader>gd", ":Gdiffsplit<CR>", opts)
+
+-- Only used if diffview is not available
+if not pcall(require, "diffview") then
+    vim.keymap.set("n", "<leader>gg", git_status_tab, opts)
+end

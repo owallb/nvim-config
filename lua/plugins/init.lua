@@ -226,6 +226,13 @@ local plugins = {
     {
         "farmergreg/vim-lastplace",
     },
+    {
+        "sindrets/diffview.nvim",
+        config = function () require("plugins.config.diffview") end,
+        dependencies = {
+            "nvim-tree/nvim-web-devicons",
+        },
+    },
 }
 
 local opts = {}
