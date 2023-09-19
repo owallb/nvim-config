@@ -110,9 +110,9 @@ local plugins = {
     {
         "rcarriga/nvim-dap-ui",
         config = function () require("plugins.config.dap_ui") end,
-    },
-    {
-        "kyazdani42/nvim-web-devicons",
+        dependencies = {
+            "mfussenegger/nvim-dap",
+        },
     },
     {
         "tpope/vim-fugitive",
@@ -129,9 +129,9 @@ local plugins = {
         config = function () require("plugins.config.lualine") end,
         lazy = true,
         event = "VimEnter",
-    },
-    {
-        "nvim-lua/plenary.nvim",
+        dependencies = {
+            "nvim-tree/nvim-web-devicons",
+        },
     },
     {
         "lewis6991/gitsigns.nvim",
@@ -144,6 +144,9 @@ local plugins = {
         config = function () require("plugins.config.telescope") end,
         lazy = true,
         event = "VimEnter",
+        dependencies = {
+            "nvim-lua/plenary.nvim",
+        },
     },
     {
         "numToStr/Comment.nvim",
@@ -182,6 +185,10 @@ local plugins = {
     {
         "stevearc/aerial.nvim",
         config = function () require("plugins.config.aerial") end,
+        dependencies = {
+            "nvim-treesitter/nvim-treesitter",
+            "nvim-tree/nvim-web-devicons",
+        },
     },
     {
         "RubixDev/mason-update-all",
@@ -205,12 +212,16 @@ local plugins = {
         -- event = "VeryLazy",
         dependencies = {
             "MunifTanjim/nui.nvim",
+            "rcarriga/nvim-notify",
         },
         config = function () require("plugins.config.noice") end,
     },
     {
         "nvim-orgmode/orgmode",
         config = function () require("plugins.config.orgmode") end,
+        dependencies = {
+            "nvim-treesitter/nvim-treesitter",
+        },
     },
     {
         "farmergreg/vim-lastplace",
