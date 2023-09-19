@@ -18,13 +18,18 @@
 
 require("nvim-treesitter.configs").setup({
     ensure_installed = {
-        "c",
-        "lua",
-        "vim",
-        "vimdoc",
-        "query",
+        "c",      -- recommended default
+        "lua",    -- recommended default
+        "vim",    -- recommended default
+        "vimdoc", -- recommended default
+        "query",  -- recommended default
         "luadoc",
         "phpdoc",
+        "regex",           -- for noice
+        "bash",            -- for noice
+        "markdown",        -- for noice
+        "markdown_inline", -- for noice
+        "org",
     },
     auto_install = true,
 

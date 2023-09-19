@@ -34,6 +34,7 @@ catppuccin.setup({
         },
         mason = true,
         neogit = true,
+        noice = true,
         dap = {
             enabled = true,
             enable_ui = true,
