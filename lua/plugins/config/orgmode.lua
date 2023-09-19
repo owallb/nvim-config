@@ -27,7 +27,7 @@ orgmode.setup({
         "WAITING(w)",
         "|",
         "DONE(d)",
-        "DISCARDED(D)",
+        "DISCARDED(c)",
     },
     org_todo_keyword_faces = {
         ACTIVE = ":foreground dodgerblue :weight bold",
