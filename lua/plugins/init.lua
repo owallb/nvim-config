@@ -180,6 +180,9 @@ local plugins = {
     {
         "kyazdani42/nvim-tree.lua",
         config = function () require("plugins.config.tree") end,
+        dependencies = {
+            "nvim-tree/nvim-web-devicons",
+        },
     },
     {
         "dstein64/vim-startuptime",
