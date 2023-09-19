@@ -58,69 +58,37 @@ local function ca_rename()
     end
 end
 
-function P._setup_diagnostic()
+function P._setup_diagnostics()
+    -- https://github.com/neovim/nvim-lspconfig/wiki/UI-Customization#customizing-how-diagnostics-are-displayed
     vim.diagnostic.config({
         underline = true,
         signs = true,
-        virtual_text = false,
-        -- virtual_text = {
-        --     format = function(diagnostic)
-        --         return string.format("%s: %s", diagnostic.user_data.lsp.code, diagnostic.message)
-        --     end
-        -- },
+        virtual_text = {
+            prefix = "",
+            format = function (diagnostic)
+                return diagnostic.message
+            end,
+        },
         float = {
             show_header = false,
-            source = "if_many",
+            source = "always",
             border = "rounded",
             focusable = false,
             format = function (diagnostic)
                 return string.format("%s", diagnostic.message)
             end,
-
         },
-        update_in_insert = false, -- default to false
-        severity_sort = true,     -- default to false
+        update_in_insert = false,
+        severity_sort = false,
     })
-    -- Change diagnostic icons
-    vim.fn.sign_define("DiagnosticSignError", {
-        text = "E",
-        texthl = "DiagnosticSignError",
-        -- culhl = 'DiagnosticSignError',
-        numhl = "DiagnosticSignError",
-        -- linehl = 'LspDiagnosticsUnderlineError'
-    })
-    vim.fn.sign_define("DiagnosticSignWarn", {
-        text = "W",
-        texthl = "DiagnosticSignWarn",
-        -- culhl = 'DiagnosticSignWarn',
-        numhl = "DiagnosticSignWarn",
-        -- linehl = 'LspDiagnosticsUnderlineWarning'
-    })
-    vim.fn.sign_define("DiagnosticSignHint", {
-        text = "H",
-        texthl = "DiagnosticSignHint",
-        -- culhl = 'DiagnosticSignHint',
-        numhl = "DiagnosticSignHint",
-        -- linehl = 'LspDiagnosticsUnderlineHint'
-    })
-    vim.fn.sign_define("DiagnosticSignInfo", {
-        text = "i",
-        texthl = "DiagnosticSignInfo",
-        -- culhl = 'DiagnosticSignInfo',
-        numhl = "DiagnosticSignInfo",
-        -- linehl = 'LspDiagnosticsUnderlineInfo'
-    })
-
-    -- Change some highlights
-    -- vim.cmd('highlight DiagnosticUnderlineError guifg=' .. utils.get_hl('DiagnosticError').foreground)
-    -- vim.cmd('highlight DiagnosticUnderlineWarn guifg=' .. utils.get_hl('DiagnosticWarn').foreground)
+    local signs = { Error = "󰅚 ", Warn = "󰀪 ", Hint = "󰌶 ", Info = " ", }
+    for type, icon in pairs(signs) do
+        local hl = "DiagnosticSign" .. type
+        vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl, })
+    end
 end
 
 function P.on_attach(client, bufnr)
-    -- Enable completion triggered by <c-x><c-o>
-    -- Disabled in favor of nvim-cmp
-    -- vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
-
     -- Mappings.
     -- See `:help vim.lsp.*` for documentation on any of the below functions
     local opts = { silent = true, buffer = bufnr, }
@@ -145,8 +113,6 @@ function P.on_attach(client, bufnr)
         end,
         opts
     )
-    -- if client.server_capabilities.document_range_formatting then
-    -- end
 
     -- The below command will highlight the current variable and its usages in the buffer.
     if client.server_capabilities.document_highlight then
@@ -163,14 +129,7 @@ function P.on_attach(client, bufnr)
             callback = vim.lsp.buf.clear_references,
         })
     end
-    -- Auto show current line diagnostics after 300 ms
-    -- vim.cmd('autocmd CursorHold <buffer> lua vim.diagnostic.open_float({ scope = "line" })')
-    -- vim.api.nvim_create_autocmd("CursorHold", {
-    --     buffer = bufnr,
-    --     callback = function()
-    --         vim.diagnostic.open_float({ scope = "line" })
-    --     end
-    -- })
+
     vim.opt.updatetime = 100
 end
 
@@ -311,7 +270,7 @@ function P.setup_server(self, name)
 end
 
 function P.setup(self)
-    self._setup_diagnostic()
+    self._setup_diagnostics()
 
     utils.try_require("cmp_nvim_lsp", package_name, function (mod)
         P.capabilities = mod.default_capabilities()
