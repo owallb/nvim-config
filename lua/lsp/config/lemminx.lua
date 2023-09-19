@@ -14,6 +14,8 @@
     limitations under the License.
 ]]
 
+-- spec: https://github.com/eclipse/lemminx/blob/main/docs/Configuration.md
+
 return {
     enabled = true,
     lspconfig = {
@@ -39,7 +41,7 @@ return {
                         spaceBeforeEmptyCloseLine = true, -- insert whitespace before self closing tag end bracket
                     },
                     validation = {
-                        noGrammar = "hint",
+                        noGrammar = "ignore",
                         enabled = true,
                         schema = true,
                     }
