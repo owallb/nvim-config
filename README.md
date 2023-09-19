@@ -77,15 +77,25 @@ The following are optional but provides additional features:
 The sections below describes this in more detail.
 
 ### Treesitter
-Some parsers require tools for compilation, like `gcc` and/or `g++`. There are far too many parsers for me to list (and keep track of) all their dependencies here, but `gcc` and `g++` should cover a lot of them. You will generally encounter an error that describes if something is missing upon opening specific filetypes, because treesitter is configured to automatically install parsers when needed.
+Some parsers require tools for compilation, like `gcc` and/or `g++`. There are
+far too many parsers for me to list (and keep track of) all their dependencies
+here, but `gcc` and `g++` should cover a lot of them. You will generally
+encounter an error that describes if something is missing upon opening specific
+filetypes, because treesitter is configured to automatically install parsers
+when needed.
 
 ### LuaSnip
-`jsregexp` is required in order to perform some [transformations](https://code.visualstudio.com/docs/editor/userdefinedsnippets#_variable-transforms). See [here](https://github.com/L3MON4D3/LuaSnip/blob/master/DOC.md#transformations) for more information. 
+`jsregexp` is required in order to perform some [transformations](https://code.visualstudio.com/docs/editor/userdefinedsnippets#_variable-transforms).
+See [here](https://github.com/L3MON4D3/LuaSnip/blob/master/DOC.md#transformations)
+for more information. 
 
-You will need to manually install `jsregexp` on windows, while it's installed automatically on other platforms using `make` and `gcc`.
+You will need to manually install `jsregexp` on windows, while it's installed
+automatically on other platforms using `make` and `gcc`.
 
 ### Language servers
-Language servers are installed automatically to the nvim data directory (`:echo stdpath('data') .. '/mason'`). The following are some noted requirements for the installations themselves:
+Language servers are installed automatically to the nvim data directory
+(`:echo stdpath('data') .. '/mason'`). The following are some noted requirements
+for the installations themselves:
 
 - **diagnostic-languageserver**: npm
 - **bash-language-server**: npm
@@ -99,7 +109,9 @@ Some servers have additional runtime dependencies:
 
 - **bash-language-server**: shellcheck (optional, used for linting)
 
-If you don't need some specific language server, and want to get rid of any warning messages, you may either remove them from the top of `lua/lsp/init.lua` or disable them in `lua/lsp/config/<server>.lua`.
+If you don't need some specific language server, and want to get rid of any
+warning messages, you may either remove them from the top of `lua/lsp/init.lua`
+or disable them in `lua/lsp/config/<server>.lua`.
 
 ### Clipboard
 see `:checkhealth` and `:h clipboard`.
