@@ -44,8 +44,6 @@ return {
                 flake8 = {
                     command = "flake8",
                     args = {
-                        "--config",
-                        "tox.ini",
                         "--format",
                         "%(row)d,%(col)d,%(code).1s,%(code)s: %(text)s",
                         "-",
