@@ -51,8 +51,7 @@ vim.opt.undofile = true
 -- and https://medium.com/usevim/set-complete-e76b9f196f0f#:~:text=When%20in%20Insert%20mode%2C%20you,%2D%2D%20CTRL%2DN%20goes%20backwards.
 -- kspell is only relevant if ':set spell' is toggled on, e.g. when editing
 -- documents
-vim.opt.complete:append("kspell")
-vim.opt.complete:remove({ "w", "b", "u", "t", })
+vim.opt.complete = ".,kspell"
 vim.opt.spelllang = "en"
 -- Align indent to next multiple value of shiftwidth.
 -- E.g., only insert as many spaces necessary for reaching the next shiftwidth
@@ -80,3 +79,5 @@ vim.opt.hlsearch = true
 vim.opt.laststatus = 3
 vim.opt.textwidth = 0
 vim.opt.colorcolumn = "81"
+vim.opt.shortmess:append("a")
+
