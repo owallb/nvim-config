@@ -30,7 +30,7 @@ vim.keymap.set("n", "<leader><leader>", "zz", opts)
 vim.keymap.set(
     "n", "<C-s>",
     -- workaround for double save messages
-    function () vim.api.nvim_command(":w") end,
+    function () vim.api.nvim_command(":silent w") end,
     { remap = false, }
 )
 -- Cycle buffers
@@ -56,3 +56,7 @@ vim.keymap.set("", "q", "")
 -- Remove right-click menu items
 vim.cmd.aunmenu({ "PopUp.-1-", })
 vim.cmd.aunmenu({ "PopUp.How-to\\ disable\\ mouse", })
+
+-- Silence some keys
+vim.keymap.set({ "n", "v", }, "u", ":silent undo<CR>", { silent = true, })
+vim.keymap.set({ "n", "v", }, "<C-r>", ":silent redo<CR>", { silent = true, })
