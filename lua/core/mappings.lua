@@ -27,7 +27,12 @@ vim.keymap.set("n", "tq", ":tabclose<CR>", opts)
 -- Center cursorline
 vim.keymap.set("n", "<leader><leader>", "zz", opts)
 -- Save buffer
-vim.keymap.set("n", "<C-s>", ":w<CR>", opts)
+vim.keymap.set(
+    "n", "<C-s>",
+    -- workaround for double save messages
+    function () vim.api.nvim_command(":w") end,
+    { remap = false, }
+)
 -- Cycle buffers
 vim.keymap.set("n", "<C-End>", ":BufferLineCycleNext<CR>", opts)
 vim.keymap.set("n", "<C-Home>", ":BufferLineCyclePrev<CR>", opts)
