@@ -34,12 +34,12 @@ return {
         init_options = {
             -- Built-in diagnostics seem to be very basic,
             -- to the point where you are wondering if it's even active.
-            -- Will use iamcco/diagnostic-languageserver instead.
+            -- Will use flake8 together with diagnosticls for added linting
             diagnostics = {
                 -- Enables (or disables) diagnostics provided by Jedi
                 -- type: boolean
                 -- default: true
-                enable = false,
+                enable = true,
             },
             -- The preferred MarkupKind for all jedi-language-server messages that take MarkupContent.
             -- type: string
