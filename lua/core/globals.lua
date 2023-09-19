@@ -17,6 +17,3 @@
 vim.g.mapleader = " "
 vim.g.vimsyn_embed = "1"
 vim.fn.execute("language en_US.utf-8")
--- Fix race condition in nvim-tree
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
