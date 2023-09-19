@@ -73,7 +73,8 @@ local plugins = {
         config = function () require("plugins.config.cmp") end,
     },
     {
-        "onsails/lspkind-nvim",
+        "onsails/lspkind.nvim",
+        config = function () require("plugins.config.lspkind") end,
     },
     {
         "williamboman/mason.nvim",
