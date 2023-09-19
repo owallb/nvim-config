@@ -57,11 +57,11 @@ return {
                     sourceName = "flake8",
                     formatLines = 1,
                     formatPattern = {
-                        [[(\d+),(\d+),([A-Z]),(.*)(\r|\n)*$]],
-                        { line = 1, column = 2, security = 3, message = { 4, }, },
+                        [[^(\d+),(\d+),([A-Z]),(.*): (.*)]],
+                        { line = 1, column = 2, security = 3, message = { 5, }, },
                     },
                     securities = {
-                        -- Available securities are { 'error', 'warning', 'hint', 'info' }
+                        -- Available securities are { 'error', 'warning', 'hin', 'info' }
                         E = "error",
                         W = "warning",
                         B = "hint",
