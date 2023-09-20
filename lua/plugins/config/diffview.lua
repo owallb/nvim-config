@@ -22,7 +22,7 @@ require("diffview").setup({
     enhanced_diff_hl = true,
     view = {
         default = {
-            layout = "diff3_mixed",
+            layout = "diff2_horizontal",
             winbar_info = true,
         },
         merge_tool = {
