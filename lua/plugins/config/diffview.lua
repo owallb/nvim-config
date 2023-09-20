@@ -44,8 +44,8 @@ require("diffview").setup({
                 "n",
                 "<CR>",
                 function()
-                    actions.select_entry()
                     vim.fn.execute("wincmd l")
+                    actions.select_entry()
                 end,
                 { desc = "Focus the diff for the selected entry", },
             },
