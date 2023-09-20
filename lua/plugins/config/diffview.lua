@@ -40,15 +40,7 @@ require("diffview").setup({
     },
     keymaps = {
         file_panel = {
-            {
-                "n",
-                "<CR>",
-                function()
-                    vim.fn.execute("wincmd l")
-                    actions.select_entry()
-                end,
-                { desc = "Focus the diff for the selected entry", },
-            },
+            ["<cr>"] = false,
             {
                 "n",
                 "s",
@@ -79,3 +71,16 @@ require("diffview").setup({
 
 local opts = { silent = true, remap = false, }
 vim.keymap.set("n", "<leader>gg", ":DiffviewOpen<CR>", opts)
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "DiffviewFiles",
+    callback = function ()
+        vim.keymap.set(
+            "n",
+            "<CR>",
+            function ()
+                actions.select_entry()
+                vim.fn.execute("wincmd l")
+            end,
+            { silent = true, noremap = true, buffer = true, })
+    end,
+})
