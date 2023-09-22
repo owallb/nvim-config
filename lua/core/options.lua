@@ -80,4 +80,4 @@ vim.opt.laststatus = 3
 vim.opt.textwidth = 0
 vim.opt.colorcolumn = "81"
 vim.opt.shortmess:append("a")
-
+vim.opt.autoread = true
