@@ -115,7 +115,7 @@ function P.on_attach(client, bufnr)
     )
 
     -- The below command will highlight the current variable and its usages in the buffer.
-    if client.server_capabilities.document_highlight then
+    if client.server_capabilities.documentHighlightProvider then
         vim.fn.execute("hi! link LspReferenceRead Visual")
         vim.fn.execute("hi! link LspReferenceText Visual")
         vim.fn.execute("hi! link LspReferenceWrite Visual")
