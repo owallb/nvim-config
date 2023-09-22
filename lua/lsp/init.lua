@@ -119,7 +119,6 @@ function P.on_attach(client, bufnr)
         vim.fn.execute("hi! link LspReferenceRead Visual")
         vim.fn.execute("hi! link LspReferenceText Visual")
         vim.fn.execute("hi! link LspReferenceWrite Visual")
-        vim.api.nvim_create_augroup("lsp_document_highlight", { clear = true, })
         vim.api.nvim_create_autocmd("CursorHold", {
             buffer = bufnr,
             callback = vim.lsp.buf.document_highlight,
@@ -130,7 +129,7 @@ function P.on_attach(client, bufnr)
         })
     end
 
-    vim.opt.updatetime = 100
+    vim.opt.updatetime = 300
 end
 
 function P.reload_server_buf(self, name)
