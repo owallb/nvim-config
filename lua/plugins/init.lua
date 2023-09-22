@@ -214,16 +214,6 @@ local plugins = {
         config = function () require("plugins.config.move") end,
     },
     {
-        "folke/noice.nvim",
-        -- see issue https://github.com/folke/lazy.nvim/issues/1038
-        -- event = "VeryLazy",
-        dependencies = {
-            "MunifTanjim/nui.nvim",
-            "rcarriga/nvim-notify",
-        },
-        config = function () require("plugins.config.noice") end,
-    },
-    {
         "nvim-orgmode/orgmode",
         config = function () require("plugins.config.orgmode") end,
         dependencies = {
