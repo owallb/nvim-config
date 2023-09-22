@@ -18,18 +18,16 @@
 
 require("noice").setup({
     cmdline = {
-        view = "cmdline_popup",
-        format = {
-            cmdline = false,
-            search_down = false,
-            search_up = false,
-            filter = false,
-            lua = false,
-            help = false,
-        },
+        enabled = false,
     },
     messages = {
-        enabled = true,
+        enabled = false,
+    },
+    popupmenu = {
+        enabled = false,
+    },
+    notify = {
+        enabled = false,
     },
     lsp = {
         override = {
@@ -38,11 +36,15 @@ require("noice").setup({
             ["cmp.entry.get_documentation"] = true,
         },
         hover = {
+            enabled = true,
             silent = true,
         },
-    },
-    presets = {
-        command_palette = true,
+        signature = {
+            enabled = true,
+        },
+        message = {
+            false,
+        },
     },
 })
 
