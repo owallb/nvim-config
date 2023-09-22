@@ -17,6 +17,16 @@
 local opts = { remap = false, silent = true, }
 local opts_expr = { remap = false, silent = true, expr = true, }
 
+local function close_floating_windows()
+    for _, win in ipairs(vim.api.nvim_list_wins()) do
+        local cfg = vim.api.nvim_win_get_config(win)
+        if cfg.relative ~= "" then
+            vim.api.nvim_win_close(win, true)
+        end
+    end
+end
+
+
 --- Tab mappings ---
 -- vim.keymap.set('n', "tn", ":tabnew <BAR> NvimTreeOpen<CR>", opts)
 vim.keymap.set("n", "tn", ":tabnew<CR>", opts)
@@ -48,6 +58,7 @@ vim.keymap.set({ "n", "x", }, "<leader>dp",
     "&diff ? ':diffput<CR>' : '<leader>dp'", opts_expr)
 vim.keymap.set({ "n", "x", }, "<leader>do",
     "&diff ? ':diffget<CR>' : '<leader>do'", opts_expr)
+vim.keymap.set("i", "<C-e>", close_floating_windows, opts)
 
 -- Remove default mappings
 vim.keymap.set("", "<C-LeftMouse>", "")
