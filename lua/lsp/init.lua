@@ -98,10 +98,10 @@ function P.on_attach(client, bufnr)
     vim.keymap.set("n", "<leader>dl", vim.diagnostic.setloclist, opts)
     vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
     vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-    vim.keymap.set("n", "<C-k>", vim.lsp.buf.hover, opts)
-    vim.keymap.set("i", "<C-k>", vim.lsp.buf.signature_help)
+    vim.keymap.set({ "n", "i", }, "<C-k>", vim.lsp.buf.hover, opts)
+    vim.keymap.set({ "n", "i", }, "<C-j>", vim.lsp.buf.signature_help, opts)
+    vim.keymap.set({ "n", "i", }, "<C-h>", vim.lsp.buf.document_highlight, opts)
     vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
-    vim.keymap.set("n", "<leader>ls", vim.lsp.buf.signature_help, opts)
     vim.keymap.set("n", "<leader>lr", ca_rename, opts)
     vim.keymap.set("n", "<leader>la", vim.lsp.buf.code_action, opts)
     vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
@@ -114,20 +114,18 @@ function P.on_attach(client, bufnr)
         opts
     )
 
-    -- The below command will highlight the current variable and its usages in the buffer.
-    if client.server_capabilities.documentHighlightProvider then
-        vim.fn.execute("hi! link LspReferenceRead Visual")
-        vim.fn.execute("hi! link LspReferenceText Visual")
-        vim.fn.execute("hi! link LspReferenceWrite Visual")
-        vim.api.nvim_create_autocmd("CursorHold", {
-            buffer = bufnr,
-            callback = vim.lsp.buf.document_highlight,
-        })
-        vim.api.nvim_create_autocmd("CursorMoved", {
-            buffer = bufnr,
-            callback = vim.lsp.buf.clear_references,
-        })
-    end
+    -- For document highlight
+    vim.fn.execute("hi! link LspReferenceRead Visual")
+    vim.fn.execute("hi! link LspReferenceText Visual")
+    vim.fn.execute("hi! link LspReferenceWrite Visual")
+    -- vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI", }, {
+    --     buffer = bufnr,
+    --     callback = vim.lsp.buf.document_highlight,
+    -- })
+    vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI", }, {
+        buffer = bufnr,
+        callback = vim.lsp.buf.clear_references,
+    })
 
     vim.opt.updatetime = 300
 end
