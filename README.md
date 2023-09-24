@@ -1,4 +1,24 @@
-# System Reqiurements
+# Notice
+
+Welcome!
+
+This is where I host my Neovim configuration. Feel free to look around or use it
+for yourself, but keep in mind the following:
+
+- This is a work in progress. Many things may change without warning.
+- This is *my* prefered setup, the goal of this project is not to accomodate the
+general users needs.
+
+If you are looking to get started with Neovim, I would instead recommend one of these awesome projects:
+- [kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim)
+    - Recommended for a minimal setup to build upon yourself.
+- [LunarVim](https://www.lunarvim.org/)
+- [NvChad](https://nvchad.com/)
+- [LazyVim](https://www.lazyvim.org/)
+- [AstroNvim](https://astronvim.com/)
+
+
+# System Requirements
 These are the requirements to make use of this neovim configuration.
 
 - Neovim 0.10 or later
