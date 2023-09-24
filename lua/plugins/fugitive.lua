@@ -24,6 +24,8 @@ local function git_status_tab()
 end
 
 vim.keymap.set("n", "<leader>gd", vim.cmd.Gdiffsplit)
+vim.keymap.set("n", "<leader>gc", function () vim.cmd.G("commit") end)
+vim.keymap.set("n", "<leader>ga", function () vim.cmd.G("commit --amend") end)
 
 -- Only used if diffview is not available
 if not pcall(require, "diffview") then
