@@ -36,9 +36,9 @@ require("lualine").setup({
             { "diagnostics", sources = { "nvim_lsp", }, },
         },
         lualine_x = {
-            "filetype",
+            "bo:filetype",
             "encoding",
-            "fileformat",
+            "bo:fileformat",
             "progress",
             "location",
         },
