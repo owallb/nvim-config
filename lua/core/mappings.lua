@@ -36,8 +36,8 @@ vim.keymap.set("n", "<leader><leader>", "zz")
 vim.keymap.set("n", "<C-s>", vim.cmd.write)
 -- Cycle buffers
 -- TODO: change to :bnext and :bprev
-vim.keymap.set("n", "<C-End>", vim.cmd.BufferLineCycleNext)
-vim.keymap.set("n", "<C-Home>", vim.cmd.BufferLineCyclePrev)
+vim.keymap.set("n", "<C-End>", vim.cmd.bnext)
+vim.keymap.set("n", "<C-Home>", vim.cmd.bprev)
 
 --- General mappings ---
 -- yank/put using named register
