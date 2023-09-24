@@ -230,6 +230,11 @@ local plugins = {
             "nvim-tree/nvim-web-devicons",
         },
     },
+    {
+        "iamcco/markdown-preview.nvim",
+        build = "cd app && npm install",
+        config = function () require("plugins.config.markdown-preview") end,
+    },
 }
 
 local opts = {}
