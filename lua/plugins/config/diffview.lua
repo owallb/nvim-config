@@ -43,6 +43,15 @@ require("diffview").setup({
             ["<cr>"] = false,
             {
                 "n",
+                "<CR>",
+                function ()
+                    actions.select_entry()
+                    vim.cmd.wincmd("l")
+                end,
+                { desc = "Open the current file in diffview", },
+            },
+            {
+                "n",
                 "s",
                 actions.toggle_stage_entry,
                 { desc = "Stage / unstage the selected entry", },
@@ -56,31 +65,23 @@ require("diffview").setup({
             {
                 "n",
                 "cc",
-                ":G commit | wincmd J<CR>",
+                function ()
+                    vim.cmd.G("commit")
+                    vim.cmd.wincmd("J")
+                end,
                 { desc = "Commit staged changes", },
             },
             {
                 "n",
                 "ca",
-                ":G commit --amend | wincmd J<CR>",
+                function ()
+                    vim.cmd.G("commit --amend")
+                    vim.cmd.wincmd("J")
+                end,
                 { desc = "Amend the last commit", },
             },
         },
     },
 })
 
-local opts = { silent = true, remap = false, }
-vim.keymap.set("n", "<leader>gg", ":DiffviewOpen<CR>", opts)
-vim.api.nvim_create_autocmd("FileType", {
-    pattern = "DiffviewFiles",
-    callback = function ()
-        vim.keymap.set(
-            "n",
-            "<CR>",
-            function ()
-                actions.select_entry()
-                vim.fn.execute("wincmd l")
-            end,
-            { silent = true, noremap = true, buffer = true, })
-    end,
-})
+vim.keymap.set("n", "<leader>gg", vim.cmd.DiffviewOpen)

@@ -19,6 +19,6 @@
 vim.keymap.set(
     "n",
     "<C-w>q",
-    ":Bwipeout<CR>",
+    vim.cmd.Bwipeout,
     { remap = false, silent = true, }
 )

@@ -16,4 +16,8 @@
 
 -- https://github.com/sindrets/winshift.nvim
 
-vim.keymap.set("n", "<C-W>m", ":WinShift<CR>", { remap = false, })
+vim.keymap.set(
+    "n",
+    "<C-W>m",
+    vim.cmd.WinShift
+)

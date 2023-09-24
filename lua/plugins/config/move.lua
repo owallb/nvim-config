@@ -17,10 +17,10 @@
 -- https://github.com/fedepujol/move.nvim
 
 local opts = { noremap = true, silent = true, }
-vim.keymap.set("n", "<A-j>", ":MoveLine(1)<CR>", opts)
-vim.keymap.set("n", "<A-k>", ":MoveLine(-1)<CR>", opts)
-vim.keymap.set("n", "<A-h>", ":MoveHChar(-1)<CR>", opts)
-vim.keymap.set("n", "<A-l>", ":MoveHChar(1)<CR>", opts)
+vim.keymap.set("n", "<A-j>", function () vim.cmd.MoveLine(1) end, opts)
+vim.keymap.set("n", "<A-k>", function () vim.cmd.MoveLine(-1) end, opts)
+vim.keymap.set("n", "<A-h>", function () vim.cmd.MoveHChar(-1) end, opts)
+vim.keymap.set("n", "<A-l>", function () vim.cmd.MoveHChar(1) end, opts)
 vim.keymap.set("x", "<A-j>", ":MoveBlock(1)<CR>", opts)
 vim.keymap.set("x", "<A-k>", ":MoveBlock(-1)<CR>", opts)
 vim.keymap.set("x", "<A-h>", ":MoveHBlock(-1)<CR>", opts)

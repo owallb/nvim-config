@@ -16,4 +16,4 @@
 
 -- https://github.com/rbong/vim-flog
 
-vim.keymap.set("n", "<leader>gl", ":Flog<CR>", { remap = false, silent = true, })
+vim.keymap.set("n", "<leader>gl", vim.cmd.Flog)

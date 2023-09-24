@@ -14,9 +14,6 @@
     limitations under the License.
 ]]
 
-local opts = { remap = false, silent = true, }
-local opts_expr = { remap = false, silent = true, expr = true, }
-
 local function close_floating_windows()
     for _, win in ipairs(vim.api.nvim_list_wins()) do
         local cfg = vim.api.nvim_win_get_config(win)
@@ -28,37 +25,32 @@ end
 
 
 --- Tab mappings ---
--- vim.keymap.set('n', "tn", ":tabnew <BAR> NvimTreeOpen<CR>", opts)
-vim.keymap.set("n", "tn", ":tabnew<CR>", opts)
-vim.keymap.set("n", "tq", ":tabclose<CR>", opts)
+vim.keymap.set("n", "tn", vim.cmd.tabnew)
+vim.keymap.set("n", "tq", vim.cmd.tabclose)
 -- switch tabs with Ctrl+PgUp/Ctrl+PgDwn (default vim mapping)
 
 --- Buffer mappings ---
 -- Center cursorline
-vim.keymap.set("n", "<leader><leader>", "zz", opts)
+vim.keymap.set("n", "<leader><leader>", "zz")
 -- Save buffer
-vim.keymap.set(
-    "n", "<C-s>",
-    -- workaround for double save messages
-    function () vim.api.nvim_command(":silent w") end,
-    { remap = false, }
-)
+vim.keymap.set("n", "<C-s>", vim.cmd.write)
 -- Cycle buffers
-vim.keymap.set("n", "<C-End>", ":BufferLineCycleNext<CR>", opts)
-vim.keymap.set("n", "<C-Home>", ":BufferLineCyclePrev<CR>", opts)
+-- TODO: change to :bnext and :bprev
+vim.keymap.set("n", "<C-End>", vim.cmd.BufferLineCycleNext)
+vim.keymap.set("n", "<C-Home>", vim.cmd.BufferLineCyclePrev)
 
 --- General mappings ---
 -- yank/put using named register
-vim.keymap.set({ "n", "x", }, "<leader>y", '"+y', opts)
-vim.keymap.set({ "n", "x", }, "<leader>p", '"+p', opts)
+vim.keymap.set({ "n", "x", }, "<leader>y", '"+y')
+vim.keymap.set({ "n", "x", }, "<leader>p", '"+p')
 -- Allow exiting insert mode in terminal by hitting <ESC>
-vim.keymap.set("t", "<Esc>", "<C-\\><C-n>", opts)
+vim.keymap.set("t", "<Esc>", "<C-\\><C-n>")
 -- Use :diffput/get instead of normal one to allow staging visual selection
-vim.keymap.set({ "n", "x", }, "<leader>dp",
-    "&diff ? ':diffput<CR>' : '<leader>dp'", opts_expr)
-vim.keymap.set({ "n", "x", }, "<leader>do",
-    "&diff ? ':diffget<CR>' : '<leader>do'", opts_expr)
-vim.keymap.set("i", "<C-e>", close_floating_windows, opts)
+vim.keymap.set("n", "<leader>dp", vim.cmd.diffput)
+vim.keymap.set("x", "<leader>dp", ":diffput<CR>")
+vim.keymap.set("n", "<leader>do", vim.cmd.diffget)
+vim.keymap.set("x", "<leader>do", ":diffget<CR>")
+vim.keymap.set("i", "<C-e>", close_floating_windows)
 
 -- Remove default mappings
 vim.keymap.set("", "<C-LeftMouse>", "")
@@ -67,7 +59,3 @@ vim.keymap.set("", "q", "")
 -- Remove right-click menu items
 vim.cmd.aunmenu({ "PopUp.-1-", })
 vim.cmd.aunmenu({ "PopUp.How-to\\ disable\\ mouse", })
-
--- Silence some keys
-vim.keymap.set({ "n", "v", }, "u", ":silent undo<CR>", { silent = true, })
-vim.keymap.set({ "n", "v", }, "<C-r>", ":silent redo<CR>", { silent = true, })

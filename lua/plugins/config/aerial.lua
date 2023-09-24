@@ -24,8 +24,12 @@ require("aerial").setup({
         unlisted_buffers = true,
     },
     on_attach = function (bufnr)
-        vim.api.nvim_buf_set_keymap(bufnr, "n", "<leader>at", "<cmd>AerialToggle!<CR>", {})
+        vim.keymap.set(
+            "n",
+            "<leader>at",
+            function () vim.cmd.AerialToggle({ bang = true, }) end,
+            { buffer = bufnr, }
+        )
     end,
     show_guides = true,
 })
-

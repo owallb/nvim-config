@@ -28,7 +28,5 @@ vim.notify = notify
 
 if has_telescope then
     telescope.load_extension("notify")
-    vim.keymap.set(
-        "n", "<leader>fn", function () telescope.extensions.notify.notify() end
-    )
+    vim.keymap.set("n", "<leader>fn", telescope.extensions.notify.notify)
 end

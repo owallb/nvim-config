@@ -16,17 +16,18 @@
 
 -- https://github.com/mfussenegger/nvim-dap
 
-vim.fn.execute("nnoremap <silent> <F5> :lua require'dap'.continue()<CR>")
-vim.fn.execute("nnoremap <silent> <F10> :lua require'dap'.step_over()<CR>")
-vim.fn.execute("nnoremap <silent> <F11> :lua require'dap'.step_into()<CR>")
-vim.fn.execute("nnoremap <silent> <F12> :lua require'dap'.step_out()<CR>")
+local dap = require("dap")
+
+vim.keymap.set("n", "<F5>", dap.continue)
+vim.keymap.set("n", "<F10>", dap.step_over)
+vim.keymap.set("n", "<F11>", dap.step_into)
+vim.keymap.set("n", "<F12>", dap.step_out)
 
 local utils = require("utils")
 
 local M = {}
 
 local env_ok = false
-local dap = nil
 
 local function check_env()
     utils.assert_installed("python3")
@@ -38,15 +39,12 @@ local function start(config)
     if not env_ok then
         check_env()
     end
-    if not dap then
-        dap = require("dap")
-        dap.adapters.python = {
-            type = "executable",
-            command = "python",
-            args = { "-m", "debugpy.adapter", },
-            cwd = vim.fn.getcwd(),
-        }
-    end
+    dap.adapters.python = {
+        type = "executable",
+        command = "python",
+        args = { "-m", "debugpy.adapter", },
+        cwd = vim.fn.getcwd(),
+    }
     dap.run(config)
     -- List of events described at https://microsoft.github.io/debug-adapter-protocol/specification#Events
     -- Also see :h dap-extensions

@@ -91,7 +91,7 @@ end
 function P.on_attach(client, bufnr)
     -- Mappings.
     -- See `:help vim.lsp.*` for documentation on any of the below functions
-    local opts = { silent = true, buffer = bufnr, }
+    local opts = { buffer = bufnr, }
     vim.keymap.set("n", "<leader>df", vim.diagnostic.open_float, opts)
     vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
     vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
@@ -115,9 +115,9 @@ function P.on_attach(client, bufnr)
     )
 
     -- For document highlight
-    vim.fn.execute("hi! link LspReferenceRead Visual")
-    vim.fn.execute("hi! link LspReferenceText Visual")
-    vim.fn.execute("hi! link LspReferenceWrite Visual")
+    vim.cmd.highlight({ "link LspReferenceRead Visual", bang = true, })
+    vim.cmd.highlight({ "link LspReferenceText Visual", bang = true, })
+    vim.cmd.highlight({ "link LspReferenceWrite Visual", bang = true, })
     -- vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI", }, {
     --     buffer = bufnr,
     --     callback = vim.lsp.buf.document_highlight,
@@ -145,7 +145,7 @@ function P.reload_server_buf(self, name)
             if ft_map[buf_ft] then
                 vim.api.nvim_buf_call(
                     bufnr,
-                    function () vim.cmd("e") end
+                    vim.cmd.edit
                 )
             end
         end

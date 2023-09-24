@@ -17,15 +17,15 @@
 -- https://github.com/tpope/vim-fugitive
 
 local function git_status_tab()
-    vim.fn.execute("tabnew")
-    vim.fn.execute("leftabove vertical G")
-    vim.fn.execute("vertical resize 60 | set wfw")
+    vim.cmd.tabnew()
+    vim.cmd("leftabove vertical G")
+    vim.cmd("vertical resize 60")
+    vim.cmd.set("wfw")
 end
 
-local opts = { silent = true, remap = false, }
-vim.keymap.set("n", "<leader>gd", ":Gdiffsplit<CR>", opts)
+vim.keymap.set("n", "<leader>gd", vim.cmd.Gdiffsplit)
 
 -- Only used if diffview is not available
 if not pcall(require, "diffview") then
-    vim.keymap.set("n", "<leader>gg", git_status_tab, opts)
+    vim.keymap.set("n", "<leader>gg", git_status_tab)
 end

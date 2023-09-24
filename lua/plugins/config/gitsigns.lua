@@ -16,21 +16,25 @@
 
 -- https://github.com/lewis6991/gitsigns.nvim
 
-local function map(bufnr, mode, l, r, opts)
-    opts = opts or {}
-    opts.buffer = bufnr
-    vim.keymap.set(mode, l, r, opts)
-end
-
 require("gitsigns").setup({
     on_attach = function (bufnr)
         local gs = package.loaded.gitsigns
-        map(bufnr, "n", "<leader>gv", gs.select_hunk)
-        map(bufnr, { "n", "x", }, "<leader>gr", ":Gitsigns reset_hunk<CR>") -- gs.reset_hunk() doesn't work with selected lines
-        map(bufnr, "n", "<leader>g?", gs.preview_hunk)
-        map(bufnr, "n", "<leader>gb", function ()
-            gs.blame_line { full = true, }
-        end)
+        vim.keymap.set("n", "<leader>gv", gs.select_hunk, { buffer = bufnr, })
+        vim.keymap.set("n", "<leader>gr", gs.reset_hunk, { buffer = bufnr, })
+        vim.keymap.set(
+            "x",
+            "<leader>gr",
+            ":Gitsigns reset_hunk<CR>",
+            { buffer = bufnr, }
+        )
+        vim.keymap.set("n", "<leader>g?", gs.preview_hunk, { buffer = bufnr, })
+        vim.keymap.set(
+            "n",
+            "<leader>gb",
+            function ()
+                gs.blame_line { full = true, ignore_whitespace = true, }
+            end,
+            { buffer = bufnr, })
     end,
     signs = {
         untracked = { text = "│", },

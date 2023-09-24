@@ -74,7 +74,7 @@ vim.opt.diffopt:append("internal")
 -- These make diffs easier to read, please see the following:
 -- https://vimways.org/2018/the-power-of-diff/
 vim.opt.diffopt:append({ "indent-heuristic", "algorithm:histogram", })
-vim.fn.execute("filetype plugin on")
+vim.cmd.filetype("plugin on")
 vim.opt.hlsearch = true
 vim.opt.laststatus = 3
 vim.opt.textwidth = 0
