@@ -19,7 +19,7 @@ If you are looking to get started with Neovim, I would instead recommend one of 
 
 
 # System Requirements
-These are the requirements to make use of this neovim configuration.
+These are the general requirements to get started:
 
 - Neovim 0.10 or later
 - git
@@ -33,7 +33,7 @@ nvim --headless --clean -c 'echo stdpath("data") .. "\n"|q'
 ```
 
 ## Nerd Font
-It's also highly recommended to use a [Nerd Font](https://www.nerdfonts.com/),
+It's highly recommended to use a [Nerd Font](https://www.nerdfonts.com/),
 v3.0.0+, otherwise some icons might not load properly.
 
 With some terminals it's possible to use a regular font and use the
@@ -64,7 +64,7 @@ Wezterm has [built-in fallback for nerd fonts symbols](https://wezfurlong.org/we
 so there's no need to install it separately. It is also possible to configure
 fallbacks manually.
 
-## Platform specific requirements
+## Platform specifics
 
 Windows:
 - powershell
