@@ -37,7 +37,7 @@ P.config = {
 }
 
 for server, _ in pairs(P.config) do
-    local ok, resp = pcall(require, "lsp.config." .. server)
+    local ok, resp = pcall(require, "lsp." .. server)
     if not ok then
         return
     end

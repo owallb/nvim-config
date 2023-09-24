@@ -23,21 +23,21 @@ local plugins = {
         lazy = false,
         name = "catppuccin",
         config = function ()
-            require("plugins.config.catppuccin")
+            require("plugins.catppuccin")
         end,
     },
     {
         "rcarriga/nvim-notify",
         priority = 900,
         lazy = false,
-        config = function () require("plugins.config.notify") end,
+        config = function () require("plugins.notify") end,
     },
     {
         "rafamadriz/friendly-snippets",
     },
     {
         "L3MON4D3/LuaSnip",
-        config = function () require("plugins.config.luasnip") end,
+        config = function () require("plugins.luasnip") end,
         -- comment out on windows and install jsregexp manually
         build = (
             require("utils").os_name ~= "Windows_NT"
@@ -48,7 +48,7 @@ local plugins = {
     },
     {
         "windwp/nvim-autopairs",
-        config = function () require("plugins.config.autopairs") end,
+        config = function () require("plugins.autopairs") end,
     },
     {
         "saadparwaiz1/cmp_luasnip",
@@ -70,21 +70,21 @@ local plugins = {
     },
     {
         "hrsh7th/nvim-cmp",
-        config = function () require("plugins.config.cmp") end,
+        config = function () require("plugins.cmp") end,
     },
     {
         "onsails/lspkind.nvim",
-        config = function () require("plugins.config.lspkind") end,
+        config = function () require("plugins.lspkind") end,
     },
     {
         "williamboman/mason.nvim",
-        config = function () require("plugins.config.mason") end,
+        config = function () require("plugins.mason") end,
         lazy = true,
         event = "VimEnter",
     },
     {
         "williamboman/mason-lspconfig.nvim",
-        config = function () require("plugins.config.mason_lspconfig") end,
+        config = function () require("plugins.mason_lspconfig") end,
         lazy = true,
         event = "VimEnter",
     },
@@ -96,37 +96,37 @@ local plugins = {
     },
     {
         "nvim-treesitter/nvim-treesitter",
-        config = function () require("plugins.config.treesitter") end,
+        config = function () require("plugins.treesitter") end,
         build = ":TSUpdate",
         lazy = true,
         event = "VimEnter",
     },
     {
         "mfussenegger/nvim-dap",
-        config = function () require("plugins.config.dap") end,
+        config = function () require("plugins.dap") end,
         lazy = true,
         ft = require("lsp"):filetypes(),
     },
     {
         "rcarriga/nvim-dap-ui",
-        config = function () require("plugins.config.dap_ui") end,
+        config = function () require("plugins.dap_ui") end,
         dependencies = {
             "mfussenegger/nvim-dap",
         },
     },
     {
         "tpope/vim-fugitive",
-        config = function () require("plugins.config.fugitive") end,
+        config = function () require("plugins.fugitive") end,
         lazy = true,
         event = "VimEnter",
     },
     {
         "rbong/vim-flog",
-        config = function () require("plugins.config.flog") end,
+        config = function () require("plugins.flog") end,
     },
     {
         "nvim-lualine/lualine.nvim",
-        config = function () require("plugins.config.lualine") end,
+        config = function () require("plugins.lualine") end,
         lazy = true,
         event = "VimEnter",
         dependencies = {
@@ -135,13 +135,13 @@ local plugins = {
     },
     {
         "lewis6991/gitsigns.nvim",
-        config = function () require("plugins.config.gitsigns") end,
+        config = function () require("plugins.gitsigns") end,
         lazy = true,
         event = "VimEnter",
     },
     {
         "nvim-telescope/telescope.nvim",
-        config = function () require("plugins.config.telescope") end,
+        config = function () require("plugins.telescope") end,
         lazy = true,
         event = "VimEnter",
         dependencies = {
@@ -150,25 +150,25 @@ local plugins = {
     },
     {
         "numToStr/Comment.nvim",
-        config = function () require("plugins.config.comment") end,
+        config = function () require("plugins.comment") end,
         lazy = true,
         event = "VimEnter",
     },
     {
         "lukas-reineke/indent-blankline.nvim",
-        config = function () require("plugins.config.indent-blankline") end,
+        config = function () require("plugins.indent-blankline") end,
         lazy = true,
         event = "VimEnter",
     },
     {
         "simeji/winresizer",
-        config = function () require("plugins.config.winresizer") end,
+        config = function () require("plugins.winresizer") end,
         lazy = true,
         keys = { "<C-W>r", },
     },
     {
         "sindrets/winshift.nvim",
-        config = function () require("plugins.config.winshift") end,
+        config = function () require("plugins.winshift") end,
         lazy = true,
         keys = { "<C-W>m", },
     },
@@ -179,7 +179,7 @@ local plugins = {
     },
     {
         "kyazdani42/nvim-tree.lua",
-        config = function () require("plugins.config.tree") end,
+        config = function () require("plugins.tree") end,
         dependencies = {
             "nvim-tree/nvim-web-devicons",
         },
@@ -191,7 +191,7 @@ local plugins = {
     },
     {
         "stevearc/aerial.nvim",
-        config = function () require("plugins.config.aerial") end,
+        config = function () require("plugins.aerial") end,
         dependencies = {
             "nvim-treesitter/nvim-treesitter",
             "nvim-tree/nvim-web-devicons",
@@ -199,23 +199,23 @@ local plugins = {
     },
     {
         "RubixDev/mason-update-all",
-        config = function () require("plugins.config.mason_update_all") end,
+        config = function () require("plugins.mason_update_all") end,
     },
     {
         "famiu/bufdelete.nvim",
-        config = function () require("plugins.config.bufdelete") end,
+        config = function () require("plugins.bufdelete") end,
     },
     {
         "nvim-treesitter/nvim-treesitter-context",
-        config = function () require("plugins.config.treesitter-context") end,
+        config = function () require("plugins.treesitter-context") end,
     },
     {
         "fedepujol/move.nvim",
-        config = function () require("plugins.config.move") end,
+        config = function () require("plugins.move") end,
     },
     {
         "nvim-orgmode/orgmode",
-        config = function () require("plugins.config.orgmode") end,
+        config = function () require("plugins.orgmode") end,
         dependencies = {
             "nvim-treesitter/nvim-treesitter",
         },
@@ -225,7 +225,7 @@ local plugins = {
     },
     {
         "sindrets/diffview.nvim",
-        config = function () require("plugins.config.diffview") end,
+        config = function () require("plugins.diffview") end,
         dependencies = {
             "nvim-tree/nvim-web-devicons",
         },
@@ -233,7 +233,7 @@ local plugins = {
     {
         "iamcco/markdown-preview.nvim",
         build = "cd app && npm install",
-        config = function () require("plugins.config.markdown-preview") end,
+        config = function () require("plugins.markdown-preview") end,
     },
 }
 
