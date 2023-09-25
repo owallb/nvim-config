@@ -236,6 +236,12 @@ local plugins = {
         config = require("plugins.markdown-preview"),
     },
     {
+        "j-hui/fidget.nvim",
+        tag = "legacy",
+        event = "LspAttach",
+        config = require("plugins.fidget"),
+    },
+    {
         "lvimuser/lsp-inlayhints.nvim",
         branch = "anticonceal",
         config = require("plugins.lsp-inlayhints"),
