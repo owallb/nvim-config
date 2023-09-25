@@ -22,9 +22,7 @@ local plugins = {
         priority = 1000,
         lazy = false,
         name = "catppuccin",
-        config = function ()
-            require("plugins.catppuccin")
-        end,
+        config = require("plugins.catppuccin"),
     },
     {
         "rcarriga/nvim-notify",
