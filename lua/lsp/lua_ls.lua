@@ -14,10 +14,6 @@
     limitations under the License.
 ]]
 
-local runtime_path = vim.split(package.path, ";")
-table.insert(runtime_path, "lua/?.lua")
-table.insert(runtime_path, "lua/?/init.lua")
-
 -- spec: https://luals.github.io/wiki/settings/
 
 return {
@@ -35,10 +31,18 @@ return {
                 },
                 runtime = {
                     version = "LuaJIT",
-                    path = runtime_path,
+                    path = {
+                        "lua/?.lua",
+                        "lua/?/init.lua",
+                        "?/lua/?.lua",
+                        "?/lua/?/init.lua",
+                    },
                 },
                 workspace = {
-                    library = vim.api.nvim_get_runtime_file("", true),
+                    library = {
+                        vim.env.VIMRUNTIME,
+                        vim.fn.stdpath("data") .. "/lazy",
+                    },
                     checkThirdParty = false,
                 },
                 telemetry = { enable = false, },
