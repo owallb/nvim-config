@@ -16,4 +16,8 @@
 
 -- https://github.com/RubixDev/mason-update-all
 
-require("mason-update-all").setup()
+local function setup()
+    require("mason-update-all").setup()
+end
+
+return setup

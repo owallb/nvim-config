@@ -16,57 +16,61 @@
 
 -- https://github.com/catppuccin/nvim
 
-local catppuccin = require("catppuccin")
+local function setup()
+    local catppuccin = require("catppuccin")
 
--- Sometimes requires running :CatppuccinCompile,
--- like when switching to a font that supports italics.
-catppuccin.setup({
-    flavour = "mocha", -- latte, frappe, macchiato, mocha
-    no_italic = false,
-    styles = {
-        comments = { "italic", },
-    },
-    integrations = {
-        cmp = true,
-        gitsigns = true,
-        nvimtree = true,
-        treesitter = true,
-        notify = true,
-        aerial = true,
-        indent_blankline = {
-            enabled = true,
-            colored_indent_levels = false,
+    -- Sometimes requires running :CatppuccinCompile,
+    -- like when switching to a font that supports italics.
+    catppuccin.setup({
+        flavour = "mocha", -- latte, frappe, macchiato, mocha
+        no_italic = false,
+        styles = {
+            comments = { "italic", },
         },
-        mason = true,
-        neogit = true,
-        noice = true,
-        dap = {
-            enabled = true,
-            enable_ui = true,
-        },
-        native_lsp = {
-            enabled = true,
-            virtual_text = {
-                errors = { "italic", },
-                hints = { "italic", },
-                warnings = { "italic", },
-                information = { "italic", },
+        integrations = {
+            cmp = true,
+            gitsigns = true,
+            nvimtree = true,
+            treesitter = true,
+            notify = true,
+            aerial = true,
+            indent_blankline = {
+                enabled = true,
+                colored_indent_levels = false,
             },
-            underlines = {
-                errors = { "underline", },
-                hints = { "underline", },
-                warnings = { "underline", },
-                information = { "underline", },
+            mason = true,
+            neogit = true,
+            noice = true,
+            dap = {
+                enabled = true,
+                enable_ui = true,
             },
-            inlay_hints = {
-                background = true,
+            native_lsp = {
+                enabled = true,
+                virtual_text = {
+                    errors = { "italic", },
+                    hints = { "italic", },
+                    warnings = { "italic", },
+                    information = { "italic", },
+                },
+                underlines = {
+                    errors = { "underline", },
+                    hints = { "underline", },
+                    warnings = { "underline", },
+                    information = { "underline", },
+                },
+                inlay_hints = {
+                    background = true,
+                },
             },
+            telescope = {
+                enabled = true,
+            },
+            lsp_trouble = true,
         },
-        telescope = {
-            enabled = true,
-        },
-        lsp_trouble = true,
-    },
-})
+    })
 
-catppuccin.load()
+    catppuccin.load()
+end
+
+return setup

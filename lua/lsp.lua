@@ -266,8 +266,8 @@ function P.setup_server(self, name)
     self:reload_server_buf(name)
 end
 
-function P.setup(self)
-    self._setup_diagnostics()
+function P.setup()
+    P._setup_diagnostics()
 
     utils.try_require("cmp_nvim_lsp", package_name, function (mod)
         P.capabilities = mod.default_capabilities()
@@ -276,7 +276,7 @@ function P.setup(self)
     utils.try_require("mason-lspconfig", package_name, function (mod)
         mod.setup_handlers({
             function (name)
-                self:setup_server(name)
+                P:setup_server(name)
             end,
         })
     end)

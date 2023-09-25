@@ -16,6 +16,7 @@
 
 -- https://github.com/nvim-treesitter/nvim-treesitter
 
+local function setup()
 require("nvim-treesitter.configs").setup({
     ensure_installed = {
         "c",      -- recommended default
@@ -49,3 +50,6 @@ require("nvim-treesitter.configs").setup({
 vim.opt.foldmethod = "expr"
 vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 vim.opt.foldenable = false
+end
+
+return setup

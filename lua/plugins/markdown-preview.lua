@@ -16,8 +16,12 @@
 
 -- https://github.com/iamcco/markdown-preview.nvim
 
-vim.g.mkdp_filetypes = { "markdown", }
-vim.g.mkdp_port = "9080"
-vim.g.mkdp_echo_preview_url = 1
-vim.g.mkdp_open_ip = "192.168.2.22"
-vim.g.mkdp_open_to_the_world = 1
+local function setup()
+    vim.g.mkdp_filetypes = { "markdown", }
+    vim.g.mkdp_port = "9080"
+    vim.g.mkdp_echo_preview_url = 1
+    vim.g.mkdp_open_ip = "192.168.2.22"
+    vim.g.mkdp_open_to_the_world = 1
+end
+
+return setup

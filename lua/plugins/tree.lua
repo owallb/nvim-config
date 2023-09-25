@@ -16,52 +16,56 @@
 
 -- https://github.com/nvim-tree/nvim-tree.lua
 
-require("nvim-tree").setup({
-    sync_root_with_cwd = true,
-    view = {
-        width = 40,
-        preserve_window_proportions = true,
-    },
-    renderer = {
-        add_trailing = true,
-        group_empty = true,
-        highlight_git = true,
-        indent_markers = {
-            enable = true,
+local function setup()
+    require("nvim-tree").setup({
+        sync_root_with_cwd = true,
+        view = {
+            width = 40,
+            preserve_window_proportions = true,
         },
-        icons = {
-            git_placement = "after",
-            show = {
-                folder_arrow = true,
+        renderer = {
+            add_trailing = true,
+            group_empty = true,
+            highlight_git = true,
+            indent_markers = {
+                enable = true,
+            },
+            icons = {
+                git_placement = "after",
+                show = {
+                    folder_arrow = true,
+                },
             },
         },
-    },
-    update_focused_file = {
-        enable = true,
-        update_root = true,
-        ignore_list = {
-            "help",
+        update_focused_file = {
+            enable = true,
+            update_root = true,
+            ignore_list = {
+                "help",
+            },
         },
-    },
-    diagnostics = {
-        enable = true,
-        show_on_dirs = false,
-    },
-    actions = {
-        change_dir = {
-            enable = false,
+        diagnostics = {
+            enable = true,
+            show_on_dirs = false,
         },
-        open_file = {
-            resize_window = true,
+        actions = {
+            change_dir = {
+                enable = false,
+            },
+            open_file = {
+                resize_window = true,
+            },
         },
-    },
-    filters = {
-        custom = { "^\\.git$", },
-    },
-    notify = {
-        threshold = vim.log.levels.WARN,
-        absolute_path = false,
-    },
-})
+        filters = {
+            custom = { "^\\.git$", },
+        },
+        notify = {
+            threshold = vim.log.levels.WARN,
+            absolute_path = false,
+        },
+    })
 
-vim.keymap.set("n", "<leader>tt", require("nvim-tree.api").tree.toggle)
+    vim.keymap.set("n", "<leader>tt", require("nvim-tree.api").tree.toggle)
+end
+
+return setup

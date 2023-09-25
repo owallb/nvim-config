@@ -16,4 +16,8 @@
 
 -- https://github.com/williamboman/mason.nvim
 
-require("mason").setup()
+local function setup()
+    require("mason").setup()
+end
+
+return setup

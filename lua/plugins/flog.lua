@@ -16,4 +16,8 @@
 
 -- https://github.com/rbong/vim-flog
 
-vim.keymap.set("n", "<leader>gl", vim.cmd.Flog)
+local function setup()
+    vim.keymap.set("n", "<leader>gl", vim.cmd.Flog)
+end
+
+return setup

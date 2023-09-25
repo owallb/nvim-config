@@ -16,9 +16,13 @@
 
 -- https://github.com/numToStr/Comment.nvim
 
-require("Comment").setup(
-    {
-        --ignore empty lines
-        ignore = "^$",
-    }
-)
+local function setup()
+    require("Comment").setup(
+        {
+            --ignore empty lines
+            ignore = "^$",
+        }
+    )
+end
+
+return setup

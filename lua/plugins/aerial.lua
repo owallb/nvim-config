@@ -13,23 +13,27 @@
 
 -- https://github.com/stevearc/aerial.nvim
 
-require("aerial").setup({
-    layout = {
-        min_width = 40,
-        placement = "edge",
-    },
-    disable_max_size = 10000000,
-    highlight_on_hover = true,
-    ignore = {
-        unlisted_buffers = true,
-    },
-    on_attach = function (bufnr)
-        vim.keymap.set(
-            "n",
-            "<leader>at",
-            function () vim.cmd.AerialToggle({ bang = true, }) end,
-            { buffer = bufnr, }
-        )
-    end,
-    show_guides = true,
-})
+local function setup()
+    require("aerial").setup({
+        layout = {
+            min_width = 40,
+            placement = "edge",
+        },
+        disable_max_size = 10000000,
+        highlight_on_hover = true,
+        ignore = {
+            unlisted_buffers = true,
+        },
+        on_attach = function (bufnr)
+            vim.keymap.set(
+                "n",
+                "<leader>at",
+                function () vim.cmd.AerialToggle({ bang = true, }) end,
+                { buffer = bufnr, }
+            )
+        end,
+        show_guides = true,
+    })
+end
+
+return setup

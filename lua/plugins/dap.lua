@@ -16,29 +16,25 @@
 
 -- https://github.com/mfussenegger/nvim-dap
 
-local dap = require("dap")
-
-vim.keymap.set("n", "<F5>", dap.continue)
-vim.keymap.set("n", "<F10>", dap.step_over)
-vim.keymap.set("n", "<F11>", dap.step_into)
-vim.keymap.set("n", "<F12>", dap.step_out)
-
-local utils = require("utils")
-
 local M = {}
 
-local env_ok = false
+M.env_ok = false
 
-local function check_env()
+function M.check_env()
+    local utils = require("utils")
+
     utils.assert_installed("python3")
     utils.assert_python3_module_installed("debugpy")
-    env_ok = true
+    M.env_ok = true
 end
 
-local function start(config)
-    if not env_ok then
-        check_env()
+function M.start(config)
+    local dap = require("dap")
+
+    if not M.env_ok then
+        M:check_env()
     end
+
     dap.adapters.python = {
         type = "executable",
         command = "python",
@@ -65,7 +61,7 @@ function M.launch(args)
         console = "integratedTerminal",
         args = args,
     }
-    start(config)
+    M.start(config)
 end
 
 function M.pytest(args)
@@ -83,16 +79,25 @@ function M.pytest(args)
         console = "integratedTerminal",
         -- program = "${file}";
     }
-    start(config)
+    M.start(config)
 end
 
---[[
-    TODO: Add this after loading dap for integrating catppuccin:
-    local sign = vim.fn.sign_define
+function M.setup()
+    local dap = require("dap")
 
-    sign("DapBreakpoint", { text = "●", texthl = "DapBreakpoint", linehl = "", numhl = ""})
-    sign("DapBreakpointCondition", { text = "●", texthl = "DapBreakpointCondition", linehl = "", numhl = ""})
-    sign("DapLogPoint", { text = "◆", texthl = "DapLogPoint", linehl = "", numhl = ""})
---]]
+    vim.keymap.set("n", "<F5>", dap.continue)
+    vim.keymap.set("n", "<F10>", dap.step_over)
+    vim.keymap.set("n", "<F11>", dap.step_into)
+    vim.keymap.set("n", "<F12>", dap.step_out)
+
+    --[[
+        TODO: Add this after loading dap for integrating catppuccin:
+        local sign = vim.fn.sign_define
+
+        sign("DapBreakpoint", { text = "●", texthl = "DapBreakpoint", linehl = "", numhl = ""})
+        sign("DapBreakpointCondition", { text = "●", texthl = "DapBreakpointCondition", linehl = "", numhl = ""})
+        sign("DapLogPoint", { text = "◆", texthl = "DapLogPoint", linehl = "", numhl = ""})
+    --]]
+end
 
 return M

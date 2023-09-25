@@ -16,6 +16,10 @@
 
 -- https://github.com/windwp/nvim-autopairs
 
-require("nvim-autopairs").setup({
-    fast_wrap = {},
-})
+local function setup()
+    require("nvim-autopairs").setup({
+        fast_wrap = {},
+    })
+end
+
+return setup
