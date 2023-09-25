@@ -61,6 +61,7 @@ The following are optional but provides additional features:
 - jsregexp
 - php
 - composer
+- A nerd font
 
 The sections below describes this in more detail.
 
