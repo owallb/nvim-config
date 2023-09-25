@@ -130,8 +130,8 @@ function P.on_attach(client, bufnr)
     vim.opt.updatetime = 300
 end
 
-function P.reload_server_buf(self, name)
-    local server = self.config[name]
+function P.reload_server_buf(name)
+    local server = P.config[name]
     local ft_map = {}
     for _, ft in ipairs(server.lspconfig.filetypes) do
         ft_map[ft] = true
@@ -152,27 +152,27 @@ function P.reload_server_buf(self, name)
     end
 end
 
-function P.filetypes(self)
-    if not self._filetypes then
-        self._filetypes = {}
+function P.filetypes()
+    if not P._filetypes then
+        P._filetypes = {}
         local unique = {}
-        for _, server in pairs(self.config) do
+        for _, server in pairs(P.config) do
             for _, ft in ipairs(server.lspconfig.filetypes) do
                 if not unique[ft] then
-                    table.insert(self._filetypes, ft)
+                    table.insert(P._filetypes, ft)
                     unique[ft] = true
                 end
             end
         end
     end
 
-    return self._filetypes
+    return P._filetypes
 end
 
-function P.language_servers(self)
-    if not self._language_servers then
-        self._language_servers = {}
-        for server, opts in pairs(self.config) do
+function P.language_servers()
+    if not P._language_servers then
+        P._language_servers = {}
+        for server, opts in pairs(P.config) do
             if opts.enabled ~= true then
                 goto next_server
             end
@@ -224,17 +224,17 @@ function P.language_servers(self)
                 end
             end
 
-            table.insert(self._language_servers, server)
+            table.insert(P._language_servers, server)
 
             ::next_server::
         end
     end
 
-    return self._language_servers
+    return P._language_servers
 end
 
-function P.setup_server(self, name)
-    local server = self.config[name]
+function P.setup_server(name)
+    local server = P.config[name]
 
     if not server or server.enabled ~= true then
         return
@@ -247,10 +247,10 @@ function P.setup_server(self, name)
     end
 
     server.lspconfig.root_dir = lspconfig.util.find_git_ancestor
-    server.lspconfig.capabilities = self.capabilities
+    server.lspconfig.capabilities = P.capabilities
     server.lspconfig.on_attach = function (...)
         local resp
-        ok, resp = pcall(self.on_attach, ...)
+        ok, resp = pcall(P.on_attach, ...)
         if not ok then
             utils.err(
                 ("Failed to load on_attach for %s:\n%s"):format(name, resp)
@@ -263,7 +263,7 @@ function P.setup_server(self, name)
         return
     end
 
-    self:reload_server_buf(name)
+    P.reload_server_buf(name)
 end
 
 function P.setup()
@@ -276,7 +276,7 @@ function P.setup()
     utils.try_require("mason-lspconfig", package_name, function (mod)
         mod.setup_handlers({
             function (name)
-                P:setup_server(name)
+                P.setup_server(name)
             end,
         })
     end)

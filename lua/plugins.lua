@@ -92,7 +92,7 @@ local plugins = {
         "neovim/nvim-lspconfig",
         config = require("lsp").setup,
         lazy = true,
-        ft = require("lsp"):filetypes(),
+        ft = require("lsp").filetypes(),
     },
     {
         "nvim-treesitter/nvim-treesitter",
@@ -105,7 +105,7 @@ local plugins = {
         "mfussenegger/nvim-dap",
         config = require("plugins.dap").setup,
         lazy = true,
-        ft = require("lsp"):filetypes(),
+        ft = require("lsp").filetypes(),
     },
     {
         "rcarriga/nvim-dap-ui",
