@@ -88,7 +88,7 @@ function P._setup_diagnostics()
     end
 end
 
-function P.on_attach(client, bufnr)
+function P.on_attach(_, bufnr)
     -- Mappings.
     -- See `:help vim.lsp.*` for documentation on any of the below functions
     local opts = { buffer = bufnr, }
