@@ -128,6 +128,8 @@ function P.on_attach(_, bufnr)
     })
 
     vim.opt.updatetime = 300
+
+    require("lsp-inlayhints").on_attach(client, bufnr)
 end
 
 function P.reload_server_buf(name)

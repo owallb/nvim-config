@@ -235,6 +235,11 @@ local plugins = {
         build = "cd app && npm install",
         config = require("plugins.markdown-preview"),
     },
+    {
+        "lvimuser/lsp-inlayhints.nvim",
+        branch = "anticonceal",
+        config = require("plugins.lsp-inlayhints"),
+    },
 }
 
 local opts = {}
