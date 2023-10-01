@@ -29,6 +29,8 @@ return {
         filetypes = {
             "python",
             "sh",
+            "bash",
+            "zsh",
             "php",
         },
         cmd = { "diagnostic-languageserver", "--stdio", },
@@ -122,6 +124,8 @@ return {
             formatFiletypes = {
                 python = { "black", "isort", },
                 sh = { "shfmt", },
+                bash = { "shfmt", },
+                zsh = { "shfmt", },
             },
             formatters = {
                 black = {
