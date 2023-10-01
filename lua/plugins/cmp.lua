@@ -48,6 +48,7 @@ local function setup()
                     not context.in_syntax_group("Comment")
             end
         end,
+        preselect = cmp.PreselectMode.None,
         completion = { keyword_length = 3, },
         snippet = {
             expand = function (args)
