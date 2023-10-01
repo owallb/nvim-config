@@ -38,11 +38,9 @@ P.config = {
 }
 
 for server, _ in pairs(P.config) do
-    local ok, resp = pcall(require, "lsp." .. server)
-    if not ok then
-        return
-    end
-    P.config[server] = resp
+    utils.try_require("lsp." .. server, package_name, function(mod)
+        P.config[server] = mod
+    end)
 end
 
 local function ca_rename()
