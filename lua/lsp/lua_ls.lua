@@ -46,7 +46,7 @@ return {
                     checkThirdParty = false,
                 },
                 hint = {
-                    enable = true,
+                    enable = false,
                     arrayIndex = "Disable",
                     await = true,
                     paramName = "All",
