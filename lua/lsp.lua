@@ -34,6 +34,7 @@ P.config = {
     lua_ls = {},
     phpactor = {},
     intelephense = {},
+    rust_analyzer = {},
 }
 
 for server, _ in pairs(P.config) do
