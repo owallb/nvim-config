@@ -39,6 +39,12 @@ vim.keymap.set("n", "<C-s>", vim.cmd.write)
 vim.keymap.set("n", "<C-End>", vim.cmd.bnext)
 vim.keymap.set("n", "<C-Home>", vim.cmd.bprev)
 
+--- Navigation ---
+vim.keymap.set("n", "<C-d>", "<C-d>zz")
+vim.keymap.set("n", "<C-u>", "<C-u>zz")
+vim.keymap.set("n", "n", "nzzzv")
+vim.keymap.set("n", "N", "Nzzzv")
+
 --- General mappings ---
 -- yank/put using named register
 vim.keymap.set({ "n", "x", }, "<leader>y", '"+y')
