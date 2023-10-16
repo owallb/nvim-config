@@ -87,7 +87,7 @@ function P._setup_diagnostics()
     end
 end
 
-function P.on_attach(_, bufnr)
+function P.on_attach(client, bufnr)
     -- Mappings.
     -- See `:help vim.lsp.*` for documentation on any of the below functions
     local opts = { buffer = bufnr, }
@@ -128,7 +128,7 @@ function P.on_attach(_, bufnr)
 
     vim.opt.updatetime = 300
 
-    require("lsp-inlayhints").on_attach(client, bufnr)
+    require("lsp-inlayhints").on_attach(client, bufnr, false)
 end
 
 function P.reload_server_buf(name)
