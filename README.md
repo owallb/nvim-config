@@ -21,7 +21,7 @@ If you are looking to get started with Neovim, I would instead recommend one of 
 # System Requirements
 These are the general requirements to get started:
 
-- Neovim 0.10 or later
+- Neovim (latest git master)
 - git
 - tar
 

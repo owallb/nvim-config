@@ -14,16 +14,6 @@
     limitations under the License.
 ]]
 
-local function close_floating_windows()
-    for _, win in ipairs(vim.api.nvim_list_wins()) do
-        local cfg = vim.api.nvim_win_get_config(win)
-        if cfg.relative ~= "" then
-            vim.api.nvim_win_close(win, true)
-        end
-    end
-end
-
-
 --- Tab mappings ---
 vim.keymap.set("n", "tn", vim.cmd.tabnew)
 vim.keymap.set("n", "tq", vim.cmd.tabclose)
@@ -60,7 +50,7 @@ vim.keymap.set("n", "<leader>dp", vim.cmd.diffput)
 vim.keymap.set("x", "<leader>dp", ":diffput<CR>")
 vim.keymap.set("n", "<leader>do", vim.cmd.diffget)
 vim.keymap.set("x", "<leader>do", ":diffget<CR>")
-vim.keymap.set("i", "<C-e>", close_floating_windows)
+vim.keymap.set("i", "<C-e>", vim.cmd.fclose)
 
 -- Remove default mappings
 vim.keymap.set("", "<C-LeftMouse>", "")
