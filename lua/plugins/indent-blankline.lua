@@ -15,13 +15,14 @@
 ]]
 
 local function setup()
-    require("indent_blankline").setup {
-        use_treesitter = true,
-        show_first_indent_level = false,
-        show_trailing_blankline_indent = false,
-        show_current_context = true,
-        max_indent_increase = 1,
-    }
+    require("ibl").setup({
+        enabled = true,
+        scope = {
+            enabled = false,
+            show_start = false,
+            show_end = false,
+        },
+    })
 end
 
 return setup
