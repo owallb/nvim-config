@@ -189,12 +189,8 @@ local plugins = {
         event = "VimEnter",
     },
     {
-        "stevearc/aerial.nvim",
-        config = require("plugins.aerial"),
-        dependencies = {
-            "nvim-treesitter/nvim-treesitter",
-            "nvim-tree/nvim-web-devicons",
-        },
+        "simrat39/symbols-outline.nvim",
+        config = require("plugins.symbols-outline"),
     },
     {
         "RubixDev/mason-update-all",

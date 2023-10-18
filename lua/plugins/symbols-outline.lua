@@ -1,9 +1,12 @@
 --[[
     Copyright 2023 Oscar Wallberg
+
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
     You may obtain a copy of the License at
+
         https://www.apache.org/licenses/LICENSE-2.0
+
     Unless required by applicable law or agreed to in writing, software
     distributed under the License is distributed on an "AS IS" BASIS,
     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,29 +14,24 @@
     limitations under the License.
 ]]
 
--- https://github.com/stevearc/aerial.nvim
+-- https://github.com/simrat39/symbols-outline.nvim
 
 local function setup()
-    require("aerial").setup({
-        layout = {
-            min_width = 40,
-            placement = "edge",
+    local outline = require("symbols-outline")
+    outline.setup({
+        show_relative_numbers = true,
+        keymaps = {
+            fold = { "h", "zc", },
+            unfold = { "l", "zo", },
+            fold_all = "zM",
+            unfold_all = "zR",
         },
-        disable_max_size = 10000000,
-        highlight_on_hover = true,
-        ignore = {
-            unlisted_buffers = true,
-        },
-        on_attach = function (bufnr)
-            vim.keymap.set(
-                "n",
-                "<leader>at",
-                function () vim.cmd.AerialToggle({ bang = true, }) end,
-                { buffer = bufnr, }
-            )
-        end,
-        show_guides = true,
     })
+    vim.keymap.set(
+        "n",
+        "<leader>ot",
+        vim.cmd.SymbolsOutline
+    )
 end
 
 return setup
