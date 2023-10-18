@@ -29,6 +29,9 @@ return {
                 completion = {
                     showWord = "Disable",
                 },
+                diagnostics = {
+                    disable = { "missing-fields", },
+                },
                 runtime = {
                     version = "LuaJIT",
                     path = {
