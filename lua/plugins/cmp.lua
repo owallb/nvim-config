@@ -49,7 +49,7 @@ local function setup()
             end
         end,
         preselect = cmp.PreselectMode.None,
-        completion = { keyword_length = 3, },
+        completion = { keyword_length = 0, },
         snippet = {
             expand = function (args)
                 luasnip.lsp_expand(args.body)
