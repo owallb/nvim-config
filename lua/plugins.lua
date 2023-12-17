@@ -177,13 +177,6 @@ local plugins = {
         ft = { "jenkinsfile", "Jenkinsfile", },
     },
     {
-        "kyazdani42/nvim-tree.lua",
-        config = require("plugins.tree"),
-        dependencies = {
-            "nvim-tree/nvim-web-devicons",
-        },
-    },
-    {
         "dstein64/vim-startuptime",
         lazy = true,
         event = "VimEnter",

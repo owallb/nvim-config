@@ -14,16 +14,3 @@
     limitations under the License.
 ]]
 
-local function open_file_tree()
-    local ok, mod = pcall(require, "nvim-tree.api")
-    if ok then
-        -- get current window id
-        local win = vim.api.nvim_get_current_win()
-        -- open NvimTree
-        mod.tree.open()
-        -- switch back focus to previous window
-        vim.api.nvim_set_current_win(win)
-    end
-end
-
-vim.api.nvim_create_autocmd("VimEnter", { callback = open_file_tree, })
