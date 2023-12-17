@@ -36,7 +36,7 @@ local function setup()
         lspkind = module
     end)
 
-    cmp.setup({
+    local opt = {
         enabled = function ()
             -- disable completion in comments
             local context = require "cmp.config.context"
@@ -125,7 +125,20 @@ local function setup()
             { name = "path", },
             -- { name = 'buffer' },
         },
-    })
+    }
+
+    utils.try_require("moonfly", module_name, function (_)
+        local winhighlight = {
+            winhighlight =
+            "Normal:NormalFloat,FloatBorder:FloatBorder,CursorLine:PmenuSel",
+        }
+        opt.window = {
+            completion = cmp.config.window.bordered(winhighlight),
+            documentation = cmp.config.window.bordered(winhighlight),
+        }
+    end)
+
+    cmp.setup(opt)
 
     cmp.setup.cmdline(
         "/",

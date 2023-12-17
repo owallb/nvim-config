@@ -71,7 +71,7 @@ function P._setup_diagnostics()
         float = {
             show_header = false,
             source = "always",
-            border = "rounded",
+            border = "single",
             focusable = false,
             format = function (diagnostic)
                 return string.format("%s", diagnostic.message)
@@ -129,6 +129,17 @@ function P.on_attach(client, bufnr)
     vim.opt.updatetime = 300
 
     require("lsp-inlayhints").on_attach(client, bufnr, false)
+
+    vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(
+        vim.lsp.handlers.hover, {
+            border = "single"
+        }
+    )
+    vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(
+        vim.lsp.handlers.signature_help, {
+            border = "single"
+        }
+    )
 end
 
 function P.reload_server_buf(name)

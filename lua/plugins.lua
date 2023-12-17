@@ -18,11 +18,11 @@ vim.loader.enable()
 
 local plugins = {
     {
-        "catppuccin/nvim",
+        "bluz71/vim-moonfly-colors",
         priority = 1000,
         lazy = false,
-        name = "catppuccin",
-        config = require("plugins.catppuccin"),
+        name = "moonfly",
+        config = require("plugins.moonfly"),
     },
     {
         "rcarriga/nvim-notify",
@@ -236,6 +236,10 @@ local plugins = {
     },
 }
 
-local opts = {}
+local opts = {
+    install = {
+        colorscheme = { "moonfly" }
+    }
+}
 
 require("lazy").setup(plugins, opts)
