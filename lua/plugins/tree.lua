@@ -57,6 +57,7 @@ local function setup()
             },
         },
         filters = {
+            git_ignored = false,
             custom = { "^\\.git$", },
         },
         notify = {
