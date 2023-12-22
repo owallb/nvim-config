@@ -234,6 +234,10 @@ local plugins = {
         branch = "anticonceal",
         config = require("plugins.lsp-inlayhints"),
     },
+    {
+        "is0n/fm-nvim",
+        config = require("plugins.fm-nvim"),
+    },
 }
 
 local opts = {
