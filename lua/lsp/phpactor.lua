@@ -22,6 +22,11 @@ return {
         "php",
         "composer",
     },
+    root_pattern = {
+        "composer.json",
+        "composer.lock",
+        "vendor",
+    },
     lspconfig = {
         filetypes = {
             "php",
@@ -31,7 +36,7 @@ return {
         init_options = {
             -- using custom php-cs-fixer setup in diagnosticls,
             -- due to issue when opening file with CRLF
-            -- ["language_server_php_cs_fixer.enabled"] = false,
+            ["language_server_php_cs_fixer.enabled"] = true,
             -- ["logging.enabled"] = true,
             -- ["logging.path"] = "/tmp/application.log",
             -- ["logging.level"] = "debug",
