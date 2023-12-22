@@ -140,7 +140,6 @@ return {
                     ignoreExitCode = false,
                 },
                 black = {
-                    sourceName = "black",
                     command = "black",
                     args = {
                         "--stdin-filename",
@@ -156,7 +155,6 @@ return {
                     ignoreExitCode = false,
                 },
                 isort = {
-                    sourceName = "isort",
                     command = "isort",
                     args = { "--quiet", "-", },
                     rootPatterns = { "Pipfile", ".git", "tox.ini", },
@@ -165,7 +163,6 @@ return {
                     ignoreExitCode = false,
                 },
                 shfmt = {
-                    sourceName = "shfmt",
                     command = "shfmt",
                     args = { "-s", "-i", "4", "-ci", },
                     rootPatterns = { "Pipfile", ".git", "tox.ini", },
