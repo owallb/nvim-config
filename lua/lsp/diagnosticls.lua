@@ -128,6 +128,17 @@ return {
                 zsh = { "shfmt", },
             },
             formatters = {
+                autopep8 = {
+                    command = "autopep8",
+                    args = {
+                        "--aggressive",
+                        "-"
+                    },
+                    rootPatterns = {"Pipfile", "tox.ini", ".git"},
+                    isStdout = true,
+                    isStderr = false,
+                    ignoreExitCode = false,
+                },
                 black = {
                     sourceName = "black",
                     command = "black",
