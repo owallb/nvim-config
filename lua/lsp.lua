@@ -35,6 +35,7 @@ P.config = {
     phpactor = {},
     intelephense = {},
     rust_analyzer = {},
+    gopls = {},
 }
 
 for server, _ in pairs(P.config) do
