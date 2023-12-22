@@ -21,6 +21,11 @@ return {
     dependencies = {
         "npm",
     },
+    root_pattern = {
+        "composer.json",
+        "composer.lock",
+        "vendor",
+    },
     lspconfig = {
         filetypes = {
             "php",
@@ -33,7 +38,7 @@ return {
                     phpVersion = "7.4",
                 },
                 format = {
-                    enable = true,
+                    enable = false,
                     braces = "psr12",
                 },
             },
