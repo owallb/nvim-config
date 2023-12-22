@@ -96,8 +96,8 @@ local function setup()
                 function (fallback)
                     if cmp.visible() then
                         cmp.select_next_item()
-                    elseif luasnip.expand_or_jumpable() then
-                        luasnip.expand_or_jump()
+                        -- elseif luasnip.expand_or_jumpable() then
+                        --     luasnip.expand_or_jump()
                     elseif has_words_before() then
                         cmp.complete()
                     else
@@ -119,7 +119,7 @@ local function setup()
         },
         sources = {
             { name = "nvim_lsp", },
-            { name = "luasnip", },
+            -- { name = "luasnip", },
             { name = "nvim_lua", },
             { name = "orgmode", },
             { name = "path", },
