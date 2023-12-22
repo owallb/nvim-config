@@ -33,7 +33,7 @@ return {
                 xml = {
                     format = {
                         enabled = true, -- is able to format document
-                        splitAttributes = false, -- each attribute is formatted onto new line
+                        splitAttributes = true, -- each attribute is formatted onto new line
                         joinCDATALines = false, -- normalize content inside CDATA
                         joinCommentLines = false, -- normalize content inside comments
                         formatComments = true, -- keep comment in relative position
