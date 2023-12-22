@@ -33,7 +33,13 @@ vim.opt.foldlevelstart = 99
 vim.opt.foldmethod = "indent"
 vim.opt.foldignore = ""
 vim.opt.guifont = "JetBrains Mono:11"
-vim.opt.completeopt:append({ "menu", "menuone", "preview", "noinsert", })
+vim.opt.completeopt:append({
+    "menu",
+    "menuone",
+    "preview",
+    "noinsert",
+    "noselect",
+})
 -- set nowrap
 vim.opt.matchpairs:append({ "<:>", "':'", "\":\"", })
 vim.opt.fileencoding = "utf-8"
@@ -81,4 +87,5 @@ vim.opt.textwidth = 0
 vim.opt.colorcolumn = "81"
 vim.opt.shortmess:append("a")
 vim.opt.autoread = true
-vim.opt.cmdheight = 0
+-- vim.opt.cmdheight = 0 -- To hide cmdline when not used. Disabled due to
+-- causing "Press ENTER to continue" messages for small messages.
