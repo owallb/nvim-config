@@ -142,10 +142,9 @@ return {
                 black = {
                     command = "black",
                     args = {
+                        "--line-length", "80",
                         "--stdin-filename",
                         "%filename",
-                        "-t",
-                        "py39",
                         "--quiet",
                         "-",
                     },
