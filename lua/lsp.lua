@@ -38,7 +38,7 @@ P.config = {
 }
 
 for server, _ in pairs(P.config) do
-    utils.try_require("lsp." .. server, package_name, function(mod)
+    utils.try_require("lsp." .. server, package_name, function (mod)
         P.config[server] = mod
     end)
 end
@@ -108,7 +108,25 @@ function P.on_attach(client, bufnr)
         { "n", "x", },
         "<leader>lf",
         function ()
-            vim.lsp.buf.format({ async = false, })
+            if vim.bo.filetype ~= "php" then
+                return vim.lsp.buf.format()
+            end
+
+            local dls = require("lsp.diagnosticls")
+            local formatters = dls.lspconfig.init_options.formatFiletypes.php
+            for _, fmt in ipairs(formatters) do
+                if fmt == "php_cs_fixer" then
+                    ---@type table
+                    local winview = vim.fn.winsaveview()
+                    vim.cmd.write({ bang = true, })
+                    vim.lsp.buf.format()
+                    vim.cmd.write({ bang = true, })
+                    vim.fn.winrestview(winview)
+                    return
+                end
+            end
+
+            return vim.lsp.buf.format()
         end,
         opts
     )
@@ -199,8 +217,8 @@ function P.language_servers()
                 if #not_installed > 0 then
                     utils.warn(
                         ("Disabling %s "
-                            + "because the following required package(s) "
-                            + "are not installed: %s")
+                            .. "because the following required package(s) "
+                            .. "are not installed: %s")
                         :format(
                             server,
                             table.concat(not_installed, ", ")

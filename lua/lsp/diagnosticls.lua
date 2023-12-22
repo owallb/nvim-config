@@ -126,6 +126,7 @@ return {
                 sh = { "shfmt", },
                 bash = { "shfmt", },
                 zsh = { "shfmt", },
+                php = { "php_cs_fixer", },
             },
             formatters = {
                 autopep8 = {
@@ -184,6 +185,27 @@ return {
                     isStdout = true,
                     isStderr = false,
                     ignoreExitCode = true,
+                },
+                php_cs_fixer = {
+                    command = "./vendor/bin/php-cs-fixer",
+                    args = {
+                        "fix",
+                        "--no-ansi",
+                        "--using-cache=no",
+                        "--quiet",
+                        "--no-interaction",
+                        "%file",
+                    },
+                    isStdout = false,
+                    isStderr = false,
+                    doesWriteToFile = true,
+                    ignoreExitCode = true,
+                    rootPatterns = {
+                        "composer.json",
+                        "composer.lock",
+                        "vendor",
+                        ".git",
+                    },
                 },
             },
         },
