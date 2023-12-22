@@ -235,6 +235,11 @@ local plugins = {
         config = require("plugins.lsp-inlayhints"),
     },
     {
+        "cbochs/grapple.nvim",
+        dependencies = { "nvim-lua/plenary.nvim", },
+        config = require("plugins.grapple"),
+    },
+    {
         "is0n/fm-nvim",
         config = require("plugins.fm-nvim"),
     },
