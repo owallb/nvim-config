@@ -34,6 +34,7 @@ P.config = {
     lua_ls = {},
     phpactor = {},
     intelephense = {},
+    -- zls = {},
     rust_analyzer = {},
     gopls = {},
 }
