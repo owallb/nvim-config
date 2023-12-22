@@ -238,8 +238,8 @@ local plugins = {
 
 local opts = {
     install = {
-        colorscheme = { "moonfly" }
-    }
+        colorscheme = { "moonfly", },
+    },
 }
 
 require("lazy").setup(plugins, opts)
