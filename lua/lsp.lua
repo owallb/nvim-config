@@ -146,6 +146,18 @@ function P.on_attach(client, bufnr)
         callback = vim.lsp.buf.clear_references,
     })
 
+    -- Auto show signature on insert in function parameters
+    -- if client.server_capabilities.signatureHelpProvider then
+    --     local chars = client.server_capabilities.signatureHelpProvider
+    --         .triggerCharacters
+    --     if chars and #chars > 0 then
+    --         vim.api.nvim_create_autocmd("CursorHoldI", {
+    --             buffer = bufnr,
+    --             callback = vim.lsp.buf.signature_help,
+    --         })
+    --     end
+    -- end
+
     vim.opt.updatetime = 300
 
     require("lsp-inlayhints").on_attach(client, bufnr, false)
