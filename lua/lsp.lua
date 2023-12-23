@@ -290,7 +290,14 @@ function P.setup_server(name)
         return
     end
 
-    server.lspconfig.root_dir = lspconfig.util.find_git_ancestor
+    -- server.lspconfig.root_dir = function () return vim.fn.getcwd() end
+    if server.root_pattern then
+        server.lspconfig.root_dir = lspconfig.util.root_pattern(
+            unpack(server.root_pattern)
+        )
+    else
+        server.lspconfig.root_dir = lspconfig.util.find_git_ancestor
+    end
     server.lspconfig.capabilities = P.capabilities
     server.lspconfig.on_attach = function (...)
         local resp
