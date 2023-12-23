@@ -111,6 +111,7 @@ function M.try_require(module, err_title, on_success)
     end
 
     M.err(("Failed to load module %s"):format(module), err_title)
+    M.err(resp, err_title)
 end
 
 return M
