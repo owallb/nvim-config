@@ -48,6 +48,7 @@ The following are optional but provides additional features:
 - shellcheck
 - php
 - composer
+- golang
 - A nerd font
 
 The sections below describes this in more detail.
@@ -71,6 +72,7 @@ for the installations themselves:
 - **jedi-language-server**: python3 with venv
 - **intelephense**: npm
 - **phpactor**: php and composer
+- **gopls**: golang
 
 Some servers have additional runtime dependencies:
 
