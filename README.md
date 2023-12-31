@@ -69,7 +69,6 @@ for the installations themselves:
 - **bash-language-server**: npm
 - **cmake-language-server**: python3 with venv
 - **jedi-language-server**: python3 with venv
-- **groovy-language-server**: java
 - **intelephense**: npm
 - **phpactor**: php and composer
 
