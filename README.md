@@ -19,11 +19,15 @@ If you are looking to get started with Neovim, I would instead recommend one of 
 
 
 # System Requirements
+Only supports Linux, macOS and other BSD variants.
 These are the general requirements to get started:
 
 - Neovim (latest git master)
 - git
 - tar
+- curl or wget
+- unzip
+- gzip
 
 If you are coming from a previous neovim configuration, it's probably also a
 good idea to delete your neovim data directory. To check where it is you can
@@ -31,22 +35,6 @@ run:
 ```sh
 nvim --headless --clean -c 'echo stdpath("data") .. "\n"|q'
 ```
-
-## Platform specific requirements
-
-Windows:
-- powershell
-- One of the following executables needs to be available:
-    - 7z
-    - peazip
-    - arc
-    - wzszip
-    - rar
-
-Linux, macOS and other BSD variants:
-- curl or wget
-- unzip
-- gzip
 
 ## Optional
 
@@ -58,7 +46,6 @@ The following are optional but provides additional features:
 - python3 with venv
 - java runtime
 - shellcheck
-- jsregexp
 - php
 - composer
 - A nerd font
@@ -72,14 +59,6 @@ here, but `gcc` and `g++` should cover a lot of them. You will generally
 encounter an error that describes if something is missing upon opening specific
 filetypes, because treesitter is configured to automatically install parsers
 when needed.
-
-### LuaSnip
-`jsregexp` is required in order to perform some [transformations](https://code.visualstudio.com/docs/editor/userdefinedsnippets#_variable-transforms).
-See [here](https://github.com/L3MON4D3/LuaSnip/blob/master/DOC.md#transformations)
-for more information. 
-
-You will need to manually install `jsregexp` on windows, while it's installed
-automatically on other platforms using `make` and `gcc`.
 
 ### Language servers
 Language servers are installed automatically to the nvim data directory
