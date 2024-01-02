@@ -161,17 +161,6 @@ local function setup()
             ),
         }
     )
-
-    utils.try_require(
-        "nvim-autopairs.completion.cmp",
-        module_name,
-        function (cmp_autopairs)
-            cmp.event:on(
-                "confirm_done",
-                cmp_autopairs.on_confirm_done()
-            )
-        end
-    )
 end
 
 return setup

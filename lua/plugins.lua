@@ -45,10 +45,6 @@ local plugins = {
         version = "2.*",
     },
     {
-        "windwp/nvim-autopairs",
-        config = require("plugins.autopairs"),
-    },
-    {
         "saadparwaiz1/cmp_luasnip",
     },
     {
