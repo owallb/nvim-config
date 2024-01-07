@@ -19,7 +19,16 @@ vim.opt.number = true
 vim.opt.relativenumber = true
 vim.opt.mouse = "a"
 vim.opt.mousemodel = "popup"
-vim.opt.fillchars:append("diff: ")
+vim.opt.fillchars = {
+    diff = " ",
+    horiz = "━",
+    horizup = "┻",
+    horizdown = "┳",
+    vert = "┃",
+    vertleft = "┫",
+    vertright = "┣",
+    verthoriz = "╋",
+}
 vim.opt.splitbelow = true
 vim.opt.splitright = true
 -- set tabline=%!MyTabLine()
