@@ -222,11 +222,6 @@ local plugins = {
         },
     },
     {
-        "iamcco/markdown-preview.nvim",
-        build = "cd app && npm install",
-        config = require("plugins.markdown-preview"),
-    },
-    {
         "j-hui/fidget.nvim",
         tag = "legacy",
         event = "LspAttach",
