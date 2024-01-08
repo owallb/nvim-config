@@ -152,11 +152,6 @@ local plugins = {
         keys = { "<C-W>m", },
     },
     {
-        "martinda/Jenkinsfile-vim-syntax",
-        lazy = true,
-        ft = { "jenkinsfile", "Jenkinsfile", },
-    },
-    {
         "dstein64/vim-startuptime",
         lazy = true,
         event = "VimEnter",
