@@ -98,4 +98,17 @@ function M.try_require(module, err_title, on_success)
     M.err(resp, err_title)
 end
 
+--- Update table t1 with values in t2.
+--- @param table table: The table to update
+--- @param values table: The table with new values
+function M.update_table(table, values)
+    for k, v in pairs(values) do
+        if type(v) == "table" and type(table[k] or false) == "table" then
+            M.update_table(table[k], values[k])
+        else
+            table[k] = v
+        end
+    end
+end
+
 return M
