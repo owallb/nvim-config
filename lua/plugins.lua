@@ -140,13 +140,6 @@ local plugins = {
         event = "VimEnter",
     },
     {
-        "lukas-reineke/indent-blankline.nvim",
-        main = "ibl",
-        config = require("plugins.indent-blankline"),
-        lazy = true,
-        event = "VimEnter",
-    },
-    {
         "simeji/winresizer",
         config = require("plugins.winresizer"),
         lazy = true,
