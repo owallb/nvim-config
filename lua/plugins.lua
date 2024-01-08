@@ -162,10 +162,6 @@ local plugins = {
         event = "VimEnter",
     },
     {
-        "simrat39/symbols-outline.nvim",
-        config = require("plugins.symbols-outline"),
-    },
-    {
         "RubixDev/mason-update-all",
         config = require("plugins.mason_update_all"),
     },
