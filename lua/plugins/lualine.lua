@@ -1,10 +1,13 @@
 -- https://github.com/nvim-lualine/lualine.nvim
 
 local function setup()
+    local custom_moonfly = require("lualine.themes.moonfly")
+    custom_moonfly.normal.c.bg = "#000000"
+
     require("lualine").setup({
         options = {
             icons_enabled = true,
-            theme = "auto",
+            theme = custom_moonfly,
             component_separators = { left = "", right = "", },
             section_separators = { left = "", right = "", },
             always_divide_middle = true,
