@@ -7,7 +7,9 @@ vim.keymap.set("n", "tq", vim.cmd.tabclose)
 -- Center cursorline
 vim.keymap.set("n", "<leader><leader>", "zz")
 -- Save buffer
-vim.keymap.set("n", "<C-s>", vim.cmd.write)
+vim.keymap.set("n", "<C-s>", function ()
+    vim.cmd.write({ mods = { silent = true, }, })
+end)
 -- Cycle buffers
 -- TODO: change to :bnext and :bprev
 vim.keymap.set("n", "<C-End>", vim.cmd.bnext)
