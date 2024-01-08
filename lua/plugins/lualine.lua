@@ -14,7 +14,6 @@ local function setup()
             lualine_a = {},
             lualine_b = {},
             lualine_c = {
-                "mode",
                 { "filename",    path = 1, },
                 "diff",
                 { "diagnostics", sources = { "nvim_lsp", }, },
