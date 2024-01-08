@@ -18,6 +18,7 @@ local function setup()
     vim.api.nvim_create_autocmd("ColorScheme", {
         pattern = "moonfly",
         callback = function ()
+            override_hl("Normal", { bg = "#000000", })
             override_hl("DiffAdd", { bg = "#364143", })
             override_hl("DiffText", { bg = "#3e4b6b", })
             override_hl("DiffChange", { bg = "#25293c", })
