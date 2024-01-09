@@ -2,7 +2,7 @@
 
 local function setup()
     local custom_moonfly = require("lualine.themes.moonfly")
-    custom_moonfly.normal.c.bg = "#000000"
+    custom_moonfly.normal.c.bg = require("moonfly").palette.bg
 
     require("lualine").setup({
         options = {
