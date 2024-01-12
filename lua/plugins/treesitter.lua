@@ -23,14 +23,7 @@ local function setup()
             disable = {},
             additional_vim_regex_highlighting = { "org", },
         },
-
-        -- Indentation based on treesitter for the = operator.
-        -- NOTE: This is an experimental feature.
-        indent = {
-            enable = true,
-        },
     })
-
 
     vim.opt.foldmethod = "expr"
     vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
