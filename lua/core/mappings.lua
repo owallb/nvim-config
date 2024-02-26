@@ -29,8 +29,10 @@ vim.keymap.set({ "n", "x", }, "<leader>P", '"+P')
 vim.keymap.set({ "n", "x", }, "<leader>+", function ()
     vim.fn.setreg("+", vim.fn.getreg('"'))
 end)
+
 -- Allow exiting insert mode in terminal by hitting <ESC>
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>")
+
 -- Use :diffput/get instead of normal one to allow staging visual selection
 vim.keymap.set("n", "<leader>dp", vim.cmd.diffput)
 vim.keymap.set("x", "<leader>dp", ":diffput<CR>")
