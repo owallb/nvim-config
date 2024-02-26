@@ -1,7 +1,7 @@
 -- spec: https://github.com/eclipse/lemminx/blob/main/docs/Configuration.md
 
 return {
-    enabled = true,
+    enable = true,
     mason = {
         name = "lemminx",
         -- version = "",
