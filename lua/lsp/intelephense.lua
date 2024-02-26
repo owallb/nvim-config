@@ -1,4 +1,6 @@
--- spec: https://github.com/bmewburn/intelephense-docs/blob/master/installation.md
+-- spec:
+-- https://github.com/bmewburn/intelephense-docs/blob/master/installation.md
+-- https://github.com/bmewburn/vscode-intelephense/blob/master/package.json
 
 return {
     enable = true,
@@ -26,8 +28,7 @@ return {
                     phpVersion = "7.4",
                 },
                 format = {
-                    enable = false,
-                    braces = "psr12",
+                    enable = true,
                 },
             },
         },
