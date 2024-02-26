@@ -75,7 +75,6 @@ for the installations themselves:
 - **cmake-language-server**: python3 with venv
 - **jedi-language-server**: python3 with venv
 - **intelephense**: npm
-- **phpactor**: php and composer
 - **gopls**: golang
 
 Some servers have additional runtime dependencies:

@@ -16,7 +16,6 @@ local config = {
     jedi_language_server = {},
     lemminx = {},
     lua_ls = {},
-    phpactor = {},
     intelephense = {},
     zls = {},
     rust_analyzer = {},
