@@ -46,3 +46,11 @@ vim.keymap.set("", "<C-LeftMouse>", "")
 -- Remove right-click menu items
 vim.cmd.aunmenu({ "PopUp.-1-", })
 vim.cmd.aunmenu({ "PopUp.How-to\\ disable\\ mouse", })
+
+-- Shift+Tab to unindent
+vim.keymap.set("i", "<S-Tab>", function ()
+    local cursor = vim.api.nvim_win_get_cursor(0)
+    local row, col = cursor[1], cursor[2]
+    vim.cmd.normal("<<")
+    vim.api.nvim_win_set_cursor(0, { row, col - vim.o.shiftwidth, })
+end)
