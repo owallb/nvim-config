@@ -32,6 +32,7 @@ return {
                 workspace = {
                     library = {
                         vim.env.VIMRUNTIME,
+                        "/usr/share/lua/5.3",
                         vim.fn.stdpath("data") .. "/lazy",
                     },
                     checkThirdParty = false,
