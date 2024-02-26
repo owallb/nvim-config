@@ -1,12 +1,23 @@
 -- https://github.com/hrsh7th/nvim-cmp
 
+local word_pattern = "[%w_.]"
+
 local function has_words_before()
     unpack = unpack or table.unpack
     local line, col = unpack(vim.api.nvim_win_get_cursor(0))
     return col ~= 0
         and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]
         :sub(col, col)
-        :match("%s") == nil
+        :match(word_pattern) ~= nil
+end
+
+local function has_words_after()
+    unpack = unpack or table.unpack
+    local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+    return col ~= 0
+        and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]
+        :sub(col + 1, col + 1)
+        :match(word_pattern) ~= nil
 end
 
 local function setup()
@@ -22,14 +33,17 @@ local function setup()
 
     local opt = {
         enabled = function ()
-            -- disable completion in comments
             local context = require "cmp.config.context"
-            -- keep command mode completion enabled when cursor is in a comment
             if vim.api.nvim_get_mode().mode == "c" then
+                -- keep command mode completion enabled
                 return true
+            elseif context.in_treesitter_capture("comment") or
+                context.in_syntax_group("Comment") then
+                -- disable completion in comments
+                return false
             else
-                return not context.in_treesitter_capture("comment") and
-                    not context.in_syntax_group("Comment")
+                -- enable only if cursor is at the end of a word
+                return has_words_before() and not has_words_after()
             end
         end,
         preselect = cmp.PreselectMode.None,
@@ -78,7 +92,7 @@ local function setup()
             ),
             ["<Tab>"] = cmp.mapping(
                 function (fallback)
-                    if cmp.visible() then
+                    if cmp.visible() and not has_words_after() then
                         cmp.select_next_item()
                         -- elseif luasnip.expand_or_jumpable() then
                         --     luasnip.expand_or_jump()
@@ -91,7 +105,7 @@ local function setup()
             ),
             ["<S-Tab>"] = cmp.mapping(
                 function (fallback)
-                    if cmp.visible() then
+                    if cmp.visible() and not has_words_after() then
                         cmp.select_prev_item()
                     elseif luasnip.jumpable(-1) then
                         luasnip.jump(-1)
