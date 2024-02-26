@@ -42,7 +42,6 @@ vim.keymap.set("i", "<C-e>", vim.cmd.fclose)
 
 -- Remove default mappings
 vim.keymap.set("", "<C-LeftMouse>", "")
-vim.keymap.set("", "q", "")
 
 -- Remove right-click menu items
 vim.cmd.aunmenu({ "PopUp.-1-", })
