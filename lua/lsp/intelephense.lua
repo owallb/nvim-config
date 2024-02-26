@@ -1,7 +1,7 @@
 -- spec: https://github.com/bmewburn/intelephense-docs/blob/master/installation.md
 
 return {
-    enabled = true,
+    enable = true,
     dependencies = {
         "npm",
     },
@@ -9,6 +9,10 @@ return {
         "composer.json",
         "composer.lock",
         "vendor",
+    },
+    mason = {
+        name = "intelephense",
+        -- version = "",
     },
     lspconfig = {
         filetypes = {

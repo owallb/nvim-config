@@ -1,7 +1,11 @@
 -- spec: https://rust-analyzer.github.io/manual.html#configuration
 
 return {
-    enabled = true,
+    enable = true,
+    mason = {
+        name = "gopls",
+        -- version = "",
+    },
     lspconfig = {
         filetypes = {
             "go",

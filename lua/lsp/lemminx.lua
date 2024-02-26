@@ -2,6 +2,10 @@
 
 return {
     enabled = true,
+    mason = {
+        name = "lemminx",
+        -- version = "",
+    },
     lspconfig = {
         filetypes = {
             "xml",

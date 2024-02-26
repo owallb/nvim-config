@@ -1,7 +1,11 @@
 return {
-    enabled = true,
+    enable = true,
     dependencies = {
         "npm",
+    },
+    mason = {
+        name = "bash-language-server",
+        -- version = "",
     },
     lspconfig = {
         filetypes = {

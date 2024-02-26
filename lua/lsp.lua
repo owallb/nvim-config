@@ -1,14 +1,14 @@
-local package_name = "lsp"
+local module_name = "lsp"
 local utils = require("utils")
 
-local P = {}
+local M = {}
 
-P._filetypes = nil
-P._language_servers = nil
+local _filetypes = nil
+-- local auto_installed_servers = nil
 
-P.capabilities = {}
+local capabilities = {}
 
-P.config = {
+local config = {
     bashls = {},
     clangd = {},
     cmake = {},
@@ -23,9 +23,9 @@ P.config = {
     gopls = {},
 }
 
-for server, _ in pairs(P.config) do
-    utils.try_require("lsp." .. server, package_name, function (mod)
-        P.config[server] = mod
+for server, _ in pairs(config) do
+    utils.try_require("lsp." .. server, module_name, function (mod)
+        config[server] = mod
     end)
 end
 
@@ -43,7 +43,7 @@ local function ca_rename()
     end
 end
 
-function P._setup_diagnostics()
+local function setup_diagnostics()
     -- https://github.com/neovim/nvim-lspconfig/wiki/UI-Customization#customizing-how-diagnostics-are-displayed
     vim.diagnostic.config({
         underline = true,
@@ -73,7 +73,7 @@ function P._setup_diagnostics()
     end
 end
 
-function P.on_attach(client, bufnr)
+local function on_attach(client, bufnr)
     -- Mappings.
     -- See `:help vim.lsp.*` for documentation on any of the below functions
     local opts = { buffer = bufnr, }
@@ -93,27 +93,7 @@ function P.on_attach(client, bufnr)
     vim.keymap.set(
         { "n", "x", },
         "<leader>lf",
-        function ()
-            if vim.bo.filetype ~= "php" then
-                return vim.lsp.buf.format()
-            end
-
-            local dls = require("lsp.diagnosticls")
-            local formatters = dls.lspconfig.init_options.formatFiletypes.php
-            for _, fmt in ipairs(formatters) do
-                if fmt == "php_cs_fixer" then
-                    ---@type table
-                    local winview = vim.fn.winsaveview()
-                    vim.cmd.write({ bang = true, })
-                    vim.lsp.buf.format()
-                    vim.cmd.write({ bang = true, })
-                    vim.fn.winrestview(winview)
-                    return
-                end
-            end
-
-            return vim.lsp.buf.format()
-        end,
+        vim.lsp.buf.format,
         opts
     )
 
@@ -146,20 +126,20 @@ function P.on_attach(client, bufnr)
 
     require("lsp-inlayhints").on_attach(client, bufnr, false)
 
-    vim.lsp.handlers['textDocument/hover'] = vim.lsp.with(
+    vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
         vim.lsp.handlers.hover, {
-            border = "single"
+            border = "single",
         }
     )
-    vim.lsp.handlers['textDocument/signatureHelp'] = vim.lsp.with(
+    vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(
         vim.lsp.handlers.signature_help, {
-            border = "single"
+            border = "single",
         }
     )
 end
 
-function P.reload_server_buf(name)
-    local server = P.config[name]
+local function reload_server_buf(name)
+    local server = config[name]
     local ft_map = {}
     for _, ft in ipairs(server.lspconfig.filetypes) do
         ft_map[ft] = true
@@ -180,101 +160,15 @@ function P.reload_server_buf(name)
     end
 end
 
-function P.filetypes()
-    if not P._filetypes then
-        P._filetypes = {}
-        local unique = {}
-        for _, server in pairs(P.config) do
-            for _, ft in ipairs(server.lspconfig.filetypes) do
-                if not unique[ft] then
-                    table.insert(P._filetypes, ft)
-                    unique[ft] = true
-                end
-            end
-        end
-    end
 
-    return P._filetypes
-end
-
-function P.language_servers()
-    if not P._language_servers then
-        P._language_servers = {}
-        for server, opts in pairs(P.config) do
-            if opts.enabled ~= true then
-                goto next_server
-            end
-            if opts.dependencies ~= nil then
-                local not_installed = {}
-                for _, dep in ipairs(opts.dependencies) do
-                    if not utils.is_installed(dep) then
-                        table.insert(not_installed, dep)
-                    end
-                end
-
-                if #not_installed > 0 then
-                    utils.warn(
-                        ("Disabling %s "
-                            .. "because the following required package(s) "
-                            .. "are not installed: %s")
-                        :format(
-                            server,
-                            table.concat(not_installed, ", ")
-                        ),
-                        package_name
-                    )
-                    opts.enabled = false
-                    goto next_server
-                end
-            end
-
-            if opts.py_module_deps ~= nil then
-                local not_installed = {}
-                for _, mod in ipairs(opts.py_module_deps) do
-                    if not utils.python3_module_is_installed(mod) then
-                        table.insert(not_installed, mod)
-                    end
-                end
-
-                if #not_installed > 0 then
-                    utils.warn(
-                        ("Disabling %s "
-                            + "because the following required python3 "
-                            + "module(s) are not installed: %s")
-                        :format(
-                            server,
-                            table.concat(not_installed, ", ")
-                        ),
-                        package_name
-                    )
-                    opts.enabled = false
-                    goto next_server
-                end
-            end
-
-            table.insert(P._language_servers, server)
-
-            ::next_server::
-        end
-    end
-
-    return P._language_servers
-end
-
-function P.setup_server(name)
-    local server = P.config[name]
-
-    if not server or server.enabled ~= true then
-        return
-    end
-
-    local ok, lspconfig = pcall(require, "lspconfig")
+local function configure_server(name, server)
+    local ok, ret = pcall(require, "lspconfig")
     if not ok then
-        utils.err("Missing required plugin lspconfig", package_name)
+        utils.err("Missing required plugin lspconfig", module_name)
         return
     end
+    local lspconfig = ret
 
-    -- server.lspconfig.root_dir = function () return vim.fn.getcwd() end
     if server.root_pattern then
         server.lspconfig.root_dir = lspconfig.util.root_pattern(
             unpack(server.root_pattern)
@@ -282,39 +176,113 @@ function P.setup_server(name)
     else
         server.lspconfig.root_dir = lspconfig.util.find_git_ancestor
     end
-    server.lspconfig.capabilities = P.capabilities
+    server.lspconfig.capabilities = capabilities
     server.lspconfig.on_attach = function (...)
-        local resp
-        ok, resp = pcall(P.on_attach, ...)
+        ok, ret = pcall(on_attach, ...)
         if not ok then
             utils.err(
-                ("Failed to load on_attach for %s:\n%s"):format(name, resp)
+                ("Failed to load on_attach for %s:\n%s"):format(name, ret),
+                module_name
             )
         end
     end
 
-    if not pcall(lspconfig[name].setup, server.lspconfig) then
-        utils.err("Unknown LSP server for lspconfig: " .. name, package_name)
+    ok, ret = pcall(lspconfig[name].setup, server.lspconfig)
+    if not ok then
+        utils.err(
+            ("Failed to setup LSP server %s with lspconfig: %s"):format(
+                name,
+                ret
+            ),
+            module_name
+        )
         return
     end
 
-    P.reload_server_buf(name)
+    reload_server_buf(name)
 end
 
-function P.setup()
-    P._setup_diagnostics()
+local function setup_server(name, server)
+    local registry = require("mason-registry")
+    local pkg_name
 
-    utils.try_require("cmp_nvim_lsp", package_name, function (mod)
-        P.capabilities = mod.default_capabilities()
-    end)
+    if server.mason then
+        pkg_name = server.mason.name
+    end
 
-    utils.try_require("mason-lspconfig", package_name, function (mod)
-        mod.setup_handlers({
-            function (name)
-                P.setup_server(name)
-            end,
-        })
-    end)
+    if (pkg_name and not registry.is_installed(pkg_name)) then
+        local pkg = registry.get_package(pkg_name)
+        local handle = pkg:install({ version = server.mason.version, })
+        utils.info("Installing " .. pkg_name)
+        local err
+        handle:on("stderr", vim.schedule_wrap(function (msg)
+            err = (err or "") .. msg
+        end))
+        handle:once("closed", vim.schedule_wrap(function ()
+            if err then
+                utils.err(err, module_name)
+            end
+
+            if pkg:is_installed() then
+                utils.info("Installation finished for " .. pkg_name)
+                configure_server(name, server)
+            else
+                utils.err("Installation failed for " .. pkg_name)
+                server.enable = false
+            end
+        end))
+    else
+        if vim.fn.executable(server.lspconfig.cmd[1]) == 1 then
+            configure_server(name, server)
+        else
+            utils.info(name .. " not installed, disabling", module_name)
+            server.enable = false
+        end
+    end
 end
 
-return P
+local function register_server(name, server)
+    local augroup = vim.api.nvim_create_augroup("LSP-" .. name, {})
+    vim.api.nvim_create_autocmd("FileType", {
+        once = true,
+        pattern = table.concat(server.lspconfig.filetypes, ","),
+        callback = vim.schedule_wrap(function ()
+            setup_server(name, server)
+            vim.api.nvim_del_augroup_by_id(augroup)
+        end),
+        group = augroup,
+    })
+end
+
+function M.filetypes()
+    if not _filetypes then
+        _filetypes = {}
+        local unique = {}
+        for _, server in pairs(config) do
+            for _, ft in ipairs(server.lspconfig.filetypes) do
+                if not unique[ft] then
+                    table.insert(_filetypes, ft)
+                    unique[ft] = true
+                end
+            end
+        end
+    end
+
+    return _filetypes
+end
+
+function M.setup()
+    setup_diagnostics()
+
+    utils.try_require("cmp_nvim_lsp", module_name, function (mod)
+        capabilities = mod.default_capabilities()
+    end)
+
+    for name, server in pairs(config) do
+        if server.enable then
+            register_server(name, server)
+        end
+    end
+end
+
+return M
