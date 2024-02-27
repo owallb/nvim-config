@@ -67,25 +67,15 @@ Language servers are installed automatically to the nvim data directory
 filetype. Automatic installation can be turned off, see the end of this section
 for instructions.
 
-The following are some noted requirements
-for the installations themselves:
-
-- **diagnostic-languageserver**: npm
-- **bash-language-server**: npm
-- **cmake-language-server**: python3 with venv
-- **jedi-language-server**: python3 with venv
-- **intelephense**: npm
-- **gopls**: golang
-
-Some servers have additional runtime dependencies:
-
-- **bash-language-server**: shellcheck (optional, used for linting)
+Some language servers have additional dependencies. If they are missing a
+warning will show up and the server will be disabled. Each dependency is listed
+in the server configuration under `lua/lsp/<server>.lua`.
 
 If you don't need some specific language server, you may either remove them from
 the top of `lua/lsp.lua` or disable them in `lua/lsp/<server>.lua`.
 
 To disable automatic installation of a selected language server, remove or
-comment out the mason part of the configuration at `lua/lsp/<server>.lua`.
+comment out the `mason` part of the configuration at `lua/lsp/<server>.lua`.
 
 ### Nerd Font
 It's recommended to use a [Nerd Font](https://www.nerdfonts.com/),
