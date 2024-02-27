@@ -13,13 +13,14 @@ local config = {
     clangd = {},
     cmake = {},
     diagnosticls = {},
+    gopls = {},
+    groovyls = {},
+    intelephense = {},
     jedi_language_server = {},
     lemminx = {},
     lua_ls = {},
-    intelephense = {},
-    zls = {},
     rust_analyzer = {},
-    gopls = {},
+    zls = {},
 }
 
 for server, _ in pairs(config) do
