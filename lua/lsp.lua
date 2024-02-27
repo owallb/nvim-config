@@ -93,27 +93,7 @@ local function on_attach(client, bufnr)
     vim.keymap.set(
         { "n", "x", },
         "<leader>lf",
-        function ()
-            if vim.bo.filetype ~= "php" then
-                return vim.lsp.buf.format()
-            end
-
-            local dls = require("lsp.diagnosticls")
-            local formatters = dls.lspconfig.init_options.formatFiletypes.php
-            for _, fmt in ipairs(formatters) do
-                if fmt == "php_cs_fixer" then
-                    ---@type table
-                    local winview = vim.fn.winsaveview()
-                    vim.cmd.write({ bang = true, })
-                    vim.lsp.buf.format()
-                    vim.cmd.write({ bang = true, })
-                    vim.fn.winrestview(winview)
-                    return
-                end
-            end
-
-            return vim.lsp.buf.format()
-        end,
+        vim.lsp.buf.format,
         opts
     )
 
