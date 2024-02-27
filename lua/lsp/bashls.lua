@@ -2,6 +2,7 @@ return {
     enable = true,
     dependencies = {
         "npm",
+        "shellcheck",
     },
     mason = {
         name = "bash-language-server",
