@@ -1,5 +1,9 @@
 return {
-    enabled = true,
+    enable = true,
+    mason = {
+        name = "clangd",
+        -- version = "",
+    },
     lspconfig = {
         filetypes = {
             "c",
