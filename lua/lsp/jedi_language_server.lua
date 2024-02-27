@@ -1,14 +1,10 @@
 return {
-    enable = true,
+    enabled = true,
     dependencies = {
         "python3",
     },
     py_module_deps = {
         "venv",
-    },
-    mason = {
-        name = "jedi-language-server",
-        -- version = "",
     },
     lspconfig = {
         filetypes = {

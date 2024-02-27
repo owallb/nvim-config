@@ -8,20 +8,6 @@ local plugins = {
         name = "moonfly",
         config = require("plugins.moonfly"),
     },
-    --[[ {
-        "catppuccin/nvim",
-        name = "catppuccin",
-        priority = 100,
-        lazy = false,
-        config = require("plugins.catppuccin"),
-    }, ]]
-    --[[ {
-        "navarasu/onedark.nvim",
-        priority = 1000,
-        lazy = false,
-        -- name = "moonfly",
-        config = require("plugins.onedark"),
-    }, ]]
     {
         "rcarriga/nvim-notify",
         priority = 900,
@@ -71,6 +57,12 @@ local plugins = {
     {
         "williamboman/mason.nvim",
         config = require("plugins.mason"),
+        lazy = true,
+        event = "VimEnter",
+    },
+    {
+        "williamboman/mason-lspconfig.nvim",
+        config = require("plugins.mason_lspconfig"),
         lazy = true,
         event = "VimEnter",
     },
@@ -163,6 +155,10 @@ local plugins = {
         "dstein64/vim-startuptime",
         lazy = true,
         event = "VimEnter",
+    },
+    {
+        "RubixDev/mason-update-all",
+        config = require("plugins.mason_update_all"),
     },
     {
         "famiu/bufdelete.nvim",

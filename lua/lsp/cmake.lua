@@ -1,14 +1,10 @@
 return {
-    enable = true,
+    enabled = true,
     dependencies = {
         "python3",
     },
     py_module_deps = {
         "venv",
-    },
-    mason = {
-        name = "cmake-language-server",
-        -- version = "",
     },
     lspconfig = {
         filetypes = {

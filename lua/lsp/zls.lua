@@ -1,14 +1,8 @@
--- spec: https://github.com/zigtools/zls#configuration-options
-
 return {
-    enable = true,
+    enabled = true,
     dependencies = {
         "zig",
     },
-    -- mason = {
-    --     name = "zls",
-    --     -- version = "",
-    -- },
     lspconfig = {
         filetypes = {
             "zig",

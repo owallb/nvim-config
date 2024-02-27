@@ -1,11 +1,7 @@
 -- spec: https://luals.github.io/wiki/settings/
 
 return {
-    enable = true,
-    mason = {
-        name = "lua-language-server",
-        -- version = "",
-    },
+    enabled = true,
     lspconfig = {
         filetypes = {
             "lua",

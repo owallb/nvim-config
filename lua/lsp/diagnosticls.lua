@@ -5,13 +5,9 @@
 -- https://github.com/iamcco/coc-diagnostic/blob/master/src/config.ts
 
 return {
-    enable = true,
+    enabled = true,
     dependencies = {
         "npm",
-    },
-    mason = {
-        name = "diagnostic-languageserver",
-        -- version = "",
     },
     lspconfig = {
         filetypes = {
@@ -114,16 +110,16 @@ return {
                 sh = { "shfmt", },
                 bash = { "shfmt", },
                 zsh = { "shfmt", },
-                -- php = { "php_cs_fixer", },
+                php = { "php_cs_fixer", },
             },
             formatters = {
                 autopep8 = {
                     command = "autopep8",
                     args = {
                         "--aggressive",
-                        "-",
+                        "-"
                     },
-                    rootPatterns = { "Pipfile", "tox.ini", ".git", },
+                    rootPatterns = {"Pipfile", "tox.ini", ".git"},
                     isStdout = true,
                     isStderr = false,
                     ignoreExitCode = false,

@@ -3,7 +3,7 @@
 -- https://github.com/bmewburn/vscode-intelephense/blob/master/package.json
 
 return {
-    enable = true,
+    enabled = true,
     dependencies = {
         "npm",
     },
@@ -11,10 +11,6 @@ return {
         "composer.json",
         "composer.lock",
         "vendor",
-    },
-    mason = {
-        name = "intelephense",
-        -- version = "",
     },
     lspconfig = {
         filetypes = {
