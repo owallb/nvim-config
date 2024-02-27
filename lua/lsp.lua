@@ -3,9 +3,6 @@ local utils = require("utils")
 
 local M = {}
 
-local _filetypes = nil
--- local auto_installed_servers = nil
-
 local capabilities = {}
 
 local config = {
@@ -252,23 +249,6 @@ local function register_server(name, server)
         end),
         group = augroup,
     })
-end
-
-function M.filetypes()
-    if not _filetypes then
-        _filetypes = {}
-        local unique = {}
-        for _, server in pairs(config) do
-            for _, ft in ipairs(server.lspconfig.filetypes) do
-                if not unique[ft] then
-                    table.insert(_filetypes, ft)
-                    unique[ft] = true
-                end
-            end
-        end
-    end
-
-    return _filetypes
 end
 
 function M.setup()
