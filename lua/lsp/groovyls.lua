@@ -15,17 +15,20 @@
 ]]
 
 return {
-    enabled = true,
+    enable = true,
     dependencies = {
         "java",
+    },
+    mason = {
+        name = "groovy-language-server",
+        -- version = "",
     },
     lspconfig = {
         filetypes = {
             "groovy",
         },
         cmd = {
-            "java", "-jar",
-            "/usr/share/java/groovy-language-server/groovy-language-server-all.jar",
+            "groovy-language-server",
         },
         single_file_support = true,
     },
