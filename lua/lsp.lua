@@ -269,7 +269,7 @@ local function setup_server(name, server)
         if vim.fn.executable(server.lspconfig.cmd[1]) == 1 then
             configure_server(name, server)
         else
-            utils.info(name .. " not installed, disabling", module_name)
+            utils.warn(name .. " not installed, disabling", module_name)
             server.enable = false
         end
     end
