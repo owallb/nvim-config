@@ -199,7 +199,44 @@ local function configure_server(name, server)
     reload_server_buf(name)
 end
 
+local function get_missing_deps(server)
+    local missing_deps = {}
+
+    if server.dependencies ~= nil then
+        for _, dep in ipairs(server.dependencies) do
+            if not utils.is_installed(dep) then
+                table.insert(missing_deps, dep)
+            end
+        end
+    end
+
+    if server.py_module_deps ~= nil then
+        for _, mod in ipairs(server.py_module_deps) do
+            if not utils.python3_module_is_installed(mod) then
+                table.insert(missing_deps, "python3-" .. mod)
+            end
+        end
+    end
+
+    return missing_deps
+end
+
 local function setup_server(name, server)
+    local missing_deps = get_missing_deps(server)
+    if #missing_deps > 0 then
+        utils.warn(
+            ("Disabling %s because the following package(s) "
+                .. "are not installed: %s")
+            :format(
+                name,
+                table.concat(missing_deps, ", ")
+            ),
+            module_name
+        )
+        server.enable = false
+        return
+    end
+
     local registry = require("mason-registry")
     local pkg_name
 
