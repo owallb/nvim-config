@@ -21,10 +21,7 @@ local function setup()
                 "diff",
                 { "diagnostics", sources = { "nvim_lsp", }, },
                 {
-                    function ()
-                        local key = require("grapple").key()
-                        return "[" .. key .. "]"
-                    end,
+                    require("grapple").statusline,
                     cond = require("grapple").exists,
                 },
             },
