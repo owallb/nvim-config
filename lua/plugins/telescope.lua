@@ -6,6 +6,15 @@ local function setup()
     local actions = require("telescope.actions")
 
     telescope.setup({
+        defaults = {
+            mappings = {
+                n = {
+                    q = actions.close,
+                    ["<C-c>"] = actions.close,
+                    l = actions.select_default,
+                },
+            },
+        },
         pickers = {
             oldfiles = {
                 initial_mode = "normal",
