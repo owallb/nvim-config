@@ -25,27 +25,9 @@ local function setup()
     local utils = require("utils")
     local cmp = require("cmp")
     local luasnip = require("luasnip")
-
-    local lspkind
-    utils.try_require("lspkind", module_name, function (module)
-        lspkind = module
-    end)
+    local lspkind = utils.try_require("lspkind", module_name)
 
     local opt = {
-        enabled = function ()
-            local context = require "cmp.config.context"
-            if vim.api.nvim_get_mode().mode == "c" then
-                -- keep command mode completion enabled
-                return true
-            elseif context.in_treesitter_capture("comment") or
-                context.in_syntax_group("Comment") then
-                -- disable completion in comments
-                return false
-            else
-                -- enable only if cursor is at the end of a word
-                return has_words_before() and not has_words_after()
-            end
-        end,
         preselect = cmp.PreselectMode.None,
         completion = { keyword_length = 0, },
         snippet = {
@@ -72,48 +54,48 @@ local function setup()
         },
         experimental = { ghost_text = true, },
         mapping = {
-            ["<C-p>"] = cmp.mapping.select_prev_item(),
-            ["<C-n>"] = cmp.mapping.select_next_item(),
-            ["<C-d>"] = cmp.mapping.scroll_docs(-4),
-            ["<C-f>"] = cmp.mapping.scroll_docs(4),
-            ["<CR>"] = cmp.mapping(
-                function (fallback)
-                    if cmp.visible() and cmp.get_selected_entry() then
-                        cmp.confirm(
-                            {
-                                behavior = cmp.ConfirmBehavior.Replace,
-                                select = true,
-                            }
-                        )
-                    else
-                        fallback()
-                    end
-                end, { "i", "s", }
-            ),
-            ["<Tab>"] = cmp.mapping(
-                function (fallback)
-                    if cmp.visible() and not has_words_after() then
-                        cmp.select_next_item()
-                        -- elseif luasnip.expand_or_jumpable() then
-                        --     luasnip.expand_or_jump()
-                    elseif has_words_before() then
-                        cmp.complete()
-                    else
-                        fallback()
-                    end
-                end, { "i", "s", }
-            ),
-            ["<S-Tab>"] = cmp.mapping(
-                function (fallback)
-                    if cmp.visible() and not has_words_after() then
-                        cmp.select_prev_item()
-                    elseif luasnip.jumpable(-1) then
-                        luasnip.jump(-1)
-                    else
-                        fallback()
-                    end
-                end, { "i", "s", }
-            ),
+            ["<C-p>"] = cmp.mapping.select_prev_item({
+                behavior = cmp.SelectBehavior.Select,
+            }),
+            ["<C-n>"] = cmp.mapping.select_next_item({
+                behavior = cmp.SelectBehavior.Select,
+            }),
+            ["<C-y>"] = function (fallback)
+                if cmp.visible() then
+                    cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, })
+                else
+                    fallback()
+                end
+            end,
+            ["<C-x><C-o>"] = cmp.mapping.complete(),
+            ["<C-l>"] = function (fallback)
+                if luasnip.expand_or_locally_jumpable() then
+                    luasnip.expand_or_jump()
+                else
+                    fallback()
+                end
+            end,
+            ["<C-h>"] = function (fallback)
+                if luasnip.locally_jumpable(-1) then
+                    luasnip.jump(-1)
+                else
+                    fallback()
+                end
+            end,
+            ["<C-b>"] = function (fallback)
+                if cmp.visible_docs() then
+                    cmp.scroll_docs(-4)
+                else
+                    fallback()
+                end
+            end,
+            ["<C-f>"] = function (fallback)
+                if cmp.visible_docs() then
+                    cmp.scroll_docs(4)
+                else
+                    fallback()
+                end
+            end,
         },
         sources = {
             { name = "nvim_lsp", },
