@@ -7,12 +7,31 @@ local function setup()
 
     telescope.setup({
         pickers = {
+            oldfiles = {
+                initial_mode = "normal",
+            },
             buffers = {
+                initial_mode = "normal",
                 mappings = {
                     i = {
-                        ["<c-d>"] = actions.delete_buffer + actions.move_to_top,
+                        ["<C-d>"] = actions.delete_buffer + actions.move_to_top,
                     },
                 },
+            },
+            diagnostics = {
+                initial_mode = "normal",
+            },
+            lsp_definitions = {
+                initial_mode = "normal",
+            },
+            lsp_type_definitions = {
+                initial_mode = "normal",
+            },
+            lsp_implementations = {
+                initial_mode = "normal",
+            },
+            lsp_references = {
+                initial_mode = "normal",
             },
         },
     })
