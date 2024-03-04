@@ -102,7 +102,6 @@ local function setup()
             -- { name = "luasnip", },
             { name = "orgmode", },
             { name = "path", },
-            -- { name = 'buffer' },
         },
     }
 
