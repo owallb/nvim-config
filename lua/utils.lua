@@ -83,15 +83,20 @@ function M.err(msg, title)
     M.notify(msg, title, vim.log.levels.ERROR)
 end
 
+--- Attempts to load a module and logs errors on failure.
+---@param module string The module to attempt to load.
+---@param err_title string The error message title.
+---@param on_success fun(module: unknown)? Will be called if module was loaded.
+---@return unknown? module The loaded module if successful, otherwise nil.
 function M.try_require(module, err_title, on_success)
     local has_module, resp = pcall(require, module)
 
     if has_module then
-        if not on_success then
-            return
+        if on_success then
+            on_success(resp)
         end
 
-        return on_success(resp)
+        return resp
     end
 
     M.err(("Failed to load module %s"):format(module), err_title)
