@@ -26,18 +26,125 @@ for server, _ in pairs(config) do
     end)
 end
 
-local function ca_rename()
+local function ca_rename_fallback()
     local old = vim.fn.expand("<cword>")
-    local new
     vim.ui.input(
         { prompt = ("Rename `%s` to: "):format(old), },
         function (input)
-            new = input
+            if input ~= "" then
+                vim.lsp.buf.rename(input)
+            end
         end
     )
-    if new and new ~= "" then
-        vim.lsp.buf.rename(new)
+end
+
+local function ca_rename()
+    local ts_utils = utils.try_require("nvim-treesitter.ts_utils", module_name)
+    if not ts_utils then
+        return ca_rename_fallback()
     end
+
+    local node = ts_utils.get_node_at_cursor()
+    if not node or node:type() ~= "IDENTIFIER" then
+        utils.info("Only identifiers may be renamed", module_name)
+        return
+    end
+
+    vim.lsp.buf.document_highlight()
+
+    local old = vim.fn.expand("<cword>")
+    local buf = vim.api.nvim_create_buf(false, true)
+    local min_width = 10
+    local max_width = 50
+    local default_width = math.min(
+        max_width,
+        math.max(min_width, vim.str_utfindex(old) + 1)
+    )
+    local row, col, _, _ = node:range()
+    local win = vim.api.nvim_open_win(
+        buf,
+        true,
+        {
+            relative = "win",
+            anchor = "NW",
+            width = default_width,
+            height = 1,
+            bufpos = { row, col - 1, },
+            focusable = true,
+            zindex = 50,
+            style = "minimal",
+            border = "rounded",
+            title = "Rename",
+            title_pos = "center",
+        }
+    )
+
+    vim.api.nvim_buf_set_lines(buf, 0, -1, false, { old, })
+
+    vim.api.nvim_create_autocmd(
+        { "TextChanged", "TextChangedI", "TextChangedP", }, {
+            buffer = buf,
+            callback = function ()
+                local win_width = vim.api.nvim_win_get_width(win)
+                local content = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+                if #content > 0 then
+                    local cwidth = vim.str_utfindex(content[1] or "") + 1
+                    local new_width = math.min(
+                        max_width,
+                        math.max(min_width, cwidth)
+                    )
+                    if new_width ~= win_width then
+                        vim.api.nvim_win_set_width(win, new_width)
+                    end
+                end
+            end,
+        })
+
+    vim.keymap.set(
+        { "n", "i", "x", },
+        "<cr>",
+        function ()
+            local content = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+            vim.api.nvim_win_close(win, true)
+            vim.cmd.stopinsert()
+            if #content > 0 then
+                local new_name = content[1]
+                vim.lsp.buf.rename(new_name)
+            end
+        end,
+        { buffer = buf, }
+    )
+    vim.keymap.set(
+        { "n", "i", "x", },
+        "<C-c>",
+        function ()
+            vim.api.nvim_win_close(win, true)
+            vim.cmd.stopinsert()
+        end,
+        { buffer = buf, }
+    )
+    vim.keymap.set(
+        { "n", "x", },
+        "<esc>",
+        function ()
+            vim.api.nvim_win_close(win, true)
+        end,
+        { buffer = buf, }
+    )
+    vim.keymap.set(
+        { "n", "x", },
+        "q",
+        function ()
+            vim.api.nvim_win_close(win, true)
+        end,
+        { buffer = buf, }
+    )
+
+    vim.api.nvim_feedkeys(
+        vim.api.nvim_replace_termcodes("^v$<C-g>", true, false, true),
+        "n",
+        true
+    )
 end
 
 local function setup_diagnostics()
