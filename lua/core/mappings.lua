@@ -38,7 +38,22 @@ vim.keymap.set("n", "<leader>dp", vim.cmd.diffput)
 vim.keymap.set("x", "<leader>dp", ":diffput<CR>")
 vim.keymap.set("n", "<leader>do", vim.cmd.diffget)
 vim.keymap.set("x", "<leader>do", ":diffget<CR>")
-vim.keymap.set("i", "<C-e>", vim.cmd.fclose)
+vim.keymap.set({ "n", "i", }, "<C-e>",
+    function ()
+        if vim.fn.pumvisible() ~= 0 then
+            return "<cmd>pclose<cr>"
+        end
+
+        for _, winid in pairs(vim.api.nvim_tabpage_list_wins(0)) do
+            if vim.api.nvim_win_get_config(winid).relative ~= "" then
+                return "<cmd>fclose<cr>"
+            end
+        end
+
+        return "<C-e>"
+    end,
+    { expr = true, }
+)
 
 -- Remove default mappings
 vim.keymap.set("", "<C-LeftMouse>", "")
