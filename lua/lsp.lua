@@ -410,8 +410,13 @@ end
 function M.setup()
     setup_diagnostics()
 
-    utils.try_require("cmp_nvim_lsp", module_name, function (mod)
-        capabilities = mod.default_capabilities()
+    capabilities = vim.lsp.protocol.make_client_capabilities()
+
+    utils.try_require("cmp_nvim_lsp", module_name, function (cmp_nvim_lsp)
+        capabilities = vim.tbl_deep_extend(
+            "force", capabilities,
+            cmp_nvim_lsp.default_capabilities()
+        )
     end)
 
     for name, server in pairs(config) do
