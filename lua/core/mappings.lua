@@ -11,7 +11,6 @@ vim.keymap.set("n", "<C-s>", function ()
     vim.cmd.write({ mods = { silent = true, }, })
 end)
 -- Cycle buffers
--- TODO: change to :bnext and :bprev
 vim.keymap.set("n", "<C-End>", vim.cmd.bnext)
 vim.keymap.set("n", "<C-Home>", vim.cmd.bprev)
 
@@ -20,6 +19,14 @@ vim.keymap.set("n", "<C-d>", "<C-d>zz")
 vim.keymap.set("n", "<C-u>", "<C-u>zz")
 vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "N", "Nzzzv")
+-- nnoremap <expr> j v:count ? 'j' : 'gj'
+-- nnoremap <expr> k v:count ? 'k' : 'gk'
+vim.keymap.set("n", "j", function ()
+    return vim.v.count == 0 and "gj" or "j"
+end, { expr = true })
+vim.keymap.set("n", "k", function ()
+    return vim.v.count == 0 and "gk" or "k"
+end, { expr = true })
 
 --- General mappings ---
 -- yank/put using named register

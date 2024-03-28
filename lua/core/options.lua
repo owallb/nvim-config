@@ -77,7 +77,7 @@ vim.cmd.filetype("plugin on")
 vim.opt.hlsearch = true
 vim.opt.laststatus = 3
 vim.opt.textwidth = 0
-vim.opt.colorcolumn = "81"
+vim.opt.colorcolumn = "101"
 vim.opt.shortmess:append("a")
 vim.opt.autoread = true
 -- vim.opt.cmdheight = 0 -- To hide cmdline when not used. Disabled due to

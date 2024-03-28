@@ -34,6 +34,8 @@ return {
                 flake8 = {
                     command = "flake8",
                     args = {
+                        "--max-line-length=100",
+                        "--max-doc-length=100",
                         "--format",
                         "%(row)d,%(col)d,%(code).1s,%(code)s: %(text)s",
                         "-",
@@ -131,7 +133,7 @@ return {
                 black = {
                     command = "black",
                     args = {
-                        "--line-length", "80",
+                        "--line-length", "100",
                         "--stdin-filename",
                         "%filename",
                         "--quiet",
