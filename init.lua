@@ -3,6 +3,7 @@ local module_name = "base"
 local utils = require("utils")
 
 local files = {
+    "env",
     "globals",
     "options",
     "autocommands",
