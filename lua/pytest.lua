@@ -1,3 +1,7 @@
+-- TODO: clean this up.
+-- For other readers: I don't currently use this, and is probably broken.
+-- This was started as a work in progress a long time ago.
+
 local utils = require("utils")
 
 local M = {}
