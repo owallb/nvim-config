@@ -1,5 +1,6 @@
 vim.loader.enable()
 
+---@type LazyPluginSpec[]
 local plugins = {
     {
         "bluz71/vim-moonfly-colors",
@@ -203,6 +204,10 @@ local plugins = {
     {
         "is0n/fm-nvim",
         config = require("plugins.fm-nvim"),
+    },
+    {
+        "NvChad/nvim-colorizer.lua",
+        config = require("plugins.nvim-colorizer"),
     },
 }
 
