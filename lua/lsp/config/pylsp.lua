@@ -1,3 +1,5 @@
+-- spec: https://github.com/python-lsp/python-lsp-server/blob/develop/CONFIGURATION.md
+
 --- @type ServerConfig
 return {
     enable = true,
@@ -52,13 +54,13 @@ return {
                         -- F - flake8 https://flake8.pycqa.org/en/latest/user/error-codes.html
                         -- W - pycodestyle https://pycodestyle.pycqa.org/en/latest/intro.html#error-codes
                         select = {
-                            "B", "B902", "B903", "B904", "C", "E", "E999", "E501", "F", "W",
+                            "B", "B902", "B903", "B904", "C", "E", "F", "W",
                         },
                         ignore = {
                             "B950", "D201", "D203", "D205", "D301", "D400", "E133", "E203", "W503",
                         },
-                        max_line_length = 100,
-                        max_doc_length = 100,
+                        maxLineLength = 100,
+                        maxDocLength = 100,
                     },
                     isort = {
                         enabled = true,
