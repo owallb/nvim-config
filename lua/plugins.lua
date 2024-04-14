@@ -88,6 +88,7 @@ local plugins = {
         config = require("plugins.dap_ui"),
         dependencies = {
             "mfussenegger/nvim-dap",
+            "nvim-neotest/nvim-nio",
         },
     },
     {
