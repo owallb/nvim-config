@@ -1,5 +1,5 @@
 return {
-    enable = true,
+    enable = false,
     dependencies = {
         "python3",
     },

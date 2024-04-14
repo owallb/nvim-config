@@ -1,5 +1,6 @@
 -- spec: https://luals.github.io/wiki/settings/
 
+---@type ServerConfig
 return {
     enable = true,
     mason = {

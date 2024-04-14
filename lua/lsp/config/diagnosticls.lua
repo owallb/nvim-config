@@ -10,12 +10,14 @@ return {
         "npm",
     },
     mason = {
+        -- TODO: figure out if possible to install required formatters/linters
+        --       in this language server automatically through mason
         name = "diagnostic-languageserver",
         -- version = "",
     },
     lspconfig = {
         filetypes = {
-            "python",
+            -- "python",
             "sh",
             "bash",
             "zsh",
@@ -25,7 +27,7 @@ return {
         single_file_support = true,
         init_options = {
             filetypes = {
-                python = "flake8",
+                -- python = "flake8",
                 php = "phpcs",
             },
             linters = {
@@ -112,7 +114,7 @@ return {
                 },
             },
             formatFiletypes = {
-                python = { "black", "isort", },
+                -- python = { "black", "isort", },
                 sh = { "shfmt", },
                 bash = { "shfmt", },
                 zsh = { "shfmt", },
@@ -137,7 +139,8 @@ return {
                         "--stdin-filename",
                         "%filename",
                         "--quiet",
-                        "-",
+                        "-code",
+                        "%text",
                     },
                     rootPatterns = { "Pipfile", ".git", "tox.ini", },
                     isStdout = true,
