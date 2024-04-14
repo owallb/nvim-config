@@ -52,7 +52,6 @@ local function setup()
                 return vim_item
             end,
         },
-        experimental = { ghost_text = true, },
         mapping = {
             ["<C-p>"] = cmp.mapping.select_prev_item({
                 behavior = cmp.SelectBehavior.Select,
