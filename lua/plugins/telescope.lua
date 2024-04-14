@@ -42,6 +42,9 @@ local function setup()
             lsp_references = {
                 initial_mode = "normal",
             },
+            git_status = {
+                initial_mode = "normal",
+            },
         },
     })
 
