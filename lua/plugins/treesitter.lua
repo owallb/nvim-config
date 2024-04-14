@@ -15,6 +15,7 @@ local function setup()
             "markdown",        -- for noice
             "markdown_inline", -- for noice
             "org",
+            "comment",
         },
         auto_install = true,
 
@@ -33,6 +34,14 @@ local function setup()
     vim.opt.foldmethod = "expr"
     vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
     vim.opt.foldenable = true
+
+    -- Disable LSP semantic highlighting for comments because it will otherwise
+    -- override highlights from `comment`.
+    vim.api.nvim_set_hl(0, '@lsp.type.comment', {})
+
+    -- To set the priority of semantic highlighting lower than treesitter (100),
+    -- uncomment the line below:
+    -- vim.highlight.priorities.semantic_tokens = 99
 end
 
 return setup
