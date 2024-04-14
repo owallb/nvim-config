@@ -21,12 +21,6 @@ vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "N", "Nzzzv")
 -- nnoremap <expr> j v:count ? 'j' : 'gj'
 -- nnoremap <expr> k v:count ? 'k' : 'gk'
-vim.keymap.set("n", "j", function ()
-    return vim.v.count == 0 and "gj" or "j"
-end, { expr = true })
-vim.keymap.set("n", "k", function ()
-    return vim.v.count == 0 and "gk" or "k"
-end, { expr = true })
 
 --- General mappings ---
 -- yank/put using named register
@@ -72,8 +66,32 @@ vim.cmd.aunmenu({ "PopUp.How-to\\ disable\\ mouse", })
 
 -- Default bindings that are good to know:
 -- insert mode:
---  <C-T>   -   indent, see :h i_CTRL-T
---  <C-D>   -   un-indent, see :h i_CTRL-D
+--  <C-T>           - indent, see :h i_CTRL-T
+--  <C-D>           - un-indent, see :h i_CTRL-D
 -- normal mode:
---  <count?><C-E>   -   scroll window down <count> lines, see :h CTRL-E
---  <count?><C-Y>   -   scroll window up <count> lines, see :h CTRL-Y
+--  <count?><C-E>   - scroll window down <count> lines, see :h CTRL-E
+--  <count?><C-Y>   - scroll window up <count> lines, see :h CTRL-Y
+-- commands:
+--  :make           - execute makeprg with given args
+--  :copen          - open quickfix list
+--  :cdo {cmd}      - execute {cmd} in each valid entry in the quickfix list.
+--                    works like this:
+--                      :cfirst
+--                      :{cmd}
+--                      :cnext
+--                      :{cmd}
+--                      etc.
+--  :cn             - go to the next error in quickfix list that includes a file name
+--  :cp             - go to the previous error in quickfix list that includes a file name
+--  :cc [num]       - go to the specified error in quickfix list
+--  @:              - repeat last command
+--  :s/foo/bar/     - substitute the first match of foo with bar in the current line
+--  :s/foo/bar/g    - same as above but for all matches in the current line
+--  :%s/foo/bar/g   - same as above, but for all lines in buffer
+--  :%s/foo/bar/gc  - same as above but asking for confirmation on each match
+--  :lua << EOF     - run a lua snippet using lua-heredoc syntax
+--  local tbl = {1, 2, 3}
+--  for k, v in ipairs(tbl) do
+--    print(v)
+--  end
+--  EOF
