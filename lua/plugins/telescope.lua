@@ -90,7 +90,7 @@ local function setup()
         "n",
         "<leader>fb",
         function ()
-            builtin.buffers({ previewer = false, })
+            builtin.buffers({ previewer = false, sort_mru = true, })
         end
     )
 
