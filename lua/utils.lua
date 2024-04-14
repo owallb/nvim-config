@@ -132,4 +132,19 @@ function M.update_table(table, values)
     end
 end
 
+--- Check if a table contains a value
+---@generic T
+---@param table table<any, T> Table to inspect
+---@param value T Value to check
+---@return boolean
+function M.has_value(table, value)
+    for _, v in ipairs(table) do
+        if v == value then
+            return true
+        end
+    end
+
+    return false
+end
+
 return M
