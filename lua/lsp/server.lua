@@ -320,6 +320,11 @@ function M:setup()
         return
     end
 
+    if vim.fn.executable(self.lspconfig.cmd[1]) == 1 then
+        self:configure_client()
+        return
+    end
+
     if self.mason then
         self:install(function (success)
             if success then
@@ -327,12 +332,8 @@ function M:setup()
             end
         end)
     else
-        if vim.fn.executable(self.lspconfig.cmd[1]) == 1 then
-            self:configure_client()
-        else
-            utils.warn(self.name .. " not installed, disabling", module_name)
-            self.enable = false
-        end
+        utils.warn(self.name .. " not installed, disabling", module_name)
+        self.enable = false
     end
 end
 
