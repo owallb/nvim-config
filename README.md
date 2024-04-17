@@ -1,17 +1,7 @@
-# Notice
-
-Welcome!
-
-This is where I host my Neovim configuration. Feel free to look around or use it
-for yourself, but keep in mind the following:
-
-- This is a work in progress. Many things may change without warning.
-- This is *my* prefered setup, the goal of this project is not to accomodate the
-general users needs.
+My Neovim config.
 
 If you are looking to get started with Neovim, I would instead recommend one of these awesome projects:
 - [kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim)
-    - Recommended for a minimal setup to build upon yourself.
 - [LunarVim](https://www.lunarvim.org/)
 - [NvChad](https://nvchad.com/)
 - [LazyVim](https://www.lazyvim.org/)
@@ -69,13 +59,13 @@ for instructions.
 
 Some language servers have additional dependencies. If they are missing a
 warning will show up and the server will be disabled. Each dependency is listed
-in the server configuration under `lua/lsp/<server>.lua`.
+in the server configuration under `lua/lsp/config/<server>.lua`.
 
-If you don't need some specific language server, you may either remove them from
-the top of `lua/lsp.lua` or disable them in `lua/lsp/<server>.lua`.
+If you don't need some specific language server, you can disable them in
+`lua/lsp/config/<server>.lua`.
 
 To disable automatic installation of a selected language server, remove or
-comment out the `mason` part of the configuration at `lua/lsp/<server>.lua`.
+comment out the `mason` part of the configuration at `lua/lsp/config/<server>.lua`.
 
 ### Nerd Font
 It's recommended to use a [Nerd Font](https://www.nerdfonts.com/),
@@ -113,4 +103,4 @@ fallbacks manually.
 see `:checkhealth` and `:h clipboard`.
 
 # License
-See the included [LICENSE](LICENSE) file.
+BSD-3-Clause, see [LICENSE](LICENSE) for more information.
