@@ -1,6 +1,6 @@
 My Neovim config.
 
-If you are looking to get started with Neovim, I would instead recommend one of these awesome projects:
+If you are looking to get started with Neovim, I would instead recommend one of these projects:
 - [kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim)
 - [LunarVim](https://www.lunarvim.org/)
 - [NvChad](https://nvchad.com/)
