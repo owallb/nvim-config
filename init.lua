@@ -1,4 +1,4 @@
-local module_name = "base"
+local module_name = "core"
 
 local utils = require("utils")
 

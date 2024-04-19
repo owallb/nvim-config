@@ -36,11 +36,7 @@ local plugins = {
         "L3MON4D3/LuaSnip",
         config = require("plugins.luasnip"),
         -- comment out on windows and install jsregexp manually
-        build = (
-            require("utils").os_name ~= "Windows_NT"
-            and "make install_jsregexp"
-            or nil
-        ),
+        build = (require("utils").os_name ~= "Windows_NT" and "make install_jsregexp" or nil),
         version = "2.*",
     },
     {
@@ -128,10 +124,9 @@ local plugins = {
     },
     {
         "nvim-telescope/telescope-fzf-native.nvim",
-        build =
-            "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release" ..
-            " && cmake --build build --config Release" ..
-            " && cmake --install build --prefix build",
+        build = "cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release"
+            .. " && cmake --build build --config Release"
+            .. " && cmake --install build --prefix build",
     },
     {
         "numToStr/Comment.nvim",
@@ -143,13 +138,13 @@ local plugins = {
         "simeji/winresizer",
         config = require("plugins.winresizer"),
         lazy = true,
-        keys = { "<C-W>r", },
+        keys = { "<C-W>r" },
     },
     {
         "sindrets/winshift.nvim",
         config = require("plugins.winshift"),
         lazy = true,
-        keys = { "<C-W>m", },
+        keys = { "<C-W>m" },
     },
     {
         "dstein64/vim-startuptime",
@@ -198,7 +193,7 @@ local plugins = {
     },
     {
         "cbochs/grapple.nvim",
-        dependencies = { "nvim-lua/plenary.nvim", },
+        dependencies = { "nvim-lua/plenary.nvim" },
         config = require("plugins.grapple"),
     },
     {
@@ -213,7 +208,7 @@ local plugins = {
 
 local opts = {
     install = {
-        colorscheme = { "moonfly", },
+        colorscheme = { "moonfly" },
     },
 }
 

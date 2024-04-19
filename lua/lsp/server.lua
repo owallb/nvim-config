@@ -1,98 +1,131 @@
-local module_name = "lsp.server"
 local utils = require("utils")
-
----@class MasonPackageConfig
-local Package = require("lsp.package")
-
+local keymap = require("lsp.keymap")
+---@class MasonPackage
+local MasonPackage = require("lsp.package")
 -- override type, seems to be incorrect in either lspconfig or vim.lsp
 ---@class lspconfig.Config
 ---@field root_dir function
 
----@class ServerConfig
+---@class Server
 ---@field name string?
----@field enable boolean?
----@field dependencies string[]
----@field py_module_deps string[]
----@field mason MasonPackageConfig?
----@field root_patterns string[]?
----@field lspconfig lspconfig.Config
+---@field mason MasonPackage?
+---@field client vim.lsp.Client?
+---@field attached_buffers number[]?
+---@field manager lspconfig.Manager
+---@field config ServerConfig
 local M = {}
 M.__index = M
-
---- Reload all buffers attached by a server
-function M:reload_buffers()
-    local ft_map = {}
-    for _, ft in ipairs(self.lspconfig.filetypes) do
-        ft_map[ft] = true
+---@class ServerConfig
+---@field enable boolean?
+---@field dependencies string[]?
+---@field mason MasonPackageConfig?
+---@field root_patterns string[]?
+---@field keymaps Keymap[]?
+---@field lspconfig lspconfig.Config?
+M.config = {}
+--- Validate ServerConfig
+---@param config ServerConfig
+---@return boolean
+function M.validate(name, config)
+    local ok, resp = pcall(vim.validate, { config = { config, { "table" } } })
+    if ok then
+        ok, resp = pcall(vim.validate, {
+            enable = { config.enable, { "boolean" }, true },
+            dependencies = {
+                config.dependencies,
+                function(f)
+                    return utils.is_list_or_nil(f, "string")
+                end, "list of strings or nil",
+            },
+            mason = {
+                config.mason, function(f)
+                if f == nil then return true end
+                return MasonPackage.validate(f)
+            end,
+            },
+            root_patterns = {
+                config.root_patterns,
+                function(f)
+                    return utils.is_list_or_nil(f, "string")
+                end, "list of strings or nil",
+            },
+            keymaps = {
+                config.keymaps, function(f)
+                if not f then return true end
+                if not utils.is_list(f, "table") then
+                    return false
+                end
+                for _, key in ipairs(f) do
+                    local o, r = pcall(vim.validate, {
+                        mode = { key.mode, { "s", "t" } },
+                        lhs = { key.lhs, "s" },
+                        rhs = { key.rhs, { "s", "f" } },
+                        opts = { key.opts, "t", true },
+                    })
+                    if not o then
+                        utils.err(("Invalid keymap:\n%s"):format(r))
+                        return false
+                    end
+                end
+                return true
+            end, "list of keymaps",
+            },
+            lspconfig = { config.lspconfig, { "table" }, true },
+        })
     end
-    for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
-        if vim.api.nvim_buf_is_loaded(bufnr) then
-            local buf_ft = vim.api.nvim_get_option_value("filetype", { buf = bufnr, })
-            if ft_map[buf_ft] then
-                vim.api.nvim_buf_call(bufnr, vim.cmd.edit)
-            end
-        end
+    if not ok then
+        utils.err(("Invalid config for %s:\n%s"):format(name, resp))
+        return false
     end
+    return true
 end
 
 --- Rename Code Action
 function M.ca_rename()
-    local ts_utils = utils.try_require("nvim-treesitter.ts_utils", module_name)
-    if not ts_utils then
-        return
-    end
-
-    local identifier_types = { "IDENTIFIER", "identifier", "variable_name", "word", }
-
+    local ts_utils = utils.try_require("nvim-treesitter.ts_utils")
+    if not ts_utils then return end
+    local identifier_types = {
+        "IDENTIFIER", "identifier", "variable_name", "word",
+    }
     local node = ts_utils.get_node_at_cursor()
-    if not node or not utils.has_value(identifier_types, node:type()) then
-        utils.info("Only identifiers may be renamed", module_name)
+    if not node or not vim.list_contains(identifier_types, node:type()) then
+        utils.info("Only identifiers may be renamed")
         return
     end
-
     vim.lsp.buf.document_highlight()
 
     local old = vim.fn.expand("<cword>")
     local buf = vim.api.nvim_create_buf(false, true)
     local min_width = 10
     local max_width = 50
-    local default_width = math.min(
-        max_width,
-        math.max(min_width, vim.str_utfindex(old) + 1)
-    )
+    local default_width = math.min(max_width, math.max(min_width,
+        vim.str_utfindex(old) + 1))
     local row, col, _, _ = node:range()
-    local win = vim.api.nvim_open_win(
-        buf,
-        true,
+    local win = vim.api.nvim_open_win(buf, true, {
+        relative = "win",
+        anchor = "NW",
+        width = default_width,
+        height = 1,
+        bufpos = { row, col - 1 },
+        focusable = true,
+        zindex = 50,
+        style = "minimal",
+        border = "rounded",
+        title = "Rename",
+        title_pos = "center",
+    })
+    vim.api.nvim_buf_set_lines(buf, 0, -1, false, { old })
+
+    vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI", "TextChangedP" },
         {
-            relative = "win",
-            anchor = "NW",
-            width = default_width,
-            height = 1,
-            bufpos = { row, col - 1, },
-            focusable = true,
-            zindex = 50,
-            style = "minimal",
-            border = "rounded",
-            title = "Rename",
-            title_pos = "center",
-        }
-    )
-
-    vim.api.nvim_buf_set_lines(buf, 0, -1, false, { old, })
-
-    vim.api.nvim_create_autocmd(
-        { "TextChanged", "TextChangedI", "TextChangedP", }, {
             buffer = buf,
-            callback = function ()
+            callback = function()
                 local win_width = vim.api.nvim_win_get_width(win)
                 local content = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
                 if #content > 0 then
                     local cwidth = vim.str_utfindex(content[1] or "") + 1
-                    local new_width = math.min(
-                        max_width,
-                        math.max(min_width, cwidth)
-                    )
+                    local new_width = math.min(max_width,
+                        math.max(min_width, cwidth))
                     if new_width ~= win_width then
                         vim.api.nvim_win_set_width(win, new_width)
                     end
@@ -100,99 +133,55 @@ function M.ca_rename()
             end,
         })
 
-    vim.keymap.set(
-        { "n", "i", "x", },
-        "<cr>",
-        function ()
-            local content = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
-            vim.api.nvim_win_close(win, true)
-            vim.cmd.stopinsert()
-            if #content > 0 then
-                local new_name = content[1]
-                vim.lsp.buf.rename(new_name)
-            end
-        end,
-        { buffer = buf, }
-    )
-    vim.keymap.set(
-        { "n", "i", "x", },
-        "<C-c>",
-        function ()
-            vim.api.nvim_win_close(win, true)
-            vim.cmd.stopinsert()
-        end,
-        { buffer = buf, }
-    )
-    vim.keymap.set(
-        { "n", "x", },
-        "<esc>",
-        function ()
-            vim.api.nvim_win_close(win, true)
-        end,
-        { buffer = buf, }
-    )
-    vim.keymap.set(
-        { "n", "x", },
-        "q",
-        function ()
-            vim.api.nvim_win_close(win, true)
-        end,
-        { buffer = buf, }
-    )
+    vim.keymap.set({ "n", "i", "x" }, "<cr>", function()
+        local content = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+        vim.api.nvim_win_close(win, true)
+        vim.cmd.stopinsert()
+        if #content > 0 then
+            local new_name = content[1]
+            vim.lsp.buf.rename(new_name)
+        end
+    end, { buffer = buf })
+    vim.keymap.set({ "n", "i", "x" }, "<C-c>", function()
+        vim.api.nvim_win_close(win, true)
+        vim.cmd.stopinsert()
+    end, { buffer = buf })
+    vim.keymap.set({ "n", "x" }, "<esc>",
+        function() vim.api.nvim_win_close(win, true) end,
+        { buffer = buf })
+    vim.keymap.set({ "n", "x" }, "q",
+        function() vim.api.nvim_win_close(win, true) end,
+        { buffer = buf })
 
-    vim.api.nvim_feedkeys(
-        vim.api.nvim_replace_termcodes("^v$<C-g>", true, false, true),
-        "n",
-        true
-    )
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("^v$<C-g>", true,
+        false, true), "n", true)
 end
 
 --- Called when language server attaches
 ---@param client vim.lsp.Client
 ---@param bufnr integer
 function M:on_attach(client, bufnr)
-    -- Mappings.
-    -- See `:help vim.lsp.*` for documentation on any of the below functions
-    local opts = { buffer = bufnr, }
-    vim.keymap.set("n", "<leader>df", vim.diagnostic.open_float, opts)
-    vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
-    vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
-    vim.keymap.set("n", "gD", vim.lsp.buf.declaration, opts)
-    vim.keymap.set({ "n", "i", }, "<C-k>", vim.lsp.buf.hover, opts)
-    vim.keymap.set({ "n", "i", }, "<C-j>", vim.lsp.buf.signature_help, opts)
-    vim.keymap.set({ "n", "i", }, "<C-h>", vim.lsp.buf.document_highlight, opts)
-    vim.keymap.set("n", "<leader>lr", self.ca_rename, opts)
-    vim.keymap.set("n", "<leader>la", vim.lsp.buf.code_action, opts)
-    vim.keymap.set({ "n", "x", }, "<leader>lf", vim.lsp.buf.format, opts)
-
-    ---@module "telescope.builtin"
-    local telescope = utils.try_require("telescope.builtin", module_name)
-    if telescope then
-        vim.keymap.set("n", "<leader>dl", telescope.diagnostics, opts)
-        vim.keymap.set("n", "<leader>lD", telescope.lsp_type_definitions, opts)
-        vim.keymap.set("n", "gd", telescope.lsp_definitions, opts)
-        vim.keymap.set("n", "gi", telescope.lsp_implementations, opts)
-        vim.keymap.set("n", "gr", telescope.lsp_references, opts)
-    else
-        vim.keymap.set("n", "<leader>dl", vim.diagnostic.setloclist, opts)
-        vim.keymap.set("n", "<leader>ld", vim.lsp.buf.type_definition, opts)
-        vim.keymap.set("n", "gd", vim.lsp.buf.definition, opts)
-        vim.keymap.set("n", "gi", vim.lsp.buf.implementation, opts)
-        vim.keymap.set("n", "gr", vim.lsp.buf.references, opts)
+    if self.client and self.client.id ~= client.id then
+        self.client.stop(true)
     end
+    self.client = client
+    self.attached_buffers = self.attached_buffers or {}
+    table.insert(self.attached_buffers, bufnr)
+
+    keymap:load(self, bufnr)
 
     -- For document highlight
-    vim.cmd.highlight({ "link LspReferenceRead Visual", bang = true, })
-    vim.cmd.highlight({ "link LspReferenceText Visual", bang = true, })
-    vim.cmd.highlight({ "link LspReferenceWrite Visual", bang = true, })
+    vim.cmd.highlight({ "link LspReferenceRead Visual", bang = true })
+    vim.cmd.highlight({ "link LspReferenceText Visual", bang = true })
+    vim.cmd.highlight({ "link LspReferenceWrite Visual", bang = true })
     -- vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI", }, {
     --     buffer = bufnr,
     --     callback = vim.lsp.buf.document_highlight,
     -- })
-    vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI", }, {
-        buffer = bufnr,
-        callback = vim.lsp.buf.clear_references,
-    })
+    -- vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
+    --     buffer = bufnr,
+    --     callback = vim.lsp.buf.clear_references,
+    -- })
 
     -- Auto show signature on insert in function parameters
     -- if client.server_capabilities.signatureHelpProvider then
@@ -207,85 +196,76 @@ function M:on_attach(client, bufnr)
     -- end
 
     vim.opt.updatetime = 300
-
     require("lsp-inlayhints").on_attach(client, bufnr, false)
 
     vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
-        vim.lsp.handlers.hover, { border = "single", }
-    )
-    vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(
-        vim.lsp.handlers.signature_help, { border = "single", }
-    )
+        vim.lsp.handlers.hover,
+        { border = "single" })
+    vim.lsp.handlers["textDocument/signatureHelp"] =
+        vim.lsp.with(vim.lsp.handlers.signature_help, { border = "single" })
 end
 
 --- Configure the LSP client
 function M:configure_client()
-    local ok, ret = pcall(require, "lspconfig")
-    if not ok then
-        utils.err("Missing required plugin lspconfig", module_name)
-        return
-    end
-    local lspconfig = ret
-
-    if self.root_patterns then
-        self.lspconfig.root_dir = lspconfig.util.root_pattern(unpack(self.root_patterns))
+    local lspconfig = require("lspconfig")
+    if self.config.root_patterns then
+        self.config.lspconfig.root_dir =
+            lspconfig.util.root_pattern(unpack(self.config.root_patterns))
     else
-        self.lspconfig.root_dir = lspconfig.util.find_git_ancestor
+        self.config.lspconfig.root_dir = lspconfig.util.find_git_ancestor
     end
-
     local capabilities = vim.lsp.protocol.make_client_capabilities()
-    utils.try_require("cmp_nvim_lsp", module_name, function (cmp_nvim_lsp)
-        capabilities = vim.tbl_deep_extend(
-            "force",
-            capabilities,
-            cmp_nvim_lsp.default_capabilities()
-        )
-    end)
-    self.lspconfig.capabilities = capabilities
-
-    self.lspconfig.on_attach = function (...)
-        ok, ret = pcall(self.on_attach, self, ...)
+    local cmp_nvim_lsp = utils.try_require("cmp_nvim_lsp")
+    if cmp_nvim_lsp then
+        capabilities = vim.tbl_deep_extend("force", capabilities,
+            cmp_nvim_lsp.default_capabilities())
+    end
+    self.config.lspconfig.capabilities = capabilities
+    self.config.lspconfig.on_attach = function(client, bufnr)
+        local ok, ret = pcall(self.on_attach, self, client, bufnr)
         if not ok then
             utils.err(
                 ("Failed to load on_attach for %s:\n%s"):format(self.name, ret),
-                module_name
-            )
+                "lsp.server:configure_client")
         end
     end
-
-    ok, ret = pcall(lspconfig[self.name].setup, self.lspconfig)
+    local ok, ret = pcall(lspconfig[self.name].setup, self.config.lspconfig)
     if not ok then
-        utils.err(
-            ("Failed to setup LSP server %s with lspconfig: %s"):format(self.name, ret),
-            module_name
-        )
+        utils.err(("Failed to setup LSP server %s with lspconfig: %s"):format(
+            self.name, ret))
         return
     end
+    self.manager = lspconfig[self.name].manager
+    for _, bufnr in ipairs(self:get_ft_buffers()) do
+        utils.debug(("Trying to attach buffer %d"):format(bufnr))
+        self.manager:try_add_wrapper(bufnr)
+    end
+end
 
-    self:reload_buffers()
+function M:get_ft_buffers()
+    local filetypes = self.config.lspconfig.filetypes or {}
+    if not vim.list_contains(filetypes, self.config.lspconfig.filetype) then
+        table.insert(filetypes, self.config.lspconfig.filetype)
+    end
+    if #filetypes == 0 then
+        return {}
+    end
+    return vim.tbl_filter(function(bufnr)
+        return vim.list_contains(filetypes, vim.bo[bufnr].filetype)
+    end, vim.api.nvim_list_bufs())
 end
 
 --- Check for and return missing dependencies
 ---@return table<string>
 function M:get_missing_unmanaged_deps()
     local missing_deps = {}
-
-    if self.dependencies ~= nil then
-        for _, dep in ipairs(self.dependencies) do
-            if not utils.is_installed(dep) then
+    if self.config.dependencies ~= nil then
+        for _, dep in ipairs(self.config.dependencies) do
+            if not utils.is_executable(dep) then
                 table.insert(missing_deps, dep)
             end
         end
     end
-
-    if self.py_module_deps ~= nil then
-        for _, mod in ipairs(self.py_module_deps) do
-            if not utils.python3_module_is_installed(mod) then
-                table.insert(missing_deps, "python3-" .. mod)
-            end
-        end
-    end
-
     return missing_deps
 end
 
@@ -295,13 +275,8 @@ function M:install(on_done)
     --- Handle install result
     ---@param success boolean
     local function handle_result(success)
-        if not success then
-            self.enable = false
-        end
-
-        if on_done then
-            on_done(success)
-        end
+        if not success then self.config.enable = false end
+        if on_done then on_done(success) end
     end
 
     self.mason:install(handle_result)
@@ -312,57 +287,70 @@ function M:setup()
     local missing_deps = self:get_missing_unmanaged_deps()
     if #missing_deps > 0 then
         utils.warn(
-            ("Disabling %s because the following package(s) are not installed: %s")
-            :format(self.name, table.concat(missing_deps, ", ")),
-            module_name
-        )
-        self.enable = false
+            ("Disabling %s because the following package(s) are not installed: %s"):format(
+                self.name, table.concat(missing_deps, ", ")))
+        self.config.enable = false
         return
     end
-
-    if vim.fn.executable(self.lspconfig.cmd[1]) == 1 then
-        self:configure_client()
-        return
-    end
-
     if self.mason then
-        self:install(function (success)
-            if success then
-                self:configure_client()
-            end
+        self:install(function(success)
+            if success then self:configure_client() end
         end)
+    elseif vim.fn.executable(self.config.lspconfig.cmd[1]) == 1 then
+        self:configure_client()
     else
-        utils.warn(self.name .. " not installed, disabling", module_name)
-        self.enable = false
+        utils.warn(self.name .. " not installed, disabling")
+        self.config.enable = false
     end
 end
 
 --- Register autocmd for setting up LSP server upon entering a buffer of related filetype
 function M:register()
-    local augroup = vim.api.nvim_create_augroup("LSP-" .. self.name, {})
+    local group = vim.api.nvim_create_augroup("lsp_bootstrap_" .. self.name, {})
     vim.api.nvim_create_autocmd("FileType", {
         once = true,
-        pattern = table.concat(self.lspconfig.filetypes, ","),
-        callback = vim.schedule_wrap(function ()
-            self:setup()
-            vim.api.nvim_del_augroup_by_id(augroup)
-        end),
-        group = augroup,
+        pattern = self.config.lspconfig.filetypes or {},
+        callback = function() self:setup() end,
+        group = group,
     })
 end
 
---- Create a new instance
----@param config ServerConfig
----@return ServerConfig
-function M:new(config)
-    config = config or {}
-
-    if config.mason then
-        config.mason = Package:new(config.mason)
+function M:unload()
+    if self.attached_buffers then
+        for _, bufnr in ipairs(self.attached_buffers) do
+            keymap:unload(bufnr)
+        end
     end
+    if self.client then
+        self.client.stop()
+        self.client = nil
+    end
+    vim.api.nvim_clear_autocmds({ group = "lsp_bootstrap_" .. self.name })
 
-    setmetatable(config, self)
-    return config
+    require("lspconfig")[self.name] = nil
+end
+
+--- Create a new instance
+---@param name string
+---@param config ServerConfig?
+---@return Server?
+function M.new(name, config)
+    config = config or {}
+    if not M.validate(name, config) then return end
+    local ok, resp = pcall(require, "lspconfig.server_configurations." .. name)
+    if not ok then
+        utils.err(("Server with name %s does not exist in lspconfig"):format(
+            name))
+        return
+    end
+    config.lspconfig = vim.tbl_deep_extend("keep", config.lspconfig or {},
+        resp.default_config)
+    local server = { name = name, config = config }
+    if server.config.mason then
+        local pkg = MasonPackage.new(server.config.mason)
+        if pkg then server.mason = pkg end
+    end
+    return setmetatable(server, M)
 end
 
 return M
