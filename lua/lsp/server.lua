@@ -174,26 +174,6 @@ function M:on_attach(client, bufnr)
     vim.cmd.highlight({ "link LspReferenceRead Visual", bang = true })
     vim.cmd.highlight({ "link LspReferenceText Visual", bang = true })
     vim.cmd.highlight({ "link LspReferenceWrite Visual", bang = true })
-    -- vim.api.nvim_create_autocmd({ "CursorHold", "CursorHoldI", }, {
-    --     buffer = bufnr,
-    --     callback = vim.lsp.buf.document_highlight,
-    -- })
-    -- vim.api.nvim_create_autocmd({ "CursorMoved", "CursorMovedI" }, {
-    --     buffer = bufnr,
-    --     callback = vim.lsp.buf.clear_references,
-    -- })
-
-    -- Auto show signature on insert in function parameters
-    -- if client.server_capabilities.signatureHelpProvider then
-    --     local chars = client.server_capabilities.signatureHelpProvider
-    --         .triggerCharacters
-    --     if chars and #chars > 0 then
-    --         vim.api.nvim_create_autocmd("CursorHoldI", {
-    --             buffer = bufnr,
-    --             callback = vim.lsp.buf.signature_help,
-    --         })
-    --     end
-    -- end
 
     vim.opt.updatetime = 300
     require("lsp-inlayhints").on_attach(client, bufnr, false)
@@ -208,13 +188,16 @@ end
 --- Configure the LSP client
 function M:configure_client()
     local lspconfig = require("lspconfig")
+
     if self.config.root_patterns then
         self.config.lspconfig.root_dir =
             lspconfig.util.root_pattern(unpack(self.config.root_patterns))
     else
         self.config.lspconfig.root_dir = lspconfig.util.find_git_ancestor
     end
+
     local capabilities = vim.lsp.protocol.make_client_capabilities()
+
     local cmp_nvim_lsp = utils.try_require("cmp_nvim_lsp")
     if cmp_nvim_lsp then
         capabilities = vim.tbl_deep_extend("force", capabilities,

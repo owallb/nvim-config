@@ -84,20 +84,6 @@ local function setup()
                     fallback()
                 end
             end,
-            ["<C-b>"] = function(fallback)
-                if cmp.visible_docs() then
-                    cmp.scroll_docs(-4)
-                else
-                    fallback()
-                end
-            end,
-            ["<C-f>"] = function(fallback)
-                if cmp.visible_docs() then
-                    cmp.scroll_docs(4)
-                else
-                    fallback()
-                end
-            end,
         },
         sources = {
             { name = "nvim_lsp" },
