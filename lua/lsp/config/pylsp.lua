@@ -6,18 +6,19 @@ return {
     dependencies = {
         "python3",
     },
-    py_module_deps = {
-        "venv",
-    },
     mason = {
         name = "python-lsp-server",
         post_install = {
             {
                 command = "./venv/bin/pip",
+                -- command = "sh",
                 args = {
-                    "install",
-                    "python-lsp-black",
-                    "python-lsp-isort",
+                    -- "install",
+                    -- "python-lsp-black",
+                    -- "python-lsp-isort",
+                    "--version",
+                    -- "-c",
+                    -- "./venv/bin/pip --version",
                 },
             },
             -- {
