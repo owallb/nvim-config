@@ -77,18 +77,6 @@ local plugins = {
         event = "VimEnter",
     },
     {
-        "mfussenegger/nvim-dap",
-        config = require("plugins.dap").setup,
-    },
-    {
-        "rcarriga/nvim-dap-ui",
-        config = require("plugins.dap_ui"),
-        dependencies = {
-            "mfussenegger/nvim-dap",
-            "nvim-neotest/nvim-nio",
-        },
-    },
-    {
         "tpope/vim-fugitive",
         config = require("plugins.fugitive"),
         lazy = true,
