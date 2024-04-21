@@ -47,6 +47,7 @@ return {
         local utils = require("utils")
         local lspkind = utils.try_require("lspkind")
 
+        ---@type cmp.ConfigSchema
         local opts = {
             preselect = cmp.PreselectMode.None,
             completion = {
@@ -77,11 +78,25 @@ return {
             },
 
             mapping = {
-                ["<S-tab>"] = cmp.mapping.select_prev_item({
-                    behavior = cmp.SelectBehavior.Insert,
+                ["<Tab>"] = cmp.mapping.select_next_item({
+                    behavior = cmp.SelectBehavior.Select,
                 }),
-                ["<tab>"] = cmp.mapping.select_next_item({
-                    behavior = cmp.SelectBehavior.Insert,
+                ["<S-tab>"] = cmp.mapping.select_prev_item({
+                    behavior = cmp.SelectBehavior.Select,
+                }),
+                ["<C-n>"] = cmp.mapping.select_next_item({
+                    behavior = cmp.SelectBehavior.Select,
+                }),
+                ["<C-p>"] = cmp.mapping.select_prev_item({
+                    behavior = cmp.SelectBehavior.Select,
+                }),
+                ["<CR>"] = cmp.mapping.confirm({
+                    select = true,
+                    behavior = cmp.ConfirmBehavior.Replace,
+                }),
+                ["<C-y>"] = cmp.mapping.confirm({
+                    select = true,
+                    behavior = cmp.ConfirmBehavior.Replace,
                 }),
                 ["<C-x><C-o>"] = cmp.mapping.complete(),
                 ["<C-l>"] = function(fallback)
