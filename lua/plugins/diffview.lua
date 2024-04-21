@@ -7,7 +7,7 @@ return {
         "nvim-tree/nvim-web-devicons",
     },
     keys = {
-        { "<leader>gg", vim.cmd.DiffviewOpen, mode = "n", remap = true },
+        { "<leader>gg", vim.cmd.DiffviewOpen, mode = "n" },
     },
     config = function()
         local actions = require("diffview.actions")
