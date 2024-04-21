@@ -25,7 +25,7 @@ local function get_server_config(name)
 end
 
 local reload_server_config = utils.debounce_with_id(function(name, events)
-    utils.debug(("Reloading server %s"):format(name))
+    utils.info(("Reloading server with new config"):format(name), name)
     ---@type Server?
     local server = servers[name]
 
@@ -61,7 +61,6 @@ local reload_server_config = utils.debounce_with_id(function(name, events)
 end, 100)
 
 local function process_change(error, filename, events)
-    utils.debug(("Got event: %s, %s, %s"):format(filename, vim.inspect(events), error))
     if error then
         utils.err(("Error on change for %s:\n%s"):format(filename, error), "lsp.on_config_change")
         return

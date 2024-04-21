@@ -241,7 +241,6 @@ function M:configure_client()
     end
     self.manager = lspconfig[self.name].manager
     for _, bufnr in ipairs(self:get_ft_buffers()) do
-        utils.debug(("Trying to attach buffer %d"):format(bufnr))
         self.manager:try_add_wrapper(bufnr)
     end
 end
