@@ -1,7 +1,9 @@
 -- https://github.com/j-hui/fidget.nvim
 
-local function setup()
-    require("fidget").setup()
-end
-
-return setup
+---@type LazyPluginSpec
+return {
+    "j-hui/fidget.nvim",
+    tag = "legacy",
+    event = "LspAttach",
+    config = true,
+}

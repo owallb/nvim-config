@@ -1,7 +1,8 @@
 -- https://github.com/lvimuser/lsp-inlayhints.nvim
 
-local function setup()
-    require("lsp-inlayhints").setup()
-end
-
-return setup
+---@type LazyPluginSpec
+return {
+    "lvimuser/lsp-inlayhints.nvim",
+    branch = "anticonceal",
+    config = true,
+}

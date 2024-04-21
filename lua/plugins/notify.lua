@@ -1,20 +1,16 @@
 -- https://github.com/rcarriga/nvim-notify
 
-local function setup()
-    local has_telescope, telescope = pcall(require, "telescope")
-
-    local notify = require("notify")
-    notify.setup({
+---@type LazyPluginSpec
+return {
+    "rcarriga/nvim-notify",
+    priority = 900,
+    lazy = false,
+    opts = {
         render = "default",
         stages = "static",
-    })
-
-    vim.notify = notify
-
-    if has_telescope then
-        telescope.load_extension("notify")
-        vim.keymap.set("n", "<leader>fn", telescope.extensions.notify.notify)
-    end
-end
-
-return setup
+    },
+    config = function(_, opts)
+        vim.notify = require("notify")
+        vim.notify.setup(opts)
+    end,
+}

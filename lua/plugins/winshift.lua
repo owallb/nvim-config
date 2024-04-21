@@ -1,11 +1,10 @@
 -- https://github.com/sindrets/winshift.nvim
 
-local function setup()
-    vim.keymap.set(
-        "n",
-        "<C-W>m",
-        vim.cmd.WinShift
-    )
-end
-
-return setup
+---@type LazyPluginSpec
+return {
+    "sindrets/winshift.nvim",
+    lazy = true,
+    keys = {
+        { "<C-W>m", vim.cmd.WinShift, mode = "n" },
+    },
+}

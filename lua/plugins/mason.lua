@@ -1,7 +1,9 @@
 -- https://github.com/williamboman/mason.nvim
 
-local function setup()
-    require("mason").setup()
-end
-
-return setup
+---@type LazyPluginSpec
+return {
+    "williamboman/mason.nvim",
+    lazy = true,
+    event = "VimEnter",
+    config = true,
+}

@@ -1,4 +1,4 @@
-local module_name = "core"
+vim.loader.enable()
 
 local utils = require("utils")
 
@@ -15,8 +15,8 @@ for _, file in ipairs(files) do
     local pkg = "core." .. file
     local ok, err = pcall(require, pkg)
     if not ok then
-        utils.err("Error while loading package " .. pkg, module_name)
-        utils.err(err, module_name)
+        utils.err("Error while loading package " .. pkg)
+        utils.err(err)
         return
     end
 end
@@ -26,15 +26,26 @@ if vim.g.vscode then
 else
     local ok, err = pcall(require, "bootstrap")
     if not ok then
-        utils.err("Error during bootstrap", module_name)
-        utils.err(err:gsub("\t", "  "), module_name)
+        utils.err("Error during bootstrap")
+        utils.err(err:gsub("\t", "  "))
         return
     end
 
-    ok, err = pcall(require, "plugins")
-    if not ok then
-        utils.err("Error while loading plugins", module_name)
-        utils.err(err:gsub("\t", "  "), module_name)
-        return
-    end
+    ---@type LazyPluginSpec[]
+    local plugins = {
+        {
+            "neovim/nvim-lspconfig",
+            config = require("lsp").setup,
+        },
+        { import = "plugins" },
+    }
+
+    ---@type LazyConfig
+    local opts = {
+        install = {
+            colorscheme = { "moonfly" },
+        },
+    }
+
+    require("lazy").setup(plugins, opts)
 end

@@ -1,9 +1,13 @@
 -- https://github.com/nvim-orgmode/orgmode
 
-local function setup()
-    local orgmode = require("orgmode")
-    orgmode.setup({
-        org_agenda_files = { "~/Documents/org/**/*", },
+---@type LazyPluginSpec
+return {
+    "nvim-orgmode/orgmode",
+    dependencies = {
+        "nvim-treesitter/nvim-treesitter",
+    },
+    opts = {
+        org_agenda_files = { "~/Documents/org/**/*" },
         org_default_notes_file = "~/Documents/org/notes.org",
         org_todo_keywords = {
             "TODO(t)",
@@ -28,7 +32,5 @@ local function setup()
         org_agenda_skip_scheduled_if_done = true,
         org_agenda_skip_deadline_if_done = true,
 
-    })
-end
-
-return setup
+    },
+}

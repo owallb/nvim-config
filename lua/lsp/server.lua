@@ -183,6 +183,11 @@ function M:on_attach(client, bufnr)
         { border = "single" })
     vim.lsp.handlers["textDocument/signatureHelp"] =
         vim.lsp.with(vim.lsp.handlers.signature_help, { border = "single" })
+
+    ---@alias lsp.Client vim.lsp.Client
+    -- require("lsp_compl").attach(client, bufnr, {
+    --     server_side_fuzzy_completion = true,
+    -- })
 end
 
 --- Configure the LSP client
@@ -203,6 +208,22 @@ function M:configure_client()
         capabilities = vim.tbl_deep_extend("force", capabilities,
             cmp_nvim_lsp.default_capabilities())
     end
+
+    -- local epo = utils.try_require("epo")
+    -- if epo then
+    --     capabilities = vim.tbl_deep_extend(
+    --         "force",
+    --         capabilities,
+    --         epo.register_cap()
+    --     )
+    -- end
+
+    -- local lsp_compl = utils.try_require("lsp_compl")
+    -- if lsp_compl then
+    --     capabilities = vim.tbl_deep_extend("force", capabilities, lsp_compl.capabilities())
+    -- end
+    --
+
     self.config.lspconfig.capabilities = capabilities
     self.config.lspconfig.on_attach = function(client, bufnr)
         local ok, ret = pcall(self.on_attach, self, client, bufnr)

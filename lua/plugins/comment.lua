@@ -1,12 +1,12 @@
 -- https://github.com/numToStr/Comment.nvim
 
-local function setup()
-    require("Comment").setup(
-        {
-            --ignore empty lines
-            ignore = "^$",
-        }
-    )
-end
-
-return setup
+---@type LazyPluginSpec
+return {
+    "numToStr/Comment.nvim",
+    lazy = true,
+    event = "VimEnter",
+    opts = {
+        --ignore empty lines
+        ignore = "^$",
+    },
+}

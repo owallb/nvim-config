@@ -1,9 +1,19 @@
 -- https://github.com/is0n/fm-nvim
 
-local function setup()
-    local fm = require("fm-nvim")
-
-    fm.setup({
+---@type LazyPluginSpec
+return {
+    "is0n/fm-nvim",
+    keys = {
+        {
+            "<leader>fe",
+            function()
+                local file = vim.fn.expand("%:p")
+                if file ~= "" then vim.cmd.Lf(file) else vim.cmd.Lf() end
+            end,
+            mode = "n",
+        },
+    },
+    opts = {
         -- UI Options
         ui = {
             float = {
@@ -16,20 +26,5 @@ local function setup()
         cmds = {
             nnn_cmd = "n",
         },
-    })
-
-    vim.keymap.set(
-        "n",
-        "<leader>fe",
-        function()
-            local file = vim.fn.expand("%:p")
-            if file ~= "" then
-                vim.cmd.Lf(file)
-            else
-                vim.cmd.Lf()
-            end
-        end
-    )
-end
-
-return setup
+    },
+}
