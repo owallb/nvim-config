@@ -6,6 +6,14 @@ vim.api.nvim_create_autocmd("FileType", {
     end,
 })
 
+vim.api.nvim_create_autocmd("FileType", {
+    desc = "Fix parsing compile errors into quickfixlist",
+    pattern = "zig",
+    callback = function()
+        vim.bo.errorformat = '%f:%l:%c: %t%.%#: %m,%-G%.%#'
+    end,
+})
+
 vim.api.nvim_create_autocmd({ "BufReadPost" }, {
     desc = "Return cursor to last position when re-opening a buffer",
     pattern = "*",
