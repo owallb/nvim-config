@@ -7,10 +7,10 @@ local function has_words_before()
     local line, col = unpack(vim.api.nvim_win_get_cursor(0))
     return col ~= 0
         and vim.api
-               .nvim_buf_get_lines(0, line - 1, line, true)[1]
-               :sub(col, col)
-               :match(word_pattern)
-        ~= nil
+                .nvim_buf_get_lines(0, line - 1, line, true)[1]
+                :sub(col, col)
+                :match(word_pattern)
+            ~= nil
 end
 
 local function has_words_after()
@@ -18,10 +18,10 @@ local function has_words_after()
     local line, col = unpack(vim.api.nvim_win_get_cursor(0))
     return col ~= 0
         and vim.api
-               .nvim_buf_get_lines(0, line - 1, line, true)[1]
-               :sub(col + 1, col + 1)
-               :match(word_pattern)
-        ~= nil
+                .nvim_buf_get_lines(0, line - 1, line, true)[1]
+                :sub(col + 1, col + 1)
+                :match(word_pattern)
+            ~= nil
 end
 
 ---@type LazyPluginSpec
@@ -39,6 +39,7 @@ return {
             end,
             build = (require("utils").os_name ~= "Windows_NT" and "make install_jsregexp" or nil),
             version = "2.*",
+            dependencies = { "rafamadriz/friendly-snippets" },
         },
     },
     config = function()
@@ -49,7 +50,10 @@ return {
 
         ---@type cmp.ConfigSchema
         local opts = {
-            preselect = cmp.PreselectMode.None,
+            -- enabled = function()
+            --     return has_words_before()
+            -- end,
+            preselect = 'None',
             completion = {
                 autocomplete = { "InsertEnter", "TextChanged" },
                 keyword_length = 1,
@@ -67,7 +71,7 @@ return {
                             maxwidth = 50,
                             ellipsis_char = "...",
                             before = function(_, item)
-                                item.dup = 0  -- remove duplicates, see nvim-cmp #511
+                                item.dup = 0 -- remove duplicates, see nvim-cmp #511
                                 return item
                             end,
                         })(entry, vim_item)
@@ -78,30 +82,48 @@ return {
             },
 
             mapping = {
-                ["<Tab>"] = cmp.mapping.select_next_item({
-                    behavior = cmp.SelectBehavior.Select,
-                }),
-                ["<S-tab>"] = cmp.mapping.select_prev_item({
-                    behavior = cmp.SelectBehavior.Select,
-                }),
+                ["<tab>"] = cmp.mapping(function(fallback)
+                    if cmp.visible() then
+                        cmp.select_next_item({
+                            behavior = cmp.SelectBehavior.Select,
+                        })
+                    else
+                        fallback()
+                    end
+                end),
+                ["<S-tab>"] = cmp.mapping(function(fallback)
+                    if cmp.visible() then
+                        cmp.select_prev_item({
+                            behavior = cmp.SelectBehavior.Select,
+                        })
+                    else
+                        fallback()
+                    end
+                end),
                 ["<C-n>"] = cmp.mapping.select_next_item({
                     behavior = cmp.SelectBehavior.Select,
                 }),
                 ["<C-p>"] = cmp.mapping.select_prev_item({
                     behavior = cmp.SelectBehavior.Select,
                 }),
-                ["<CR>"] = cmp.mapping.confirm({
-                    select = true,
-                    behavior = cmp.ConfirmBehavior.Replace,
-                }),
+                ["<CR>"] = cmp.mapping(function(fallback)
+                    if cmp.visible() and cmp.get_active_entry() then
+                        cmp.confirm({
+                            select = false,
+                            behavior = cmp.ConfirmBehavior.Replace,
+                        })
+                    else
+                        fallback()
+                    end
+                end),
                 ["<C-y>"] = cmp.mapping.confirm({
                     select = true,
                     behavior = cmp.ConfirmBehavior.Replace,
                 }),
                 ["<C-x><C-o>"] = cmp.mapping.complete(),
                 ["<C-l>"] = function(fallback)
-                    if luasnip.expand_or_locally_jumpable() then
-                        luasnip.expand_or_jump()
+                    if luasnip.locally_jumpable(1) then
+                        luasnip.jump(1)
                     else
                         fallback()
                     end
@@ -116,13 +138,13 @@ return {
             },
             sources = {
                 { name = "nvim_lsp" },
-                -- { name = "luasnip", },
+                { name = "luasnip" },
                 { name = "orgmode" },
                 { name = "path" },
             },
         }
 
-        if utils.try_require("moonfly") then
+        if utils.has_module("moonfly") then
             local winhighlight = {
                 winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder,CursorLine:PmenuSel",
             }
