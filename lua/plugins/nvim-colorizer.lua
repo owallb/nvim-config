@@ -5,12 +5,14 @@ return {
     "NvChad/nvim-colorizer.lua",
     opts = {
         user_default_options = {
+            names = false,
+            RGB = false,
+            RRGGBB = true,
             RRGGBBAA = true,
             AARRGGBB = true,
-            css = true,
+            rgb_fn = true,
+            hsl_fn = true,
             mode = "virtualtext",
-            tailwind = true,
-            sass = { enable = true },
         },
     },
 }
