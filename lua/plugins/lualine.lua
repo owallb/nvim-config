@@ -27,7 +27,7 @@ return {
                 lualine_c = {
                     { "filename",                    path = 1 },
                     { "diff" },
-                    { "diagnostics",                 sources = { "nvim_lsp" } },
+                    { "diagnostics",                 sources = { "nvim_diagnostic" } },
                     { require("grapple").statusline, cond = require("grapple").exists },
                 },
                 lualine_x = {
