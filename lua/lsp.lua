@@ -26,11 +26,11 @@ end
 
 local reload_server_config = utils.debounce_with_id(function(name, events)
     utils.info(("Reloading server with new config"):format(name), name)
-    ---@type Server?
+    ---@type Server|nil
     local server = servers[name]
 
     if server and server.config.enable then
-        server:unload()
+        server:deinit()
         servers[name] = nil
     end
 
@@ -54,11 +54,11 @@ local reload_server_config = utils.debounce_with_id(function(name, events)
     if #server:get_ft_buffers() ~= 0 then
         server:setup()
     else
-        server:register()
+        server:init()
     end
 
     servers[name] = server
-end, 100)
+end, 1000)
 
 local function process_change(error, filename, events)
     if error then
@@ -103,12 +103,7 @@ local function load_configs()
         ::continue::
     end
 
-    vim.uv.fs_event_start(
-        vim.uv.new_fs_event(),
-        CONFIG_DIR,
-        {},
-        vim.schedule_wrap(process_change)
-    )
+    vim.uv.fs_event_start(vim.uv.new_fs_event(), CONFIG_DIR, {}, vim.schedule_wrap(process_change))
 end
 
 --- Setup diagnostics UI
@@ -148,7 +143,7 @@ function M.setup()
 
     for _, server in pairs(servers) do
         if server.config.enable then
-            server:register()
+            server:init()
         end
     end
 end

@@ -21,22 +21,22 @@ M.new = {}
 
 --- Load LSP keybinds
 ---@param server Server
-function M:load(server, bufnr)
+function M:init(server, bufnr)
     self.old[bufnr] = {}
     for _, mode in ipairs(MODE_TYPES) do
         vim.tbl_extend("error", self.old[bufnr], vim.api.nvim_buf_get_keymap(bufnr, mode))
     end
 
     self.new[bufnr] = {
-        { mode = { "n" },      lhs = "<leader>df", rhs = vim.diagnostic.open_float },
-        { mode = { "n" },      lhs = "[d",         rhs = vim.diagnostic.goto_prev },
-        { mode = { "n" },      lhs = "]d",         rhs = vim.diagnostic.goto_next },
-        { mode = { "n" },      lhs = "gD",         rhs = vim.lsp.buf.declaration },
-        { mode = { "n", "i" }, lhs = "<C-k>",      rhs = vim.lsp.buf.hover },
-        { mode = { "n", "i" }, lhs = "<C-j>",      rhs = vim.lsp.buf.signature_help },
-        { mode = { "n", "i" }, lhs = "<C-h>",      rhs = vim.lsp.buf.document_highlight },
-        { mode = { "n" },      lhs = "<leader>lr", rhs = server.ca_rename },
-        { mode = { "n" },      lhs = "<leader>la", rhs = vim.lsp.buf.code_action },
+        { mode = { "n" }, lhs = "<leader>df", rhs = vim.diagnostic.open_float },
+        { mode = { "n" }, lhs = "[d", rhs = vim.diagnostic.goto_prev },
+        { mode = { "n" }, lhs = "]d", rhs = vim.diagnostic.goto_next },
+        { mode = { "n" }, lhs = "gD", rhs = vim.lsp.buf.declaration },
+        { mode = { "n", "i" }, lhs = "<C-k>", rhs = vim.lsp.buf.hover },
+        { mode = { "n", "i" }, lhs = "<C-j>", rhs = vim.lsp.buf.signature_help },
+        { mode = { "n", "i" }, lhs = "<C-h>", rhs = vim.lsp.buf.document_highlight },
+        { mode = { "n" }, lhs = "<leader>lr", rhs = server.ca_rename },
+        { mode = { "n" }, lhs = "<leader>la", rhs = vim.lsp.buf.code_action },
         { mode = { "n", "x" }, lhs = "<leader>lf", rhs = vim.lsp.buf.format },
         {
             mode = { "n", "i" },
@@ -57,17 +57,17 @@ function M:load(server, bufnr)
         vim.list_extend(self.new[bufnr], {
             { mode = "n", lhs = "<leader>dl", rhs = telescope.diagnostics },
             { mode = "n", lhs = "<leader>lD", rhs = telescope.lsp_type_definitions },
-            { mode = "n", lhs = "gd",         rhs = telescope.lsp_definitions },
-            { mode = "n", lhs = "gi",         rhs = telescope.lsp_implementations },
-            { mode = "n", lhs = "gr",         rhs = telescope.lsp_references },
+            { mode = "n", lhs = "gd", rhs = telescope.lsp_definitions },
+            { mode = "n", lhs = "gi", rhs = telescope.lsp_implementations },
+            { mode = "n", lhs = "gr", rhs = telescope.lsp_references },
         })
     else
         vim.list_extend(self.new[bufnr], {
             { mode = "n", lhs = "<leader>dl", rhs = vim.diagnostic.setloclist },
             { mode = "n", lhs = "<leader>ld", rhs = vim.lsp.buf.type_definition },
-            { mode = "n", lhs = "gd",         rhs = vim.lsp.buf.definition },
-            { mode = "n", lhs = "gi",         rhs = vim.lsp.buf.implementation },
-            { mode = "n", lhs = "gr",         rhs = vim.lsp.buf.references },
+            { mode = "n", lhs = "gd", rhs = vim.lsp.buf.definition },
+            { mode = "n", lhs = "gi", rhs = vim.lsp.buf.implementation },
+            { mode = "n", lhs = "gr", rhs = vim.lsp.buf.references },
         })
     end
 
@@ -81,7 +81,7 @@ function M:load(server, bufnr)
     end
 end
 
-function M:unload(bufnr)
+function M:deinit(bufnr)
     if self.new[bufnr] then
         for _, keymap in ipairs(self.new[bufnr]) do
             -- pcall to avoid error if keymap was already removed,

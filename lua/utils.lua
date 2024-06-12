@@ -4,7 +4,7 @@ M.os_name = vim.uv.os_uname().sysname
 
 --- Get the module path of a file
 ---@param file string
----@return string?
+---@return string|nil
 local function get_module_path(file)
     for _, rtp in ipairs(vim.api.nvim_list_runtime_paths()) do
         if file:sub(1, #rtp) == rtp then
@@ -21,13 +21,13 @@ end
 
 --- Send a notification
 ---@param msg string Message to send
----@param title string? Title of notification
+---@param title? string Title of notification
 ---@param level integer Log level
 local function notify(msg, title, level)
     if not title then
         local info = debug.getinfo(3)
         local file = info.source
-            and (info.source:sub(1, 1) == "@" and info.source:sub(2) or info.source)
+                and (info.source:sub(1, 1) == "@" and info.source:sub(2) or info.source)
             or nil
         local module = file and (get_module_path(file) or file) or nil
         title = module and module .. (info.name and info.name ~= "" and ":" .. info.name or "")
@@ -97,28 +97,28 @@ end
 
 --- Send a debug notification
 ---@param msg string Message to send
----@param title string? Title of notification
+---@param title? string Title of notification
 function M.debug(msg, title)
     notify(msg, title, vim.log.levels.DEBUG)
 end
 
 --- Send an info notification
 ---@param msg string Message to send
----@param title string? Title of notification
+---@param title? string Title of notification
 function M.info(msg, title)
     notify(msg, title, vim.log.levels.INFO)
 end
 
 --- Send a warning notification
 ---@param msg string Message to send
----@param title string? Title of notification
+---@param title? string Title of notification
 function M.warn(msg, title)
     notify(msg, title, vim.log.levels.WARN)
 end
 
 --- Send an error notification
 ---@param msg string Message to send
----@param title string? Title of notification
+---@param title? string Title of notification
 function M.err(msg, title)
     notify(msg, title, vim.log.levels.ERROR)
 end
@@ -136,21 +136,29 @@ function M.try_require(module)
     M.err(("Failed to load module %s:\n%s"):format(module, resp))
 end
 
+--- Checks if it is possible to require a module
+---@param module string
+---@return boolean
+function M.has_module(module)
+    local has_module, _ = pcall(require, module)
+    return has_module
+end
+
 ---@class FormatOptions
 ---@field cmd string[] Command to run. The following keywords get replaces by the specified values:
 ---                    * %file%         - path to the current file
+---                    * %filename%     - name of the current file
 ---                    * %row_start%    - first row of selection
 ---                    * %row_end%      - last row of selection
 ---                    * %col_start%    - first column position of selection
 ---                    * %col_end%      - last column position of selection
 ---                    * %byte_start%   - byte count of first cell in selection
 ---                    * %byte_end%     - byte count of last cell in selection
----@field stdin boolean? Pass text to stdin. False by default.
----@field stdout boolean? Use stdout as the result. False by default.
----@field stderr boolean? Use stderr as the result. False by default.
----@field in_place boolean? The file is formatted in-place by `cmd`. False by default.
----@field auto_indent boolean? Perform auto indent on formatted range. False by default.
----@field selection boolean? Only format the currently selected lines. False by default.
+---@field stdin? boolean Pass text to stdin. Assumes in-place formatting on False. False by default.
+---@field stdout? boolean Use stdout as the result. False by default.
+---@field stderr? boolean Use stderr as the result. False by default.
+---@field auto_indent? boolean Perform auto indent on formatted range. False by default.
+---@field only_selection? boolean Only send the selected lines to `stdin`. False by default.
 
 --- Format buffer
 ---@param opts FormatOptions
@@ -160,23 +168,20 @@ function M.format(opts)
         stdin = opts.stdin or false,
         stdout = opts.stdout or false,
         stderr = opts.stderr or false,
-        in_place = opts.in_place or false,
         auto_indent = opts.auto_indent or false,
-        selection = opts.selection or false,
+        only_selection = opts.only_selection or false,
     }
 
-    if not opts.in_place and not opts.stdout and not opts.stderr then
-        M.err("One of `in_place`, `stdout` or `stderr` must be true.")
+    if opts.stdin and not (opts.stdout or opts.stderr) then
+        M.err("`stdin` requires that one of `stdout` or `stderr` is set")
         return
-    elseif opts.in_place and (opts.selection or opts.stdin or opts.stdout or opts.stderr) then
-        M.err(
-            "`in_place` is not valid together with any of "
-            .. "`selection`, `stdin`, `stdout` or `stderr`"
-        )
+    elseif (opts.only_selection or opts.stdout or opts.stderr) and not opts.stdin then
+        M.err("`stdout`, `stderr` and `only_selection` requires `stdin` to be set")
         return
     end
 
     local file = vim.fn.expand("%")
+    local filename = vim.fn.expand("%:t")
     local mode = vim.fn.mode()
     local is_visual = mode == "v" or mode == "V" or mode == ""
 
@@ -199,18 +204,19 @@ function M.format(opts)
     end
 
     local input
-    if opts.selection then
+    if opts.only_selection then
         input = vim.api.nvim_buf_get_lines(0, row_start - 1, row_end, false)
-    else
+    elseif opts.stdin then
         input = vim.api.nvim_buf_get_lines(0, 0, -1, false)
     end
 
-    if opts.in_place then
+    if not opts.stdin then
         vim.api.nvim_buf_call(0, vim.cmd.write)
     end
 
     for i, arg in ipairs(opts.cmd) do
         arg = arg:gsub("%%file%%", file)
+        arg = arg:gsub("%%filename%%", filename)
         if is_visual then
             arg = arg:gsub("%%row_start%%", row_start)
             arg = arg:gsub("%%row_end%%", row_end)
@@ -222,58 +228,100 @@ function M.format(opts)
         opts.cmd[i] = arg
     end
 
-    vim.system(
-        opts.cmd,
-        {
-            stdin = opts.stdin and input or nil,
-        },
-        vim.schedule_wrap(function(out)
-            if out.code ~= 0 or out.signal ~= 0 then
-                local err = out.stderr or ""
-                M.err(("Failed to format:\n%s"):format(err))
-                return
+    local stdout, stderr, err
+    local resp = vim.system(opts.cmd, {
+        stdin = opts.stdin and input or nil,
+        stdout = opts.stdout and function(e, data)
+            if data then
+                stdout = stdout and stdout .. data or data
             end
 
-            if opts.in_place then
-                vim.api.nvim_buf_call(0, vim.cmd.edit)
+            if e then
+                err = err and err .. e or e
+            end
+        end,
+        stderr = opts.stderr and function(e, data)
+            if data then
+                stderr = stderr and stderr .. data or data
+            end
+
+            if e then
+                err = err and err .. e or e
+            end
+        end,
+    }):wait()
+
+    if err then
+        M.err("Error during formatting:\n%s" .. err)
+        return
+    end
+
+    if resp.code ~= 0 or resp.signal ~= 0 then
+        M.err(("Failed to format:\n%s"):format(stderr or ""))
+        return
+    end
+
+    if not opts.stdin then
+        vim.api.nvim_buf_call(0, vim.cmd.edit)
+    else
+        local output
+        if opts.stdout then
+            output = stdout or ""
+        end
+        if opts.stderr then
+            output = stderr or ""
+        end
+
+        output = output:gsub("\n$", "")
+        local output_lines = vim.fn.split(output, "\n", true)
+
+        if opts.only_selection then
+            vim.api.nvim_buf_set_lines(0, row_start - 1, row_end, false, output_lines)
+        else
+            vim.api.nvim_buf_set_lines(0, 0, -1, false, output_lines)
+        end
+
+        if opts.auto_indent then
+            if is_visual then
+                vim.api.nvim_command(
+                    ("%d,%dnormal! =="):format(row_start, row_start + #output_lines)
+                )
             else
-                local output
-                if opts.stdout then
-                    output = out.stdout or ""
-                end
-                if opts.stderr then
-                    output = out.stderr or ""
-                end
-
-                output = output:gsub("\n$", "")
-                local output_lines = vim.fn.split(output, "\n", true)
-
-                if opts.selection then
-                    vim.api.nvim_buf_set_lines(0, row_start - 1, row_end, false, output_lines)
-                else
-                    vim.api.nvim_buf_set_lines(0, 0, -1, false, output_lines)
-                end
-
-                if opts.auto_indent then
-                    if is_visual then
-                        vim.api.nvim_command(
-                            ("%d,%dnormal! =="):format(row_start, row_start + #output_lines)
-                        )
-                    else
-                        vim.api.nvim_command("normal! gg=G")
-                    end
-                end
+                vim.api.nvim_command("normal! gg=G")
             end
-        end)
-    )
+        end
+    end
 end
 
 --- Check if `val` is a list of type `t` (if given)
 ---@param val any
----@param t type?
+---@param kt type
+---@param vt type
+---@return boolean
+function M.is_map(val, kt, vt)
+    if type(val) ~= "table" then
+        return false
+    end
+
+    for k, v in pairs(val) do
+        if type(k) ~= kt then
+            return false
+        end
+
+        if type(v) ~= vt then
+            return false
+        end
+    end
+
+    return true
+end
+
+--- Check if `val` is a list of type `t` (if given)
+---@param val any
+---@param t? type
 ---@return boolean
 function M.is_list(val, t)
-    if type(val) ~= "table" then
+    if not vim.tbl_islist(val) then
         return false
     end
 
@@ -291,8 +339,8 @@ function M.is_list(val, t)
 end
 
 --- Check if `val` is a list of type `t` (if given), or nil
----@param val any?
----@param t type?
+---@param val? any
+---@param t? type
 ---@return boolean
 function M.is_list_or_nil(val, t)
     if val == nil then

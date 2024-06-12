@@ -1,100 +1,96 @@
 local utils = require("utils")
 
 ---@class PostInstallStep
----@field command string
----@field args string[]
+---@field cmd string[]
 
 ---@class MasonPackage
----@field dependencies MasonPackage[]?
+---@field dependencies? MasonPackage[]
 ---@field config MasonPackageConfig
 local M = {}
 M.__index = M
 
 ---@class MasonPackageConfig
----@field name string?
----@field version string?
----@field dependencies MasonPackageConfig[]?
----@field post_install PostInstallStep[]?
+---@field [1]? string
+---@field name? string
+---@field version? string
+---@field dependencies? string[]|MasonPackageConfig[]
+---@field post_install? PostInstallStep[]
 M.config = {}
 
 --- Validate MasonPackageConfig
----@param config MasonPackageConfig
+---@param config string|MasonPackageConfig
 ---@return boolean
 function M.validate(config)
     local ok, resp = pcall(vim.validate, { config = { config, { "table" } } })
-    if not ok then
-        goto check_resp
-    end
-
-    ok, resp = pcall(
-        vim.validate, {
-            name = { config.name, { "string" }, true },
+    if ok then
+        ok, resp = pcall(vim.validate, {
+            name = { config.name or config[1], { "string" }, true },
             version = { config.version, { "string" }, true },
             dependencies = {
-                config.dependencies, function(f)
-                if not f then
-                    return true
-                end
+                config.dependencies,
+                function(f)
+                    if not f then
+                        return true
+                    end
 
-                if not utils.is_list(f) then
-                    return false
-                end
-
-                for _, dep in ipairs(f) do
-                    if not M.validate(dep) then
+                    if utils.is_list(f, "string") then
+                        return true
+                    elseif not utils.is_list(f) then
                         return false
                     end
-                end
 
-                return true
-            end,
+                    for _, dep in ipairs(f) do
+                        if not M.validate(dep) then
+                            return false
+                        end
+                    end
+
+                    return true
+                end,
+                "list of dependencies",
             },
             post_install = {
-                config.post_install, function(field)
-                if not field then
-                    return true
-                end
-
-                if not utils.is_list(field) then
-                    return false
-                end
-
-                for _, step in ipairs(field) do
-                    local o, r = pcall(vim.validate, { step = { step, { "table" } } })
-                    if not ok then
-                        goto check_r
+                config.post_install,
+                function(field)
+                    if not field then
+                        return true
                     end
 
-                    o, r = pcall(
-                        vim.validate, {
-                            command = { step.command, { "string" } },
-                            args = {
-                                step.args, function(f)
-                                return utils.is_list_or_nil(f, "string")
-                            end, "list of strings or nil",
-                            },
-                        }
-                    )
-
-                    ::check_r::
-
-                    if not o then
-                        utils.err(("Invalid config for post_install step: %s"):format(r))
+                    if not utils.is_list(field) then
                         return false
                     end
 
+                    for _, step in ipairs(field) do
+                        local o, r = pcall(vim.validate, { step = { step, { "table" } } })
+                        if o then
+                            o, r = pcall(vim.validate, {
+                                cmd = {
+                                    step.cmd,
+                                    function(f)
+                                        return utils.is_list(f, "string")
+                                    end,
+                                    "list of strings or nil",
+                                },
+                            })
+                        end
+
+                        if not o then
+                            utils.err(("Invalid config for post_install step: %s"):format(r))
+                            return false
+                        end
+
+                        return true
+                    end
+
                     return true
-                end
-
-                return true
-            end,
+                end,
+                "list of steps",
             },
-        }
-    )
+        })
+    end
 
-    ::check_resp::
     if not ok then
-        utils.err(("Invalid config for %s:\n%s"):format(config.name, resp))
+        utils.err(("Invalid config for %s:\n%s"):format(config.name or config[1] or config, resp))
         return false
     end
 
@@ -107,52 +103,47 @@ function M:run_post_install(pkg)
     ---@param step PostInstallStep
     ---@param msg string
     local function log_err(step, msg)
-        local cmd = step.command
-
-        if step.args then
-            cmd = cmd .. " " .. table.concat(step.args, " ")
-        end
+        local cmd = table.concat(step.cmd, " ")
 
         utils.err(
             ("Post installation step for %s:\n`%s`\nfailed with:\n%s"):format(
-                self.config.name, cmd, msg
-            ), "lsp.package:run_post_install"
+                self.config.name,
+                cmd,
+                msg
+            ),
+            "lsp.package:run_post_install"
         )
     end
 
     if self.config.post_install then
-        utils.info("running post install")
         for _, step in ipairs(self.config.post_install) do
+            utils.info("running post install step")
             local cwd = pkg:get_install_path()
-            local command = step.command
+            local args = step.cmd
+            local prog = table.remove(args, 1)
 
-            if command:find("[/\\]") then
-                command = vim.fn.resolve(("%s/%s"):format(cwd, command))
+            if prog:find("[/\\]") then
+                prog = vim.fn.resolve(("%s/%s"):format(cwd, prog))
             end
 
-            if not utils.is_executable(command) then
+            if not utils.is_executable(prog) then
                 log_err(step, "command not executable")
                 return
             end
 
-            local job = require("plenary.job"):new(
-                {
-                    command = step.command,
-                    args = step.args,
-                    cwd = pkg:get_install_path(),
-                    enabled_recording = true,
-                    on_exit = function(job, code, signal)
-                        if code ~= 0 or signal ~= 0 then
-                            local cmd = command
-                            if step.args then
-                                cmd = cmd .. " " .. table.concat(step.args, " ")
-                            end
-
-                            log_err(step, table.concat(job:stderr_result(), "\n"))
-                        end
-                    end,
-                }
-            )
+            local job = require("plenary.job"):new({
+                command = prog,
+                args = args,
+                cwd = pkg:get_install_path(),
+                enabled_recording = true,
+                on_exit = vim.schedule_wrap(function(job, code, signal)
+                    if code ~= 0 or signal ~= 0 then
+                        log_err(step, table.concat(job:stderr_result(), "\n"))
+                        return
+                    end
+                    utils.info("post install step done")
+                end),
+            })
             job:start()
         end
     end
@@ -186,42 +177,40 @@ function M:mason_install(on_done)
 
     local err
     handle:on(
-        "stderr", vim.schedule_wrap(
-            function(msg)
-                err = (err or "") .. msg
-            end
-        )
+        "stderr",
+        vim.schedule_wrap(function(msg)
+            err = (err or "") .. msg
+        end)
     )
 
     handle:once(
-        "closed", vim.schedule_wrap(
-            function()
-                local is_installed = pkg:is_installed()
+        "closed",
+        vim.schedule_wrap(function()
+            local is_installed = pkg:is_installed()
 
-                if is_installed then
-                    utils.info(
-                        ("Successfully installed %s"):format(self.config.name),
-                        "lsp.package:mason_install"
-                    )
-                    self:run_post_install(pkg)
+            if is_installed then
+                utils.info(
+                    ("Successfully installed %s"):format(self.config.name),
+                    "lsp.package:mason_install"
+                )
+                self:run_post_install(pkg)
+            else
+                if err then
+                    err = ":\n" .. err
                 else
-                    if err then
-                        err = ":\n" .. err
-                    else
-                        err = ""
-                    end
-
-                    utils.err(
-                        ("Failed to install %s%s"):format(self.config.name, err),
-                        "lsp.package:mason_install"
-                    )
+                    err = ""
                 end
 
-                if on_done then
-                    on_done(is_installed)
-                end
+                utils.err(
+                    ("Failed to install %s%s"):format(self.config.name, err),
+                    "lsp.package:mason_install"
+                )
             end
-        )
+
+            if on_done then
+                on_done(is_installed)
+            end
+        end)
     )
 end
 
@@ -276,14 +265,18 @@ function M:install(on_done)
 end
 
 --- Create a new instance
----@param config MasonPackageConfig?
----@return MasonPackage?
+---@param config MasonPackageConfig|string
+---@return MasonPackage|nil
 function M.new(config)
-    config = config or {}
+    if type(config) == "string" then
+        config = { config }
+    end
 
     if not M.validate(config) then
         return
     end
+
+    config.name = config.name or config[1]
 
     local pkg = { config = config }
 

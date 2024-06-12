@@ -1,33 +1,44 @@
-local utils = require("utils")
 local keymap = require("lsp.keymap")
+local utils = require("utils")
+
+---@class Linter
+local Linter = require("lsp.linter")
+
 ---@class MasonPackage
 local MasonPackage = require("lsp.package")
+
 -- override type, seems to be incorrect in either lspconfig or vim.lsp
 ---@class lspconfig.Config
 ---@field root_dir function
 
 ---@class Server
----@field name string?
----@field mason MasonPackage?
----@field client vim.lsp.Client?
----@field attached_buffers number[]?
+---@field name? string
+---@field mason? MasonPackage
+---@field client? vim.lsp.Client
+---@field attached_buffers? number[]
 ---@field manager lspconfig.Manager
+---@field linters? Linter[]
 ---@field config ServerConfig
 local M = {}
+
 M.__index = M
+
 ---@class ServerConfig
----@field enable boolean?
----@field dependencies string[]?
----@field mason MasonPackageConfig?
----@field root_patterns string[]?
----@field keymaps Keymap[]?
----@field lspconfig lspconfig.Config?
+---@field enable? boolean
+---@field dependencies? string[]
+---@field mason? string|MasonPackageConfig
+---@field root_patterns? string[]
+---@field keymaps? Keymap[]
+---@field linters? LinterConfig[]
+---@field lspconfig? lspconfig.Config
 M.config = {}
+
 --- Validate ServerConfig
 ---@param config ServerConfig
 ---@return boolean
 function M.validate(name, config)
     local ok, resp = pcall(vim.validate, { config = { config, { "table" } } })
+
     if ok then
         ok, resp = pcall(vim.validate, {
             enable = { config.enable, { "boolean" }, true },
@@ -35,57 +46,69 @@ function M.validate(name, config)
                 config.dependencies,
                 function(f)
                     return utils.is_list_or_nil(f, "string")
-                end, "list of strings or nil",
+                end,
+                "list of strings or nil",
             },
-            mason = {
-                config.mason, function(f)
-                if f == nil then return true end
-                return MasonPackage.validate(f)
-            end,
-            },
+            mason = { config.mason, { "string", "table" }, true },
             root_patterns = {
                 config.root_patterns,
                 function(f)
                     return utils.is_list_or_nil(f, "string")
-                end, "list of strings or nil",
+                end,
+                "list of strings or nil",
             },
             keymaps = {
-                config.keymaps, function(f)
-                if not f then return true end
-                if not utils.is_list(f, "table") then
-                    return false
-                end
-                for _, key in ipairs(f) do
-                    local o, r = pcall(vim.validate, {
-                        mode = { key.mode, { "s", "t" } },
-                        lhs = { key.lhs, "s" },
-                        rhs = { key.rhs, { "s", "f" } },
-                        opts = { key.opts, "t", true },
-                    })
-                    if not o then
-                        utils.err(("Invalid keymap:\n%s"):format(r))
+                config.keymaps,
+                function(f)
+                    if not f then
+                        return true
+                    end
+
+                    if not utils.is_list(f, "table") then
                         return false
                     end
-                end
-                return true
-            end, "list of keymaps",
+
+                    for _, key in ipairs(f) do
+                        local o, r = pcall(vim.validate, {
+                            mode = { key.mode, { "s", "t" } },
+                            lhs = { key.lhs, "s" },
+                            rhs = { key.rhs, { "s", "f" } },
+                            opts = { key.opts, "t", true },
+                        })
+
+                        if not o then
+                            utils.err(("Invalid keymap:\n%s"):format(r))
+                            return false
+                        end
+                    end
+
+                    return true
+                end,
+                "list of keymaps",
             },
             lspconfig = { config.lspconfig, { "table" }, true },
         })
     end
+
     if not ok then
         utils.err(("Invalid config for %s:\n%s"):format(name, resp))
         return false
     end
+
     return true
 end
 
 --- Rename Code Action
 function M.ca_rename()
     local ts_utils = utils.try_require("nvim-treesitter.ts_utils")
-    if not ts_utils then return end
+    if not ts_utils then
+        return
+    end
     local identifier_types = {
-        "IDENTIFIER", "identifier", "variable_name", "word",
+        "IDENTIFIER",
+        "identifier",
+        "variable_name",
+        "word",
     }
     local node = ts_utils.get_node_at_cursor()
     if not node or not vim.list_contains(identifier_types, node:type()) then
@@ -98,8 +121,7 @@ function M.ca_rename()
     local buf = vim.api.nvim_create_buf(false, true)
     local min_width = 10
     local max_width = 50
-    local default_width = math.min(max_width, math.max(min_width,
-        vim.str_utfindex(old) + 1))
+    local default_width = math.min(max_width, math.max(min_width, vim.str_utfindex(old) + 1))
     local row, col, _, _ = node:range()
     local win = vim.api.nvim_open_win(buf, true, {
         relative = "win",
@@ -116,22 +138,20 @@ function M.ca_rename()
     })
     vim.api.nvim_buf_set_lines(buf, 0, -1, false, { old })
 
-    vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI", "TextChangedP" },
-        {
-            buffer = buf,
-            callback = function()
-                local win_width = vim.api.nvim_win_get_width(win)
-                local content = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
-                if #content > 0 then
-                    local cwidth = vim.str_utfindex(content[1] or "") + 1
-                    local new_width = math.min(max_width,
-                        math.max(min_width, cwidth))
-                    if new_width ~= win_width then
-                        vim.api.nvim_win_set_width(win, new_width)
-                    end
+    vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI", "TextChangedP" }, {
+        buffer = buf,
+        callback = function()
+            local win_width = vim.api.nvim_win_get_width(win)
+            local content = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+            if #content > 0 then
+                local cwidth = vim.str_utfindex(content[1] or "") + 1
+                local new_width = math.min(max_width, math.max(min_width, cwidth))
+                if new_width ~= win_width then
+                    vim.api.nvim_win_set_width(win, new_width)
                 end
-            end,
-        })
+            end
+        end,
+    })
 
     vim.keymap.set({ "n", "i", "x" }, "<cr>", function()
         local content = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
@@ -146,15 +166,14 @@ function M.ca_rename()
         vim.api.nvim_win_close(win, true)
         vim.cmd.stopinsert()
     end, { buffer = buf })
-    vim.keymap.set({ "n", "x" }, "<esc>",
-        function() vim.api.nvim_win_close(win, true) end,
-        { buffer = buf })
-    vim.keymap.set({ "n", "x" }, "q",
-        function() vim.api.nvim_win_close(win, true) end,
-        { buffer = buf })
+    vim.keymap.set({ "n", "x" }, "<esc>", function()
+        vim.api.nvim_win_close(win, true)
+    end, { buffer = buf })
+    vim.keymap.set({ "n", "x" }, "q", function()
+        vim.api.nvim_win_close(win, true)
+    end, { buffer = buf })
 
-    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("^v$<C-g>", true,
-        false, true), "n", true)
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("^v$<C-g>", true, false, true), "n", true)
 end
 
 --- Called when language server attaches
@@ -168,7 +187,12 @@ function M:on_attach(client, bufnr)
     self.attached_buffers = self.attached_buffers or {}
     table.insert(self.attached_buffers, bufnr)
 
-    keymap:load(self, bufnr)
+    keymap:init(self, bufnr)
+    if self.linters then
+        for _, linter in ipairs(self.linters) do
+            linter:init(bufnr)
+        end
+    end
 
     -- For document highlight
     vim.cmd.highlight({ "link LspReferenceRead Visual", bang = true })
@@ -178,9 +202,8 @@ function M:on_attach(client, bufnr)
     vim.opt.updatetime = 300
     require("lsp-inlayhints").on_attach(client, bufnr, false)
 
-    vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
-        vim.lsp.handlers.hover,
-        { border = "single" })
+    vim.lsp.handlers["textDocument/hover"] =
+        vim.lsp.with(vim.lsp.handlers.hover, { border = "single" })
     vim.lsp.handlers["textDocument/signatureHelp"] =
         vim.lsp.with(vim.lsp.handlers.signature_help, { border = "single" })
 
@@ -205,8 +228,8 @@ function M:configure_client()
 
     local cmp_nvim_lsp = utils.try_require("cmp_nvim_lsp")
     if cmp_nvim_lsp then
-        capabilities = vim.tbl_deep_extend("force", capabilities,
-            cmp_nvim_lsp.default_capabilities())
+        capabilities =
+            vim.tbl_deep_extend("force", capabilities, cmp_nvim_lsp.default_capabilities())
     end
 
     -- local epo = utils.try_require("epo")
@@ -230,18 +253,30 @@ function M:configure_client()
         if not ok then
             utils.err(
                 ("Failed to load on_attach for %s:\n%s"):format(self.name, ret),
-                "lsp.server:configure_client")
+                "lsp.server:configure_client"
+            )
         end
     end
+
     local ok, ret = pcall(lspconfig[self.name].setup, self.config.lspconfig)
     if not ok then
-        utils.err(("Failed to setup LSP server %s with lspconfig: %s"):format(
-            self.name, ret))
+        utils.err(("Failed to setup LSP server %s with lspconfig: %s"):format(self.name, ret))
         return
     end
+
     self.manager = lspconfig[self.name].manager
     for _, bufnr in ipairs(self:get_ft_buffers()) do
         self.manager:try_add_wrapper(bufnr)
+    end
+
+    if self.config.linters then
+        self.linters = {}
+        for i, config in ipairs(self.config.linters) do
+            local linter = Linter.new(("%s_linter%d"):format(self.name, i), config)
+            if linter then
+                table.insert(self.linters, linter)
+            end
+        end
     end
 end
 
@@ -278,8 +313,12 @@ function M:install(on_done)
     --- Handle install result
     ---@param success boolean
     local function handle_result(success)
-        if not success then self.config.enable = false end
-        if on_done then on_done(success) end
+        if not success then
+            self.config.enable = false
+        end
+        if on_done then
+            on_done(success)
+        end
     end
 
     self.mason:install(handle_result)
@@ -291,13 +330,18 @@ function M:setup()
     if #missing_deps > 0 then
         utils.warn(
             ("Disabling %s because the following package(s) are not installed: %s"):format(
-                self.name, table.concat(missing_deps, ", ")))
+                self.name,
+                table.concat(missing_deps, ", ")
+            )
+        )
         self.config.enable = false
         return
     end
     if self.mason then
         self:install(function(success)
-            if success then self:configure_client() end
+            if success then
+                self:configure_client()
+            end
         end)
     elseif vim.fn.executable(self.config.lspconfig.cmd[1]) == 1 then
         self:configure_client()
@@ -307,51 +351,65 @@ function M:setup()
     end
 end
 
---- Register autocmd for setting up LSP server upon entering a buffer of related filetype
-function M:register()
+--- Load autocmd for setting up LSP server upon entering a buffer of related filetype
+function M:init()
     local group = vim.api.nvim_create_augroup("lsp_bootstrap_" .. self.name, {})
     vim.api.nvim_create_autocmd("FileType", {
         once = true,
         pattern = self.config.lspconfig.filetypes or {},
-        callback = function() self:setup() end,
+        callback = function()
+            self:setup()
+        end,
         group = group,
     })
 end
 
-function M:unload()
+function M:deinit()
     if self.attached_buffers then
         for _, bufnr in ipairs(self.attached_buffers) do
-            keymap:unload(bufnr)
+            keymap:deinit(bufnr)
         end
     end
+
     if self.client then
         self.client.stop()
         self.client = nil
     end
+
     vim.api.nvim_clear_autocmds({ group = "lsp_bootstrap_" .. self.name })
+
+    if self.linters then
+        for _, linter in ipairs(self.linters) do
+            linter:deinit()
+        end
+
+        self.linters = nil
+    end
 
     require("lspconfig")[self.name] = nil
 end
 
 --- Create a new instance
 ---@param name string
----@param config ServerConfig?
----@return Server?
+---@param config? ServerConfig
+---@return Server|nil
 function M.new(name, config)
     config = config or {}
-    if not M.validate(name, config) then return end
-    local ok, resp = pcall(require, "lspconfig.server_configurations." .. name)
-    if not ok then
-        utils.err(("Server with name %s does not exist in lspconfig"):format(
-            name))
+    if not M.validate(name, config) then
         return
     end
-    config.lspconfig = vim.tbl_deep_extend("keep", config.lspconfig or {},
-        resp.default_config)
+    local ok, resp = pcall(require, "lspconfig.server_configurations." .. name)
+    if not ok then
+        utils.err(("Server with name %s does not exist in lspconfig"):format(name))
+        return
+    end
+    config.lspconfig = vim.tbl_deep_extend("keep", config.lspconfig or {}, resp.default_config)
     local server = { name = name, config = config }
     if server.config.mason then
         local pkg = MasonPackage.new(server.config.mason)
-        if pkg then server.mason = pkg end
+        if pkg then
+            server.mason = pkg
+        end
     end
     return setmetatable(server, M)
 end
