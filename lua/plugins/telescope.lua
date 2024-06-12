@@ -36,6 +36,9 @@ return {
                 buffers = {
                     initial_mode = "normal",
                     mappings = {
+                        n = {
+                            ["<C-d>"] = actions.delete_buffer + actions.move_to_top,
+                        },
                         i = {
                             ["<C-d>"] = actions.delete_buffer + actions.move_to_top,
                         },
