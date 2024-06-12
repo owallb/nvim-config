@@ -1,3 +1,5 @@
+local utils = require("utils")
+
 return {
     enable = true,
     dependencies = {
@@ -7,6 +9,20 @@ return {
         name = "bash-language-server",
         dependencies = {
             { name = "shellcheck", },
+            { name = "shfmt", },
+        },
+    },
+    keymaps = {
+        {
+            mode = "n",
+            lhs = "<leader>lf",
+            rhs = function()
+                utils.format({
+                    cmd = { "shfmt", "-s", "-i", "4", "-" },
+                    stdin = true,
+                    stdout = true,
+                })
+            end,
         },
     },
     lspconfig = {

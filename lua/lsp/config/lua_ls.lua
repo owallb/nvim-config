@@ -1,39 +1,74 @@
 -- spec: https://luals.github.io/wiki/settings/
+local utils = require("utils")
 
 ---@type ServerConfig
 return {
     enable = true,
+    dependencies = { "cargo" },
     mason = {
-        name = "lua-language-server",
-        -- version = "",
+        "lua-language-server",
+        post_install = { { cmd = { "cargo", "install", "stylua", "--features", "lua54" } } },
+    },
+    keymaps = {
+        {
+            mode = "n",
+            lhs = "<leader>lf",
+            rhs = function()
+                utils.format({
+                    cmd = { "stylua", "-" },
+                    stdin = true,
+                    stdout = true,
+                })
+            end,
+        },
+        {
+            mode = "x",
+            lhs = "<leader>lf",
+            rhs = function()
+                utils.format({
+                    cmd = {
+                        "stylua",
+                        "-",
+                        "--range-start",
+                        "%byte_start%",
+                        "--range-end",
+                        "%byte_end%",
+                    },
+                    stdin = true,
+                    stdout = true,
+                })
+            end,
+        },
     },
     lspconfig = {
-        filetypes = {
-            "lua",
-        },
-        cmd = { "lua-language-server", },
+        filetypes = { "lua" },
+        cmd = { "lua-language-server" },
         single_file_support = true,
         settings = {
             Lua = {
-                completion = {
-                    showWord = "Disable",
-                },
+                completion = { showWord = "Disable" },
                 diagnostics = {
-                    disable = { "missing-fields", },
+                    -- disable = { "missing-fields" },
                 },
                 runtime = {
                     version = "LuaJIT",
                     path = {
-                        "lua/?.lua",
-                        "lua/?/init.lua",
-                        "?/lua/?.lua",
-                        "?/lua/?/init.lua",
+                        -- "?.lua",
+                        "?.lua",
+                        "?/init.lua",
+                        -- "?.lua",
+                        -- "lua/?.lua",
+                        -- "lua/?/init.lua",
+                        -- "?/lua/?.lua",
+                        -- "?/lua/?/init.lua",
                     },
+                    -- pathStrict = true,
                 },
                 workspace = {
                     library = {
                         vim.env.VIMRUNTIME,
-                        "/usr/share/lua/5.3",
+                        "~/repos/awesome-code-doc",
+                        "/usr/share/awesome/lib",
                         vim.fn.stdpath("data") .. "/lazy",
                     },
                     checkThirdParty = false,
@@ -47,7 +82,7 @@ return {
                     semicolon = "Disable",
                     setType = true,
                 },
-                telemetry = { enable = false, },
+                telemetry = { enable = false },
             },
         },
     },

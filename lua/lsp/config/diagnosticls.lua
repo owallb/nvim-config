@@ -5,7 +5,7 @@
 -- https://github.com/iamcco/coc-diagnostic/blob/master/src/config.ts
 
 return {
-    enable = true,
+    enable = false,
     dependencies = {
         "npm",
     },

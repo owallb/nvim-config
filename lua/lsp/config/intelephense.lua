@@ -12,15 +12,12 @@ return {
         "composer.lock",
         "vendor",
     },
-    mason = {
-        name = "intelephense",
-        -- version = "",
-    },
+    mason = "intelephense",
     lspconfig = {
         filetypes = {
             "php",
         },
-        cmd = { "intelephense", "--stdio", },
+        cmd = { "intelephense", "--stdio" },
         single_file_support = true,
         settings = {
             intelephense = {
