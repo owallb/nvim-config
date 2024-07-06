@@ -15,13 +15,12 @@
 ]]
 
 return {
-    enable = false,
+    enable = true,
     dependencies = {
         "java",
     },
     mason = {
-        name = "groovy-language-server",
-        -- version = "",
+        "groovy-language-server",
     },
     lspconfig = {
         filetypes = {
