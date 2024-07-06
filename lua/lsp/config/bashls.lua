@@ -6,10 +6,10 @@ return {
         "npm",
     },
     mason = {
-        name = "bash-language-server",
+        "bash-language-server",
         dependencies = {
-            { name = "shellcheck", },
-            { name = "shfmt", },
+            { "shellcheck" },
+            { "shfmt" },
         },
     },
     keymaps = {
@@ -31,7 +31,7 @@ return {
             "bash",
             "zsh",
         },
-        cmd = { "bash-language-server", "start", },
+        cmd = { "bash-language-server", "start" },
         single_file_support = true,
     },
 }
