@@ -4,6 +4,7 @@ local utils = require("utils")
 return {
     enable = true,
     mason = { "pyright" },
+    dependencies = { "black", "flake8", "isort" },
     linters = {
         {
             cmd = {
@@ -88,6 +89,7 @@ return {
                     autoSearchPaths = true,
                     diagnosticMode = "openFilesOnly",
                     useLibraryCodeForTypes = true,
+                    typeCheckingMode = "off",
                 },
             },
         },
