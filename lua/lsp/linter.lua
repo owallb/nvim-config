@@ -80,7 +80,8 @@ function M:run(bufnr)
         input = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
     end
 
-    vim.system(
+    local ok, resp = pcall(
+        vim.system,
         self.config.cmd,
         { stdin = input },
         vim.schedule_wrap(function(out)
@@ -105,16 +106,18 @@ function M:run(bufnr)
                 if not ok then
                     utils.err(tostring(resp))
                     return
-                elseif not resp then
-                    utils.err(("Failed to parse linter output:\n%s"):format(line))
+                elseif resp then
+                    resp.source = self.config.source
+                    table.insert(diagnostics, resp)
                 end
-
-                resp.source = self.config.source
-                table.insert(diagnostics, resp)
             end
             vim.diagnostic.set(self.namespace, bufnr, diagnostics)
         end)
     )
+
+    if not ok then
+        utils.err(("Failed to run %s:\n%s"):format(self.config.cmd[1], resp))
+    end
 end
 
 function M:init(bufnr)

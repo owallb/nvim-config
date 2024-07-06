@@ -190,7 +190,12 @@ function M:on_attach(client, bufnr)
     keymap:init(self, bufnr)
     if self.linters then
         for _, linter in ipairs(self.linters) do
-            linter:init(bufnr)
+            local bin = linter.config.cmd[1]
+            if utils.is_executable(bin) then
+                linter:init(bufnr)
+            else
+                utils.warn(("Not adding %s because it is not installed"):format(bin))
+            end
         end
     end
 
