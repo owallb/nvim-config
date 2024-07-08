@@ -56,6 +56,10 @@ vim.keymap.set({ "n", "i", }, "<C-e>",
     { expr = true, }
 )
 
+-- Allow (de)indenting without deselecting
+vim.keymap.set({"x"}, "<", "<gv")
+vim.keymap.set({"x"}, ">", ">gv")
+
 -- Remove default mappings
 vim.keymap.set("", "<C-LeftMouse>", "")
 vim.keymap.set({ "n", }, "K", "")
