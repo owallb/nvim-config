@@ -1,13 +1,5 @@
 My Neovim config.
 
-If you are looking to get started with Neovim, I would instead recommend one of these projects:
-- [kickstart.nvim](https://github.com/nvim-lua/kickstart.nvim)
-- [LunarVim](https://www.lunarvim.org/)
-- [NvChad](https://nvchad.com/)
-- [LazyVim](https://www.lazyvim.org/)
-- [AstroNvim](https://astronvim.com/)
-
-
 # System Requirements
 Only supports Linux, macOS and other BSD variants.
 These are the general requirements to get started:
@@ -18,13 +10,6 @@ These are the general requirements to get started:
 - curl or wget
 - unzip
 - gzip
-
-If you are coming from a previous neovim configuration, it's probably also a
-good idea to delete your neovim data directory. To check where it is you can
-run:
-```sh
-nvim --headless --clean -c 'echo stdpath("data") .. "\n"|q'
-```
 
 ## Optional
 
