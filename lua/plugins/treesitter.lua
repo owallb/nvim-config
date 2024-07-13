@@ -9,11 +9,11 @@ return {
         event = "VimEnter",
         opts = {
             ensure_installed = {
-                "c",       -- recommended default
-                "lua",     -- recommended default
-                "vim",     -- recommended default
-                "vimdoc",  -- recommended default
-                "query",   -- recommended default
+                "c", -- recommended default
+                "lua", -- recommended default
+                "vim", -- recommended default
+                "vimdoc", -- recommended default
+                "query", -- recommended default
                 "luadoc",
                 "phpdoc",
                 "org",
@@ -46,12 +46,5 @@ return {
             -- uncomment the line below:
             -- vim.highlight.priorities.semantic_tokens = 99
         end,
-    },
-    {
-        "nvim-treesitter/nvim-treesitter-context",
-        opts = {
-            max_lines = 1,
-            min_window_height = 10,
-        },
     },
 }
