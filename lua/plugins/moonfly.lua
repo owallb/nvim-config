@@ -10,6 +10,7 @@ return {
         vim.g.moonflyNormalFloat = true
         vim.g.moonflyCursorColor = true
         vim.g.moonflyWinSeparator = 2
+        vim.g.moonflyVirtualTextColor = true
     end,
     config = function()
         vim.cmd.colorscheme("moonfly")
