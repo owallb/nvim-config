@@ -5,16 +5,13 @@ return {
     "nvim-lualine/lualine.nvim",
     lazy = true,
     event = "VimEnter",
-    dependencies = {
-        "nvim-tree/nvim-web-devicons",
-    },
     config = function()
         local custom_moonfly = require("lualine.themes.moonfly")
         custom_moonfly.normal.c.bg = require("moonfly").palette.bg
 
         require("lualine").setup({
             options = {
-                icons_enabled = true,
+                icons_enabled = false,
                 theme = custom_moonfly,
                 component_separators = { left = "", right = "" },
                 section_separators = { left = "", right = "" },

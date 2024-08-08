@@ -3,9 +3,6 @@
 ---@type LazyPluginSpec
 return {
     "sindrets/diffview.nvim",
-    dependencies = {
-        "nvim-tree/nvim-web-devicons",
-    },
     keys = {
         { "<leader>gg", vim.cmd.DiffviewOpen, mode = "n" },
     },
@@ -13,6 +10,12 @@ return {
         local actions = require("diffview.actions")
         require("diffview").setup({
             enhanced_diff_hl = true,
+            use_icons = false,
+            signs = {
+                fold_closed = "+ ",
+                fold_open = "- ",
+                done = "",
+            },
             view = {
                 default = {
                     layout = "diff2_horizontal",
