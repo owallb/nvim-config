@@ -155,7 +155,7 @@ function M:mason_install(on_done)
     local registry = require("mason-registry")
     local ok, pkg = pcall(registry.get_package, self.config.name)
     if not ok then
-        utils.err("Could not locate package " .. self.config.name)
+        utils.err(pkg)
 
         if on_done then
             on_done(false)
@@ -217,14 +217,6 @@ end
 --- Install package dependencies
 ---@param on_done fun(success: boolean)?
 function M:install_dependencies(on_done)
-    if not self.dependencies or #self.dependencies == 0 then
-        if on_done then
-            on_done(true)
-        end
-
-        return
-    end
-
     local total = #self.dependencies
     local completed = 0
     local all_successful = true
@@ -261,7 +253,13 @@ function M:install(on_done)
         end
     end
 
-    self:install_dependencies(handle_result)
+    require("mason-registry").refresh(function()
+        if self.dependencies and #self.dependencies ~= 0 then
+            self:install_dependencies(handle_result)
+        else
+            self:mason_install(on_done)
+        end
+    end)
 end
 
 --- Create a new instance
