@@ -1,8 +1,8 @@
 local version = vim.version()
 
 if version.major == 0 then
-    if version.minor < 10 then
-        error("Neovim version 0.10 or above is required with this configuration.")
+    if version.minor < 11 then
+        error("Neovim version 0.11 or above is required with this configuration.")
     end
 end
 
