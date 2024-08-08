@@ -112,6 +112,15 @@ return {
                 builtin.buffers({ previewer = false, sort_mru = true })
             end
         )
+        vim.keymap.set(
+            "n",
+            "<leader>fd",
+            function()
+                builtin.diagnostics({
+                    bufnr = 0,
+                })
+            end
+        )
 
         telescope.load_extension("fzf")
         telescope.load_extension("notify")
