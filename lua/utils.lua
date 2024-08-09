@@ -321,7 +321,7 @@ end
 ---@param t? type
 ---@return boolean
 function M.is_list(val, t)
-    if not vim.tbl_islist(val) then
+    if not vim.islist(val) then
         return false
     end
 
