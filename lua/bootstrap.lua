@@ -11,17 +11,15 @@ local utils = require("utils")
 -- Install lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.uv.fs_stat(lazypath) then
-    if utils.os_name == "Windows_NT" then
-        utils.assert_any_installed({ "pwsh", "powershell", })
-        utils.assert_any_installed({ "7z", "peazip", "arc", "wzzip", "rar", })
-    else
-        utils.assert_any_installed({ "curl", "wget", })
-        utils.assert_installed("unzip")
-        utils.assert_installed("gzip")
-    end
-
     utils.assert_installed("git")
+    if not os.getenv("CC") then
+        utils.assert_installed("cc")
+    end
+    utils.assert_installed("make")
+    utils.assert_any_installed({ "curl", "wget", })
+    utils.assert_installed("unzip")
     utils.assert_installed("tar")
+    utils.assert_installed("gzip")
 
     local resp = vim.system({
         "git",
