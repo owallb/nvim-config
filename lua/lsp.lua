@@ -108,7 +108,6 @@ end
 
 --- Setup diagnostics UI
 local function setup_diagnostics()
-    -- https://github.com/neovim/nvim-lspconfig/wiki/UI-Customization#customizing-how-diagnostics-are-displayed
     vim.diagnostic.config({
         underline = true,
         signs = true,
@@ -130,11 +129,6 @@ local function setup_diagnostics()
         update_in_insert = false,
         severity_sort = false,
     })
-    local signs = { Error = "E", Warn = "W", Hint = "H", Info = "I" }
-    for type, icon in pairs(signs) do
-        local hl = "DiagnosticSign" .. type
-        vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-    end
 end
 
 function M.setup()
