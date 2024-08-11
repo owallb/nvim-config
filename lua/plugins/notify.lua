@@ -10,6 +10,7 @@ return {
         stages = "static",
     },
     config = function(_, opts)
+        ---@type notify
         vim.notify = require("notify")
         vim.notify.setup(opts)
     end,

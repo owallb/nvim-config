@@ -3,7 +3,6 @@
 ---@type LazyPluginSpec
 return {
     "simeji/winresizer",
-    lazy = true,
     keys = {
         { "<C-W>r", vim.cmd.WinResizerStartResize, mode = "n" },
     },

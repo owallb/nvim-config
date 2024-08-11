@@ -1,7 +1,6 @@
 ---@type LazyPluginSpec
 return {
     "wellle/context.vim",
-    lazy = true,
     event = "VimEnter",
     init = function()
         vim.g.context_enabled = true

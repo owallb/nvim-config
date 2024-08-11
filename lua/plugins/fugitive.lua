@@ -10,7 +10,6 @@ end
 ---@type LazyPluginSpec
 return {
     "tpope/vim-fugitive",
-    lazy = true,
     event = "VimEnter",
     ---@type LazyKeysSpec[]
     keys = {

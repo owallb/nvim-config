@@ -3,7 +3,6 @@
 ---@type LazyPluginSpec
 return {
     "nvim-telescope/telescope.nvim",
-    lazy = true,
     event = "VimEnter",
     dependencies = {
         "nvim-lua/plenary.nvim",

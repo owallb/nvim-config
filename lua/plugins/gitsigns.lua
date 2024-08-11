@@ -3,7 +3,6 @@
 ---@type LazyPluginSpec
 return {
     "lewis6991/gitsigns.nvim",
-    lazy = true,
     event = "VimEnter",
     opts = {
         on_attach = function(bufnr)

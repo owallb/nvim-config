@@ -3,7 +3,6 @@
 ---@type LazyPluginSpec
 return {
     "nvim-lualine/lualine.nvim",
-    lazy = true,
     event = "VimEnter",
     config = function()
         local custom_moonfly = require("lualine.themes.moonfly")
