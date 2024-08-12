@@ -211,7 +211,9 @@ function M.format(opts)
     end
 
     if not opts.stdin then
-        vim.api.nvim_buf_call(0, vim.cmd.write)
+        vim.api.nvim_buf_call(0, function()
+            vim.cmd("silent write")
+        end)
     end
 
     for i, arg in ipairs(opts.cmd) do
