@@ -17,6 +17,7 @@ return {
         {
             cmd = {
                 "phpcs",
+                "--standard=PSR12",
                 "--report=emacs",
                 "-s",
                 "-q",
