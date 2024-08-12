@@ -11,9 +11,13 @@ M.__index = M
 
 ---@alias Group
 ---| "lnum"
+---| "end_lnum"
 ---| "col"
+---| "end_col"
 ---| "severity"
 ---| "message"
+---| "source"
+---| "code"
 
 ---@class LinterConfig
 ---@field cmd string[]
@@ -107,7 +111,7 @@ function M:run(bufnr)
                     utils.err(tostring(resp))
                     return
                 elseif resp then
-                    resp.source = self.config.source
+                    resp.source = resp.source or self.config.source
                     table.insert(diagnostics, resp)
                 end
             end
