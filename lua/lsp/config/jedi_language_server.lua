@@ -44,8 +44,7 @@ return {
                         "--quiet",
                         "-",
                     },
-                    stdin = true,
-                    stdout = true,
+                    output = "stdout",
                 })
                 utils.format({
                     cmd = {
@@ -53,8 +52,7 @@ return {
                         "--quiet",
                         "-",
                     },
-                    stdin = true,
-                    stdout = true,
+                    output = "stdout",
                 })
             end,
         },
@@ -73,8 +71,7 @@ return {
                         "--line-ranges=%row_start%-%row_end%",
                         "-",
                     },
-                    stdin = true,
-                    stdout = true,
+                    output = "stdout",
                 })
             end,
         },

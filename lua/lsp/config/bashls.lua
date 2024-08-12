@@ -19,8 +19,7 @@ return {
             rhs = function()
                 utils.format({
                     cmd = { "shfmt", "-s", "-i", "4", "-" },
-                    stdin = true,
-                    stdout = true,
+                    output = "stdout",
                 })
             end,
         },

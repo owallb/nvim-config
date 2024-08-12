@@ -144,6 +144,10 @@ function M.has_module(module)
     return has_module
 end
 
+---@alias OutputStream
+---| '"stdout"'
+---| '"stderr"'
+
 ---@class FormatOptions
 ---@field cmd string[] Command to run. The following keywords get replaces by the specified values:
 ---                    * %file%         - path to the current file
@@ -154,8 +158,7 @@ end
 ---                    * %col_end%      - last column position of selection
 ---                    * %byte_start%   - byte count of first cell in selection
 ---                    * %byte_end%     - byte count of last cell in selection
----@field stdout? boolean Use stdout as the result. False by default.
----@field stderr? boolean Use stderr as the result. False by default.
+---@field output OutputStream What stream to use as the result. May be one of `stdout` or `stderr`.
 ---@field auto_indent? boolean Perform auto indent on formatted range. False by default.
 ---@field only_selection? boolean Only send the selected lines to `stdin`. False by default.
 
@@ -164,14 +167,13 @@ end
 function M.format(opts)
     opts = {
         cmd = opts.cmd,
-        stdout = opts.stdout or false,
-        stderr = opts.stderr or false,
+        output = opts.output,
         auto_indent = opts.auto_indent or false,
         only_selection = opts.only_selection or false,
     }
 
-    if not opts.stdout and not opts.stderr then
-        M.err("one of `stdout` or `stderr` must be set")
+    if opts.output ~= "stdout" and opts.output ~= "stderr" then
+        M.err("`output` must be set to either `stdout` or `stderr`.")
         return
     end
 
@@ -222,7 +224,7 @@ function M.format(opts)
     local stdout, stderr, err
     local resp = vim.system(opts.cmd, {
         stdin = input,
-        stdout = opts.stdout and function(e, data)
+        stdout = opts.output == "stdout" and function(e, data)
             if data then
                 stdout = stdout and stdout .. data or data
             end
@@ -231,7 +233,7 @@ function M.format(opts)
                 err = err and err .. e or e
             end
         end,
-        stderr = opts.stderr and function(e, data)
+        stderr = function(e, data)
             if data then
                 stderr = stderr and stderr .. data or data
             end
@@ -247,19 +249,24 @@ function M.format(opts)
         return
     end
 
-    if resp.code ~= 0 or resp.signal ~= 0 then
-        M.err(("Failed to format:\n%s"):format(stderr or ""))
+    if
+        resp.code ~= 0
+        or resp.signal ~= 0
+        or (opts.output ~= "stderr" and stderr)
+    then
+        local msg
+        if stdout then
+            msg = "\n" .. stdout
+        end
+        if stderr then
+            msg = "\n" .. stderr
+        end
+
+        M.err(("Failed to format:%s"):format(msg or ""))
         return
     end
 
-    local output
-    if opts.stdout then
-        output = stdout or ""
-    end
-    if opts.stderr then
-        output = stderr or ""
-    end
-
+    local output = opts.output == "stdout" and stdout or stderr or ""
     output = output:gsub("\n$", "")
     local output_lines = vim.fn.split(output, "\n", true)
 
@@ -271,9 +278,7 @@ function M.format(opts)
 
     if opts.auto_indent then
         if is_visual then
-            vim.api.nvim_command(
-                ("%d,%dnormal! =="):format(row_start, row_start + #output_lines)
-            )
+            vim.api.nvim_command(("%d,%dnormal! =="):format(row_start, row_start + #output_lines))
         else
             vim.api.nvim_command("normal! gg=G")
         end

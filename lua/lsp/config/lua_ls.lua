@@ -16,8 +16,7 @@ return {
             rhs = function()
                 utils.format({
                     cmd = { "stylua", "-" },
-                    stdin = true,
-                    stdout = true,
+                    output = "stdout",
                 })
             end,
         },
@@ -34,8 +33,7 @@ return {
                         "--range-end",
                         "%byte_end%",
                     },
-                    stdin = true,
-                    stdout = true,
+                    output = "stdout",
                 })
             end,
         },
