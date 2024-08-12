@@ -12,7 +12,27 @@ return {
         "composer.lock",
         "vendor",
     },
-    mason = "intelephense",
+    mason = { "intelephense", dependencies = { "phpcs" } },
+    linters = {
+        {
+            cmd = {
+                "phpcs",
+                "--report=emacs",
+                "-s",
+                "-q",
+                "-",
+            },
+            stdin = true,
+            stdout = true,
+            pattern = "^.+:(%d+):(%d+): (%w+) %- (.*) %((.*)%)$",
+            groups = { "lnum", "col", "severity", "message", "source" },
+            source = "phpcs",
+            severity_map = {
+                error = vim.diagnostic.severity.ERROR,
+                warning = vim.diagnostic.severity.WARN,
+            },
+        },
+    },
     lspconfig = {
         filetypes = {
             "php",
