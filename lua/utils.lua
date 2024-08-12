@@ -154,7 +154,6 @@ end
 ---                    * %col_end%      - last column position of selection
 ---                    * %byte_start%   - byte count of first cell in selection
 ---                    * %byte_end%     - byte count of last cell in selection
----@field stdin? boolean Pass text to stdin. Assumes in-place formatting on False. False by default.
 ---@field stdout? boolean Use stdout as the result. False by default.
 ---@field stderr? boolean Use stderr as the result. False by default.
 ---@field auto_indent? boolean Perform auto indent on formatted range. False by default.
@@ -165,18 +164,14 @@ end
 function M.format(opts)
     opts = {
         cmd = opts.cmd,
-        stdin = opts.stdin or false,
         stdout = opts.stdout or false,
         stderr = opts.stderr or false,
         auto_indent = opts.auto_indent or false,
         only_selection = opts.only_selection or false,
     }
 
-    if opts.stdin and not (opts.stdout or opts.stderr) then
-        M.err("`stdin` requires that one of `stdout` or `stderr` is set")
-        return
-    elseif (opts.only_selection or opts.stdout or opts.stderr) and not opts.stdin then
-        M.err("`stdout`, `stderr` and `only_selection` requires `stdin` to be set")
+    if not opts.stdout and not opts.stderr then
+        M.err("one of `stdout` or `stderr` must be set")
         return
     end
 
@@ -206,14 +201,8 @@ function M.format(opts)
     local input
     if opts.only_selection then
         input = vim.api.nvim_buf_get_lines(0, row_start - 1, row_end, false)
-    elseif opts.stdin then
+    else
         input = vim.api.nvim_buf_get_lines(0, 0, -1, false)
-    end
-
-    if not opts.stdin then
-        vim.api.nvim_buf_call(0, function()
-            vim.cmd("silent write")
-        end)
     end
 
     for i, arg in ipairs(opts.cmd) do
@@ -232,7 +221,7 @@ function M.format(opts)
 
     local stdout, stderr, err
     local resp = vim.system(opts.cmd, {
-        stdin = opts.stdin and input or nil,
+        stdin = input,
         stdout = opts.stdout and function(e, data)
             if data then
                 stdout = stdout and stdout .. data or data
@@ -263,34 +252,30 @@ function M.format(opts)
         return
     end
 
-    if not opts.stdin then
-        vim.api.nvim_buf_call(0, vim.cmd.edit)
+    local output
+    if opts.stdout then
+        output = stdout or ""
+    end
+    if opts.stderr then
+        output = stderr or ""
+    end
+
+    output = output:gsub("\n$", "")
+    local output_lines = vim.fn.split(output, "\n", true)
+
+    if opts.only_selection then
+        vim.api.nvim_buf_set_lines(0, row_start - 1, row_end, false, output_lines)
     else
-        local output
-        if opts.stdout then
-            output = stdout or ""
-        end
-        if opts.stderr then
-            output = stderr or ""
-        end
+        vim.api.nvim_buf_set_lines(0, 0, -1, false, output_lines)
+    end
 
-        output = output:gsub("\n$", "")
-        local output_lines = vim.fn.split(output, "\n", true)
-
-        if opts.only_selection then
-            vim.api.nvim_buf_set_lines(0, row_start - 1, row_end, false, output_lines)
+    if opts.auto_indent then
+        if is_visual then
+            vim.api.nvim_command(
+                ("%d,%dnormal! =="):format(row_start, row_start + #output_lines)
+            )
         else
-            vim.api.nvim_buf_set_lines(0, 0, -1, false, output_lines)
-        end
-
-        if opts.auto_indent then
-            if is_visual then
-                vim.api.nvim_command(
-                    ("%d,%dnormal! =="):format(row_start, row_start + #output_lines)
-                )
-            else
-                vim.api.nvim_command("normal! gg=G")
-            end
+            vim.api.nvim_command("normal! gg=G")
         end
     end
 end
