@@ -35,7 +35,7 @@ function M:init(server, bufnr)
         { mode = { "n", "i" }, lhs = "<C-k>", rhs = vim.lsp.buf.hover },
         { mode = { "n", "i" }, lhs = "<C-j>", rhs = vim.lsp.buf.signature_help },
         { mode = { "n", "i" }, lhs = "<C-h>", rhs = vim.lsp.buf.document_highlight },
-        { mode = { "n" }, lhs = "<leader>lr", rhs = server.ca_rename },
+        { mode = { "n" }, lhs = "<leader>lr", rhs = vim.lsp.buf.rename },
         { mode = { "n" }, lhs = "<leader>la", rhs = vim.lsp.buf.code_action },
         { mode = { "n", "x" }, lhs = "<leader>lf", rhs = vim.lsp.buf.format },
         {
