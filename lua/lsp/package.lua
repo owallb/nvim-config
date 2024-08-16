@@ -33,21 +33,19 @@ function M.validate(config)
                         return true
                     end
 
-                    if utils.is_list(f, "string") then
-                        return true
-                    elseif not utils.is_list(f) then
-                        return false
-                    end
-
                     for _, dep in ipairs(f) do
-                        if not M.validate(dep) then
+                        local t = type(dep)
+                        if
+                            (t ~= "string" and t ~= "table")
+                            or (type(dep) == "table" and not M.validate(dep))
+                        then
                             return false
                         end
                     end
 
                     return true
                 end,
-                "list of dependencies",
+                "list of string|MasonPackageConfig",
             },
             post_install = {
                 config.post_install,
