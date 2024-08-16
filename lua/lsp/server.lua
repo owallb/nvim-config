@@ -248,7 +248,7 @@ function M:install(on_done)
         end
     end
 
-    self.mason:install(handle_result)
+    self.mason:install_with_dependencies(handle_result)
 end
 
 --- Setup LSP server
