@@ -51,10 +51,16 @@ local reload_server_config = utils.debounce_with_id(function(name, events)
         return
     end
 
+    local on_done = function (success)
+        if success then
+            utils.info(("%s reloaded"):format(name))
+        end
+    end
+
     if #server:get_ft_buffers() ~= 0 then
-        server:setup()
+        server:setup(on_done)
     else
-        server:init()
+        server:init(on_done)
     end
 
     servers[name] = server

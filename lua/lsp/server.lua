@@ -252,7 +252,7 @@ function M:install(on_done)
 end
 
 --- Setup LSP server
-function M:setup()
+function M:setup(on_done)
     local missing_deps = self:get_missing_unmanaged_deps()
     if #missing_deps > 0 then
         utils.warn(
@@ -269,6 +269,10 @@ function M:setup()
             if success then
                 self:configure_client()
             end
+
+            if on_done then
+                on_done(success)
+            end
         end)
     elseif vim.fn.executable(self.config.lspconfig.cmd[1]) == 1 then
         self:configure_client()
@@ -279,13 +283,13 @@ function M:setup()
 end
 
 --- Load autocmd for setting up LSP server upon entering a buffer of related filetype
-function M:init()
+function M:init(on_done)
     local group = vim.api.nvim_create_augroup("lsp_bootstrap_" .. self.name, {})
     vim.api.nvim_create_autocmd("FileType", {
         once = true,
         pattern = self.config.lspconfig.filetypes or {},
         callback = function()
-            self:setup()
+            self:setup(on_done)
         end,
         group = group,
     })
