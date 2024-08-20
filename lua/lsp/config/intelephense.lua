@@ -2,6 +2,8 @@
 -- https://github.com/bmewburn/intelephense-docs/blob/master/installation.md
 -- https://github.com/bmewburn/vscode-intelephense/blob/master/package.json
 
+local utils = require("utils")
+
 return {
     enable = true,
     dependencies = {
@@ -12,7 +14,7 @@ return {
         "composer.lock",
         "vendor",
     },
-    mason = { "intelephense", dependencies = { "phpcs" } },
+    mason = { "intelephense", dependencies = { {"phpcs", "pretty-php" } },
     linters = {
         {
             cmd = {
@@ -34,6 +36,38 @@ return {
             },
         },
     },
+    keymaps = {
+        {
+            mode = "n",
+            lhs = "<leader>lf",
+            rhs = function()
+                utils.format({
+                    cmd = {
+                        "pretty-php",
+                        "--psr12",
+                        "-qq",
+                        "-",
+                    },
+                    output = "stdout",
+                })
+            end,
+        },
+        {
+            mode = "x",
+            lhs = "<leader>lf",
+            rhs = function()
+                utils.format({
+                    cmd = {
+                        "pretty-php",
+                        "--psr12",
+                        "-qq",
+                        "-",
+                    },
+                    output = "stdout",
+                })
+            end,
+        },
+    },
     lspconfig = {
         filetypes = {
             "php",
@@ -46,7 +80,7 @@ return {
                     phpVersion = "7.4",
                 },
                 format = {
-                    enable = true,
+                    enable = false,
                 },
             },
         },
