@@ -14,7 +14,7 @@ return {
         "composer.lock",
         "vendor",
     },
-    mason = { "intelephense", dependencies = { {"phpcs", "pretty-php" } },
+    mason = { "intelephense", dependencies = { {"phpcs", "pretty-php" } } },
     linters = {
         {
             cmd = {
