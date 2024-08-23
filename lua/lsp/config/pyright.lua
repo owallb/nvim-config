@@ -9,8 +9,8 @@ return {
         {
             cmd = {
                 "flake8",
-                "--max-line-length=100",
-                "--max-doc-length=100",
+                "--max-line-length=80",
+                "--max-doc-length=80",
                 "--format",
                 "%(row)d,%(col)d,%(code).1s: %(text)s",
                 "-",
@@ -38,7 +38,7 @@ return {
                     cmd = {
                         "black",
                         "--line-length",
-                        "100",
+                        "80",
                         "--stdin-filename",
                         "%filename%",
                         "--quiet",
@@ -64,7 +64,7 @@ return {
                     cmd = {
                         "black",
                         "--line-length",
-                        "100",
+                        "80",
                         "--stdin-filename",
                         "%filename%",
                         "--quiet",
