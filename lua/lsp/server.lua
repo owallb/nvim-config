@@ -7,10 +7,6 @@ local Linter = require("lsp.linter")
 ---@class MasonPackage
 local MasonPackage = require("lsp.package")
 
--- override type, seems to be incorrect in either lspconfig or vim.lsp
----@class lspconfig.Config
----@field root_dir function
-
 ---@class Server
 ---@field name? string
 ---@field mason? MasonPackage
