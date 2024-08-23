@@ -45,6 +45,7 @@ return {
                     cmd = {
                         "pretty-php",
                         "--psr12",
+                        "--enable=align-comments",
                         "-qq",
                         "-",
                     },
@@ -60,6 +61,7 @@ return {
                     cmd = {
                         "pretty-php",
                         "--psr12",
+                        "--enable=align-comments",
                         "-qq",
                         "-",
                     },
