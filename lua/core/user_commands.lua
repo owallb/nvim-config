@@ -20,3 +20,23 @@ end, {
     desc = "Update lazy plugins, treesitter parsers and mason language servers",
     force = false,
 })
+
+vim.api.nvim_create_user_command("Cmake", function(ctx)
+    local args = ctx.fargs
+    if vim.tbl_isempty(args) then
+        args = { "--build", "build" }
+    end
+
+    local mp = vim.o.makeprg
+    vim.o.makeprg = "cmake"
+    local ok, res = pcall(vim.cmd.make, { args = args, bang = ctx.bang })
+    vim.o.makeprg = mp
+
+    if not ok then
+        utils.err(res)
+    end
+end, {
+    desc = "Like :make, but for CMake",
+    force = false,
+    nargs = "*",
+})
