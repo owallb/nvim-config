@@ -1,8 +1,12 @@
+---@type ServerConfig
 return {
     enable = true,
-    mason = {
-        name = "clangd",
-        -- version = "",
+    keymaps = {
+        {
+            mode = "n",
+            lhs = "gs",
+            rhs = vim.cmd.ClangdSwitchSourceHeader,
+        },
     },
     lspconfig = {
         filetypes = {
