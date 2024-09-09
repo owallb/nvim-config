@@ -299,7 +299,7 @@ function M:deinit()
     end
 
     if self.client then
-        self.client.stop()
+        self.client.stop(true)
         self.client = nil
     end
 
