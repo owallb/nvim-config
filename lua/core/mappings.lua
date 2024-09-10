@@ -68,6 +68,32 @@ vim.keymap.set({ "n", }, "K", "")
 vim.cmd.aunmenu({ "PopUp.-1-", })
 vim.cmd.aunmenu({ "PopUp.How-to\\ disable\\ mouse", })
 
+-- Insert-mode Emacs bindings
+vim.keymap.set('i', '<C-f>', '<Right>')
+vim.keymap.set('i', '<C-b>', '<Left>')
+vim.keymap.set('i', '<C-a>', '<C-o>^')
+vim.keymap.set('i', '<C-e>', '<C-o>$')
+vim.keymap.set('i', '<C-k>', '<C-o>C')
+vim.keymap.set('i', '<C-d>', '<C-o>x')
+vim.keymap.set('i', '<M-f>', '<C-o>w')
+vim.keymap.set('i', '<M-b>', '<C-o>b')
+vim.keymap.set('i', '<M-d>', '<C-o>dw')
+vim.keymap.set('i', '<M-BS>', '<C-o>db')
+
+-- Command-mode Emacs bindings
+vim.keymap.set('c', '<C-f>', '<Right>')
+vim.keymap.set('c', '<C-b>', '<Left>')
+vim.keymap.set('c', '<C-a>', '<Home>')
+vim.keymap.set('c', '<C-e>', '<End>')
+-- vim.keymap.set('c', '<C-k>', '???')
+vim.keymap.set('c', '<C-d>', '<Delete>')
+vim.keymap.set('c', '<C-n>', '<Down>')
+vim.keymap.set('c', '<C-p>', '<Up>')
+vim.keymap.set('c', '<M-f>', '<C-Right>')
+vim.keymap.set('c', '<M-b>', '<C-Left>')
+vim.keymap.set('c', '<M-d>', '<C-Right><C-w>')
+vim.keymap.set('c', '<M-BS>', '<C-w>')
+
 -- Default bindings that are good to know:
 -- insert mode:
 --  <C-T>           - indent, see :h i_CTRL-T
