@@ -20,6 +20,16 @@ vim.api.nvim_create_autocmd({ "BufReadPost" }, {
     command = 'silent! normal! g`"zv',
 })
 
+vim.api.nvim_create_autocmd("FileType", {
+    desc = "Use two space indent for C/C++ files",
+    pattern = { "c", "cpp" },
+    callback = function()
+        vim.bo.tabstop = 2
+        vim.bo.softtabstop = 2
+        vim.bo.shiftwidth = 2
+    end,
+})
+
 local make_group = vim.api.nvim_create_augroup("make_diagnostics", {})
 local make_namespace = vim.api.nvim_create_namespace("make_diagnostics")
 -- Create diagnostics after running :make
