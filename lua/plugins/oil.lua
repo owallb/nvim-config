@@ -24,6 +24,7 @@ return {
         delete_to_trash = true,
         float = {
             padding = 10,
+            max_width = 80,
         },
         skip_confirm_for_simple_edits = true,
         watch_for_changes = false,
