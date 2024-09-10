@@ -40,5 +40,8 @@ return {
             show_hidden = true,
             natural_order = false,
         },
+        win_options = {
+            colorcolumn = "",
+        },
     },
 }
