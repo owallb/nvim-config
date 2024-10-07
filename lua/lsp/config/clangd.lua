@@ -1,6 +1,7 @@
 ---@type ServerConfig
 return {
     enable = true,
+    mason = { "clangd" },
     keymaps = {
         {
             mode = "n",
