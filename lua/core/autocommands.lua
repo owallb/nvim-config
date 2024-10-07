@@ -14,6 +14,18 @@ vim.api.nvim_create_autocmd("FileType", {
     end,
 })
 
+vim.api.nvim_create_autocmd("FileType", {
+    desc = "Setup python indent",
+    pattern = "python",
+    callback = function()
+        -- see :h ft-python-indent
+        vim.g.python_indent = {
+            open_paren = "shiftwidth()",
+            continue = "shiftwidth()",
+        }
+    end,
+})
+
 vim.api.nvim_create_autocmd({ "BufReadPost" }, {
     desc = "Return cursor to last position when re-opening a buffer",
     pattern = "*",
