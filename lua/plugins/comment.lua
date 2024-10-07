@@ -3,7 +3,7 @@
 ---@type LazyPluginSpec
 return {
     "numToStr/Comment.nvim",
-    event = "VimEnter",
+    event = "VeryLazy",
     opts = {
         --ignore empty lines
         ignore = "^$",

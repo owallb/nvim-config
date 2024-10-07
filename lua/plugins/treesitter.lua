@@ -4,7 +4,7 @@
 return {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
-    event = "VimEnter",
+    event = "VeryLazy",
     opts = {
         ensure_installed = {
             "c", -- recommended default

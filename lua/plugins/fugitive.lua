@@ -10,7 +10,7 @@ end
 ---@type LazyPluginSpec
 return {
     "tpope/vim-fugitive",
-    event = "VimEnter",
+    event = "VeryLazy",
     ---@type LazyKeysSpec[]
     keys = {
         { "<leader>gd", vim.cmd.Gdiffsplit,                         mode = "n" },

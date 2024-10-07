@@ -3,6 +3,6 @@
 ---@type LazyPluginSpec
 return {
     "williamboman/mason.nvim",
-    event = "VimEnter",
+    event = "VeryLazy",
     config = true,
 }
