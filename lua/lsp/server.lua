@@ -23,7 +23,6 @@ M.__index = M
 ---@field enable? boolean
 ---@field dependencies? string[]
 ---@field mason? string|MasonPackageConfig
----@field root_patterns? string[]
 ---@field keymaps? Keymap[]
 ---@field linters? LinterConfig[]
 ---@field lspconfig? lspconfig.Config
@@ -46,13 +45,6 @@ function M.validate(name, config)
                 "list of strings or nil",
             },
             mason = { config.mason, { "string", "table" }, true },
-            root_patterns = {
-                config.root_patterns,
-                function(f)
-                    return utils.is_list_or_nil(f, "string")
-                end,
-                "list of strings or nil",
-            },
             keymaps = {
                 config.keymaps,
                 function(f)
@@ -140,15 +132,7 @@ end
 function M:configure_client()
     local lspconfig = require("lspconfig")
 
-    if self.config.root_patterns then
-        self.config.lspconfig.root_dir =
-            lspconfig.util.root_pattern(unpack(self.config.root_patterns))
-    else
-        self.config.lspconfig.root_dir = lspconfig.util.find_git_ancestor
-    end
-
     local capabilities = vim.lsp.protocol.make_client_capabilities()
-
     local cmp_nvim_lsp = utils.try_require("cmp_nvim_lsp")
     if cmp_nvim_lsp then
         capabilities =

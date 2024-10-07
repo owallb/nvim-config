@@ -9,11 +9,6 @@ return {
     dependencies = {
         "npm",
     },
-    root_pattern = {
-        "composer.json",
-        "composer.lock",
-        "vendor",
-    },
     mason = { "intelephense", dependencies = { {"phpcs", "pretty-php" } } },
     linters = {
         {
