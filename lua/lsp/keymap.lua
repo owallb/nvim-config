@@ -39,6 +39,13 @@ function M:init(server, bufnr)
         { mode = { "n" }, lhs = "<leader>la", rhs = vim.lsp.buf.code_action },
         { mode = { "n", "x" }, lhs = "<leader>lf", rhs = vim.lsp.buf.format },
         {
+            mode = { "n" },
+            lhs = "<leader>ld",
+            rhs = function()
+                vim.diagnostic.enable(not vim.diagnostic.is_enabled())
+            end,
+        },
+        {
             mode = { "n", "i" },
             lhs = "<C-l>",
             rhs = function()
