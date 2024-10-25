@@ -1,4 +1,12 @@
 vim.api.nvim_create_autocmd("FileType", {
+    pattern = "help",
+    callback = function()
+        vim.wo.number = true
+        vim.wo.relativenumber = true
+    end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
     desc = "Use tabs for indents in Go files",
     pattern = "go",
     callback = function()
