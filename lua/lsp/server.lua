@@ -309,7 +309,7 @@ function M.new(name, config)
     if not M.validate(name, config) then
         return
     end
-    local ok, resp = pcall(require, "lspconfig.server_configurations." .. name)
+    local ok, resp = pcall(require, "lspconfig.configs." .. name)
     if not ok then
         utils.err(("Server with name %s does not exist in lspconfig"):format(name))
         return
