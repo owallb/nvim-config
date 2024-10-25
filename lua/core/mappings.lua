@@ -101,6 +101,12 @@ vim.keymap.set('c', '<M-BS>', '<C-w>')
 -- normal mode:
 --  <count?><C-E>   - scroll window down <count> lines, see :h CTRL-E
 --  <count?><C-Y>   - scroll window up <count> lines, see :h CTRL-Y
+--  <C-A>           - Increment
+--  <C-X>           - Decrement
+--  <C-w>H          - Move window to the left
+--  <C-w>J          - Move window down
+--  <C-w>K          - Move window up
+--  <C-w>L          - Move window to the right
 -- commands:
 --  :make           - execute makeprg with given args
 --  :copen          - open quickfix list
@@ -125,3 +131,4 @@ vim.keymap.set('c', '<M-BS>', '<C-w>')
 --    print(v)
 --  end
 --  EOF
+--  :diffsplit <other-file> - open diff split
