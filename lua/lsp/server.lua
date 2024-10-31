@@ -114,9 +114,6 @@ function M:on_attach(client, bufnr)
     vim.cmd.highlight({ "link LspReferenceText Visual", bang = true })
     vim.cmd.highlight({ "link LspReferenceWrite Visual", bang = true })
 
-    vim.opt.updatetime = 300
-    require("lsp-inlayhints").on_attach(client, bufnr, false)
-
     vim.lsp.handlers["textDocument/hover"] =
         vim.lsp.with(vim.lsp.handlers.hover, { border = "single" })
     vim.lsp.handlers["textDocument/signatureHelp"] =
