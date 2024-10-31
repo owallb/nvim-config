@@ -130,7 +130,7 @@ function _G._status_line_diagnostics()
     return table.concat(parts, " ")
 end
 
-vim.opt.statusline = " %f%4( %m%) %{%v:lua._status_line_git()%} %="
+vim.opt.statusline = " %{expand('%:.')}%4( %m%) %{%v:lua._status_line_git()%} %="
                      .. " %{%v:lua._status_line_diagnostics()%} "
                      .. " %{&filetype}  %-6.6{&fileencoding}"
                      .. " %-4.4{&fileformat} %4.4(%p%%%)%5.5l:%-3.3v"
