@@ -50,6 +50,14 @@ vim.api.nvim_create_autocmd("FileType", {
     end,
 })
 
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = { "netrw" },
+    callback = function()
+        vim.keymap.set("n", "<C-h>", "-", { buffer = true, remap = true })
+        vim.keymap.set("n", "<C-l>", "<CR>", { buffer = true, remap = true })
+    end,
+})
+
 local make_group = vim.api.nvim_create_augroup("make_diagnostics", {})
 local make_namespace = vim.api.nvim_create_namespace("make_diagnostics")
 -- Create diagnostics after running :make
