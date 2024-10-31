@@ -15,7 +15,6 @@ vim.opt.fillchars = {
 }
 vim.opt.splitbelow = true
 vim.opt.splitright = true
--- set tabline=%!MyTabLine()
 vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
 vim.opt.expandtab = true
@@ -25,7 +24,6 @@ vim.opt.smarttab = false
 vim.opt.foldlevelstart = 99
 vim.opt.foldmethod = "indent"
 vim.opt.foldignore = ""
-vim.opt.guifont = "JetBrains Mono:11"
 vim.opt.completeopt:append({
     "menu",
     "menuone",
@@ -34,8 +32,7 @@ vim.opt.completeopt:append({
     "noselect",
 })
 -- set nowrap
-vim.opt.matchpairs:append({ "<:>", "':'", "\":\"", })
-vim.opt.fileencoding = "utf-8"
+vim.opt.matchpairs:append({ "<:>", })
 -- Only relevant with wrap enabled (default)
 vim.opt.linebreak = true
 vim.opt.breakindent = true
@@ -46,12 +43,6 @@ vim.opt.visualbell = true
 vim.opt.errorbells = false
 -- Persistent undo even after you close a file and re-open it
 vim.opt.undofile = true
--- Insert mode key word completion setting, see :h 'compelete'
--- and https://medium.com/usevim/set-complete-e76b9f196f0f#:~:text=When%20in%20Insert%20mode%2C%20you,%2D%2D%20CTRL%2DN%20goes%20backwards.
--- kspell is only relevant if ':set spell' is toggled on, e.g. when editing
--- documents
-vim.opt.complete = ".,kspell"
-vim.opt.spelllang = "en"
 -- Align indent to next multiple value of shiftwidth.
 -- E.g., only insert as many spaces necessary for reaching the next shiftwidth
 vim.opt.shiftround = true
@@ -73,7 +64,6 @@ vim.opt.diffopt:append("internal")
 -- These make diffs easier to read, please see the following:
 -- https://vimways.org/2018/the-power-of-diff/
 vim.opt.diffopt:append({ "indent-heuristic", "algorithm:histogram", })
-vim.cmd.filetype("plugin on")
 vim.opt.hlsearch = true
 vim.opt.laststatus = 3
 vim.opt.textwidth = 0
@@ -82,3 +72,63 @@ vim.opt.shortmess:append("a")
 vim.opt.autoread = true
 -- vim.opt.cmdheight = 0 -- To hide cmdline when not used. Disabled due to
 -- causing "Press ENTER to continue" messages for small messages.
+vim.opt.jumpoptions = {'stack', 'view', 'clean'}
+vim.opt.updatetime = 100
+
+function _G._status_line_git()
+    local status = vim.b.gitsigns_status_dict
+    if not status then
+        return ''
+    end
+
+    local parts = {}
+
+    if status.added > 0 then
+        table.insert(parts, string.format("%%#GitSignsAdd#+%d%%*", status.added))
+    end
+
+    if status.changed > 0 then
+        table.insert(parts, string.format('%%#GitSignsChange#~%d%%*', status.changed))
+    end
+
+    if status.removed > 0 then
+        table.insert(parts, string.format('%%#GitSignsDelete#-%d%%*', status.removed))
+    end
+
+    return table.concat(parts, " ")
+end
+
+function _G._status_line_diagnostics()
+    local diag = vim.diagnostic.count(0)
+    local err = diag[vim.diagnostic.severity.ERROR] or 0
+    local warn = diag[vim.diagnostic.severity.WARN] or 0
+    local hint = diag[vim.diagnostic.severity.HINT] or 0
+    local info = diag[vim.diagnostic.severity.INFO] or 0
+    local parts = {}
+
+    if err > 0 then
+        table.insert(parts, string.format("%%#DiagnosticError#E%d%%*", err))
+    end
+
+    if warn > 0 then
+        table.insert(parts, string.format('%%#DiagnosticWarn#W%d%%*', warn))
+    end
+
+    if hint > 0 then
+        table.insert(parts, string.format('%%#DiagnosticHint#H%d%%*', hint))
+    end
+
+    if info > 0 then
+        table.insert(parts, string.format('%%#DiagnosticInfo#I%d%%*', info))
+    end
+
+    return table.concat(parts, " ")
+end
+
+vim.opt.statusline = " %f%4( %m%) %{%v:lua._status_line_git()%} %="
+                     .. " %{%v:lua._status_line_diagnostics()%} "
+                     .. " %{&filetype}  %-6.6{&fileencoding}"
+                     .. " %-4.4{&fileformat} %4.4(%p%%%)%5.5l:%-3.3v"
+
+vim.cmd("syntax on")
+vim.cmd("filetype plugin indent on")

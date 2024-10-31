@@ -1,44 +1,27 @@
---- Tab mappings ---
+-- Tab mappings ---
 vim.keymap.set("n", "tn", vim.cmd.tabnew)
 vim.keymap.set("n", "tq", vim.cmd.tabclose)
--- switch tabs with Ctrl+PgUp/Ctrl+PgDwn (default vim mapping)
 
---- Buffer mappings ---
--- Center cursorline
-vim.keymap.set("n", "<leader><leader>", "zz")
--- Save buffer
-vim.keymap.set("n", "<C-s>", function ()
-    vim.cmd.write({ mods = { silent = true, }, })
-end)
--- Cycle buffers
-vim.keymap.set("n", "<C-End>", vim.cmd.bnext)
-vim.keymap.set("n", "<C-Home>", vim.cmd.bprev)
-
---- Navigation ---
-vim.keymap.set("n", "<C-d>", "<C-d>zz")
-vim.keymap.set("n", "<C-u>", "<C-u>zz")
-vim.keymap.set("n", "n", "nzzzv")
-vim.keymap.set("n", "N", "Nzzzv")
--- nnoremap <expr> j v:count ? 'j' : 'gj'
--- nnoremap <expr> k v:count ? 'k' : 'gk'
-
---- General mappings ---
--- yank/put using named register
-vim.keymap.set({ "n", "x", }, "<leader>y", '"+y')
+-- Clipboard
+if vim.env.TMUX and vim.fn.executable('tmux') then
+    vim.keymap.set(
+        { "n", "x" },
+        "<leader>y",
+        "\"+y:call system('tmux load-buffer -w -', @+)<CR>"
+    )
+else
+    vim.keymap.set({ "n", "x", }, "<leader>y", '"+y')
+end
 vim.keymap.set({ "n", "x", }, "<leader>p", '"+p')
 vim.keymap.set({ "n", "x", }, "<leader>P", '"+P')
-vim.keymap.set({ "n", "x", }, "<leader>+", function ()
-    vim.fn.setreg("+", vim.fn.getreg('"'))
-end)
+vim.keymap.set({ "n", "x", }, "<leader>+", ":call setreg('+', @\")<CR>")
 
 -- Allow exiting insert mode in terminal by hitting <ESC>
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>")
 
 -- Use :diffput/get instead of normal one to allow staging visual selection
-vim.keymap.set("n", "<leader>dp", vim.cmd.diffput)
-vim.keymap.set("x", "<leader>dp", ":diffput<CR>")
-vim.keymap.set("n", "<leader>do", vim.cmd.diffget)
-vim.keymap.set("x", "<leader>do", ":diffget<CR>")
+vim.keymap.set({"n", "x"}, "<leader>dp", ":diffput<CR>")
+vim.keymap.set({"n", "x"}, "<leader>do", ":diffget<CR>")
 vim.keymap.set({ "n", "i", }, "<C-e>",
     function ()
         if vim.fn.pumvisible() ~= 0 then
@@ -55,6 +38,8 @@ vim.keymap.set({ "n", "i", }, "<C-e>",
     end,
     { expr = true, }
 )
+
+vim.keymap.set("n", "<C-w>q", ":bp \\| bd#<CR>")
 
 -- Allow (de)indenting without deselecting
 vim.keymap.set({"x"}, "<", "<gv")
@@ -73,7 +58,6 @@ vim.keymap.set('i', '<C-f>', '<Right>')
 vim.keymap.set('i', '<C-b>', '<Left>')
 vim.keymap.set('i', '<C-a>', '<C-o>^')
 vim.keymap.set('i', '<C-e>', '<C-o>$')
-vim.keymap.set('i', '<C-k>', '<C-o>C')
 vim.keymap.set('i', '<C-d>', '<C-o>x')
 vim.keymap.set('i', '<M-f>', '<C-o>w')
 vim.keymap.set('i', '<M-b>', '<C-o>b')
@@ -85,7 +69,6 @@ vim.keymap.set('c', '<C-f>', '<Right>')
 vim.keymap.set('c', '<C-b>', '<Left>')
 vim.keymap.set('c', '<C-a>', '<Home>')
 vim.keymap.set('c', '<C-e>', '<End>')
--- vim.keymap.set('c', '<C-k>', '???')
 vim.keymap.set('c', '<C-d>', '<Delete>')
 vim.keymap.set('c', '<C-n>', '<Down>')
 vim.keymap.set('c', '<C-p>', '<Up>')
