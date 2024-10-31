@@ -22,7 +22,7 @@ return {
                     n = {
                         q = actions.close,
                         ["<C-c>"] = actions.close,
-                        ["<S-l>"] = actions.select_default,
+                        ["<C-l>"] = actions.select_default,
                     },
                 },
             },

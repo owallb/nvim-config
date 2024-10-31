@@ -28,12 +28,12 @@ return {
         skip_confirm_for_simple_edits = true,
         watch_for_changes = false,
         keymaps = {
+            ["<Esc>"] = "actions.close",
             ["q"] = "actions.close",
             ["<C-s>"] = false,
-            ["<C-l>"] = false,
+            ["<C-h>"] = "actions.parent",
+            ["<C-l>"] = "actions.select",
             ["<C-r>"] = "actions.refresh",
-            ["<S-h>"] = "actions.parent",
-            ["<S-l>"] = "actions.select",
         },
         view_options = {
             show_hidden = true,
