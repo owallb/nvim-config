@@ -77,21 +77,26 @@ vim.opt.updatetime = 100
 
 function _G._status_line_git()
     local status = vim.b.gitsigns_status_dict
+
     if not status then
         return ''
     end
 
+    local added = status.added or 0
+    local changed = status.changed or 0
+    local removed = status.removed or 0
+
     local parts = {}
 
-    if status.added > 0 then
+    if added > 0 then
         table.insert(parts, string.format("%%#GitSignsAdd#+%d%%*", status.added))
     end
 
-    if status.changed > 0 then
+    if changed > 0 then
         table.insert(parts, string.format('%%#GitSignsChange#~%d%%*', status.changed))
     end
 
-    if status.removed > 0 then
+    if removed > 0 then
         table.insert(parts, string.format('%%#GitSignsDelete#-%d%%*', status.removed))
     end
 
