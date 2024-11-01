@@ -58,6 +58,11 @@ vim.api.nvim_create_autocmd("FileType", {
     end,
 })
 
+vim.api.nvim_create_autocmd("VimEnter", {
+    pattern = "*",
+    command = ":clearjumps",
+})
+
 local make_group = vim.api.nvim_create_augroup("make_diagnostics", {})
 local make_namespace = vim.api.nvim_create_namespace("make_diagnostics")
 -- Create diagnostics after running :make
