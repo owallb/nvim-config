@@ -104,7 +104,9 @@ function M:on_attach(client, bufnr)
             if utils.is_executable(bin) then
                 linter:init(bufnr)
             else
-                utils.warn(("Not adding %s because it is not installed"):format(bin))
+                utils.warn(
+                    ("Not adding %s because it is not installed"):format(bin)
+                )
             end
         end
     end
@@ -132,8 +134,11 @@ function M:configure_client()
     local capabilities = vim.lsp.protocol.make_client_capabilities()
     local cmp_nvim_lsp = utils.try_require("cmp_nvim_lsp")
     if cmp_nvim_lsp then
-        capabilities =
-            vim.tbl_deep_extend("force", capabilities, cmp_nvim_lsp.default_capabilities())
+        capabilities = vim.tbl_deep_extend(
+            "force",
+            capabilities,
+            cmp_nvim_lsp.default_capabilities()
+        )
     end
 
     -- local epo = utils.try_require("epo")
@@ -164,7 +169,12 @@ function M:configure_client()
 
     local ok, ret = pcall(lspconfig[self.name].setup, self.config.lspconfig)
     if not ok then
-        utils.err(("Failed to setup LSP server %s with lspconfig: %s"):format(self.name, ret))
+        utils.err(
+            ("Failed to setup LSP server %s with lspconfig: %s"):format(
+                self.name,
+                ret
+            )
+        )
         return
     end
 
@@ -176,7 +186,9 @@ function M:configure_client()
     if self.config.linters then
         self.linters = {}
         for i, config in ipairs(self.config.linters) do
-            local linter = Linter.new(("%s_linter%d"):format(self.name, i), config)
+            local linter =
+                Linter.new(("%s_linter%d"):format(self.name, i), config)
+
             if linter then
                 table.insert(self.linters, linter)
             end
@@ -231,16 +243,18 @@ end
 --- Setup LSP server
 function M:setup(on_done)
     local missing_deps = self:get_missing_unmanaged_deps()
+
     if #missing_deps > 0 then
         utils.warn(
-            ("Disabling %s because the following package(s) are not installed: %s"):format(
-                self.name,
-                table.concat(missing_deps, ", ")
-            )
+            (
+                "Disabling %s because the following package(s)"
+                .. "are not installed: %s"
+            ):format(self.name, table.concat(missing_deps, ", "))
         )
         self.config.enable = false
         return
     end
+
     if self.mason then
         self:install(function(success)
             if success then
@@ -259,7 +273,8 @@ function M:setup(on_done)
     end
 end
 
---- Load autocmd for setting up LSP server upon entering a buffer of related filetype
+--- Load autocmd for setting up LSP server upon entering a buffer of related
+--- filetype
 function M:init(on_done)
     local group = vim.api.nvim_create_augroup("lsp_bootstrap_" .. self.name, {})
     vim.api.nvim_create_autocmd("FileType", {
@@ -303,22 +318,31 @@ end
 ---@return Server|nil
 function M.new(name, config)
     config = config or {}
+
     if not M.validate(name, config) then
         return
     end
+
     local ok, resp = pcall(require, "lspconfig.configs." .. name)
+
     if not ok then
-        utils.err(("Server with name %s does not exist in lspconfig"):format(name))
+        utils.err(
+            ("Server with name %s does not exist in lspconfig"):format(name)
+        )
         return
     end
-    config.lspconfig = vim.tbl_deep_extend("keep", config.lspconfig or {}, resp.default_config)
+
+    config.lspconfig =
+        vim.tbl_deep_extend("keep", config.lspconfig or {}, resp.default_config)
     local server = { name = name, config = config }
+
     if server.config.mason then
         local pkg = MasonPackage.new(server.config.mason)
         if pkg then
             server.mason = pkg
         end
     end
+
     return setmetatable(server, M)
 end
 
