@@ -22,22 +22,26 @@ vim.keymap.set("t", "<Esc>", "<C-\\><C-n>")
 -- Use :diffput/get instead of normal one to allow staging visual selection
 vim.keymap.set({"n", "x"}, "<leader>dp", ":diffput<CR>")
 vim.keymap.set({"n", "x"}, "<leader>do", ":diffget<CR>")
-vim.keymap.set({ "n", "i", }, "<C-e>",
-    function ()
-        if vim.fn.pumvisible() ~= 0 then
-            return "<cmd>pclose<cr>"
-        end
 
-        for _, winid in pairs(vim.api.nvim_tabpage_list_wins(0)) do
-            if vim.api.nvim_win_get_config(winid).relative ~= "" then
-                return "<cmd>fclose<cr>"
-            end
-        end
+local close_pum = function()
+    if vim.fn.pumvisible() ~= 0 then
+        return "<cmd>pclose<cr>"
+    end
 
-        return "<C-e>"
-    end,
-    { expr = true, }
-)
+    for _, winid in pairs(vim.api.nvim_tabpage_list_wins(0)) do
+        if vim.api.nvim_win_get_config(winid).relative ~= "" then
+            return "<cmd>fclose<cr>"
+        end
+    end
+end
+
+vim.keymap.set("n", "<C-e>", function()
+    return close_pum() or "<C-e>"
+end, { expr = true })
+
+vim.keymap.set("i", "<C-e>", function()
+    return close_pum() or "<C-o>$"
+end, { expr = true })
 
 vim.keymap.set("n", "<C-w>q", ":bp \\| bd#<CR>")
 
@@ -57,7 +61,7 @@ vim.cmd.aunmenu({ "PopUp.How-to\\ disable\\ mouse", })
 vim.keymap.set('i', '<C-f>', '<Right>')
 vim.keymap.set('i', '<C-b>', '<Left>')
 vim.keymap.set('i', '<C-a>', '<C-o>^')
-vim.keymap.set('i', '<C-e>', '<C-o>$')
+-- vim.keymap.set('i', '<C-e>', '<C-o>$')
 vim.keymap.set('i', '<C-d>', '<C-o>x')
 vim.keymap.set('i', '<M-f>', '<C-o>w')
 vim.keymap.set('i', '<M-b>', '<C-o>b')
