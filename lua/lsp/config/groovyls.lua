@@ -15,7 +15,7 @@
 ]]
 
 return {
-    enable = true,
+    enable = false,
     dependencies = {
         "java",
     },
@@ -23,12 +23,8 @@ return {
         "groovy-language-server",
     },
     lspconfig = {
-        filetypes = {
-            "groovy",
-        },
         cmd = {
             "groovy-language-server",
         },
-        single_file_support = true,
     },
 }
