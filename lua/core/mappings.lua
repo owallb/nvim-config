@@ -61,8 +61,8 @@ vim.cmd.aunmenu({ "PopUp.How-to\\ disable\\ mouse", })
 vim.keymap.set('i', '<C-f>', '<Right>')
 vim.keymap.set('i', '<C-b>', '<Left>')
 vim.keymap.set('i', '<C-a>', '<C-o>^')
--- vim.keymap.set('i', '<C-e>', '<C-o>$')
-vim.keymap.set('i', '<C-d>', '<C-o>x')
+-- vim.keymap.set('i', '<C-e>', '<C-o>$') -- Done in previous mapping above
+-- vim.keymap.set('i', '<C-d>', '<C-o>x') -- Overrides de-indent
 vim.keymap.set('i', '<M-f>', '<C-o>w')
 vim.keymap.set('i', '<M-b>', '<C-o>b')
 vim.keymap.set('i', '<M-d>', '<C-o>dw')
