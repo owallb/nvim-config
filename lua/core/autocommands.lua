@@ -63,6 +63,15 @@ vim.api.nvim_create_autocmd("VimEnter", {
     command = ":clearjumps",
 })
 
+vim.api.nvim_create_autocmd("FileType", {
+    desc = "Make markdown files a bit prettier",
+    pattern = { "markdown" },
+    callback = function()
+        vim.wo.conceallevel = 2
+        vim.wo.concealcursor = "n"
+    end,
+})
+
 local make_group = vim.api.nvim_create_augroup("make_diagnostics", {})
 local make_namespace = vim.api.nvim_create_namespace("make_diagnostics")
 -- Create diagnostics after running :make
