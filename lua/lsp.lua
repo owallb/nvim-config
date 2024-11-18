@@ -117,12 +117,7 @@ local function setup_diagnostics()
     vim.diagnostic.config({
         underline = true,
         signs = true,
-        virtual_text = {
-            prefix = "",
-            format = function(diagnostic)
-                return diagnostic.message
-            end,
-        },
+        virtual_text = false,
         float = {
             show_header = false,
             source = true,
