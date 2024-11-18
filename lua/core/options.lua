@@ -133,7 +133,7 @@ end
 vim.opt.statusline = " %{expand('%:.')}%4( %m%) %{%v:lua._status_line_git()%} %="
                      .. " %{%v:lua._status_line_diagnostics()%} "
                      .. " %{&filetype}  %-6.6{&fileencoding}"
-                     .. " %-4.4{&fileformat} %4.4(%p%%%)%5.5l:%-3.3v"
+                     .. " %-4.4{&fileformat} %4.4(%p%%%)%6.6l:%-3.3v"
 
 vim.cmd("syntax on")
 vim.cmd("filetype plugin indent on")
