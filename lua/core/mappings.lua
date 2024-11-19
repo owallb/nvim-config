@@ -86,6 +86,7 @@ vim.keymap.set('c', '<M-BS>', '<C-w>')
 --  <C-T>           - indent, see :h i_CTRL-T
 --  <C-D>           - un-indent, see :h i_CTRL-D
 -- normal mode:
+--  H/M/L           - Jump to highest/middle/lowest line in window.
 --  <count?><C-E>   - scroll window down <count> lines, see :h CTRL-E
 --  <count?><C-Y>   - scroll window up <count> lines, see :h CTRL-Y
 --  <C-A>           - Increment
