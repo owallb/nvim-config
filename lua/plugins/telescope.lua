@@ -98,7 +98,7 @@ return {
                             "--iglob=!.git",
                         }
                     end,
-                    previewer = false,
+                    previewer = true,
                 })
             end
         )
