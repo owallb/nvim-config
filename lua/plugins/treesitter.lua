@@ -34,7 +34,6 @@ return {
 
         vim.opt.foldmethod = "expr"
         vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
-        vim.opt.foldenable = true
 
         -- Disable LSP semantic highlighting for comments because it will otherwise
         -- override highlights from `comment`.

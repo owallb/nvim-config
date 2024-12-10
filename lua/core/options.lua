@@ -21,6 +21,8 @@ vim.opt.expandtab = true
 vim.opt.shiftwidth = 4
 vim.opt.smarttab = false
 -- Folds are configured in nvim-treesitter, so this is only for fallback
+vim.opt.foldenable = false
+vim.opt.foldlevel = 99
 vim.opt.foldlevelstart = 99
 vim.opt.foldmethod = "indent"
 vim.opt.foldignore = ""
