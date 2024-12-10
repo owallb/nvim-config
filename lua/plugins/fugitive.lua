@@ -3,7 +3,7 @@
 local function git_status_tab()
     vim.cmd.tabnew()
     vim.cmd("leftabove vertical G")
-    vim.cmd("vertical resize 60")
+    vim.cmd("vertical resize 40")
     vim.cmd.set("wfw")
 end
 
@@ -13,10 +13,10 @@ return {
     event = "VeryLazy",
     ---@type LazyKeysSpec[]
     keys = {
-        { "<leader>gd", vim.cmd.Gdiffsplit,                         mode = "n" },
+        { "<leader>gd", vim.cmd.Ghdiffsplit,                         mode = "n" },
         { "<leader>gc", function() vim.cmd.G("commit") end,         mode = "n" },
         { "<leader>ga", function() vim.cmd.G("commit --amend") end, mode = "n" },
         { "<leader>gp", function() vim.cmd.G("push") end,           mode = "n" },
-        -- { "<leader>gg", git_status_tab,                             mode = "n" },
+        { "<leader>gg", git_status_tab,                             mode = "n" },
     },
 }
