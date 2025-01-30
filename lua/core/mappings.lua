@@ -95,9 +95,9 @@ vim.keymap.set('c', '<M-BS>', '<C-w>')
 --  <C-w>J          - Move window down
 --  <C-w>K          - Move window up
 --  <C-w>L          - Move window to the right
---  gq{motion}      - format the line that {motion} moves over
---  {Visual}gq      - format the visually selected area
---  gqq             - format the current line
+--  gq{motion}      - format word-wrap of the line that {motion} moves over
+--  {Visual}gq      - format word-wrap of the visually selected area
+--  gqq             - format word-wrap of the current line
 -- commands:
 --  :make           - execute makeprg with given args
 --  :copen          - open quickfix list
