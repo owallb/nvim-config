@@ -58,10 +58,10 @@ function M.validate(name, config)
 
                     for _, key in ipairs(f) do
                         local o, r = pcall(vim.validate, {
-                            mode = { key.mode, { "s", "t" } },
-                            lhs = { key.lhs, "s" },
-                            rhs = { key.rhs, { "s", "f" } },
-                            opts = { key.opts, "t", true },
+                            mode = { key.mode, { "string", "table" } },
+                            lhs = { key.lhs, "string" },
+                            rhs = { key.rhs, { "string", "function" } },
+                            opts = { key.opts, "table", true },
                         })
 
                         if not o then
@@ -115,11 +115,6 @@ function M:on_attach(client, bufnr)
     vim.cmd.highlight({ "link LspReferenceRead Visual", bang = true })
     vim.cmd.highlight({ "link LspReferenceText Visual", bang = true })
     vim.cmd.highlight({ "link LspReferenceWrite Visual", bang = true })
-
-    vim.lsp.handlers["textDocument/hover"] =
-        vim.lsp.with(vim.lsp.handlers.hover, { border = "single" })
-    vim.lsp.handlers["textDocument/signatureHelp"] =
-        vim.lsp.with(vim.lsp.handlers.signature_help, { border = "single" })
 
     ---@alias lsp.Client vim.lsp.Client
     -- require("lsp_compl").attach(client, bufnr, {

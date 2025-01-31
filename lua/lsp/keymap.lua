@@ -24,17 +24,49 @@ M.new = {}
 function M:init(server, bufnr)
     self.old[bufnr] = {}
     for _, mode in ipairs(MODE_TYPES) do
-        vim.tbl_extend("error", self.old[bufnr], vim.api.nvim_buf_get_keymap(bufnr, mode))
+        vim.tbl_extend(
+            "error",
+            self.old[bufnr],
+            vim.api.nvim_buf_get_keymap(bufnr, mode)
+        )
     end
 
     self.new[bufnr] = {
         { mode = { "n" }, lhs = "<leader>df", rhs = vim.diagnostic.open_float },
-        { mode = { "n" }, lhs = "[d", rhs = vim.diagnostic.goto_prev },
-        { mode = { "n" }, lhs = "]d", rhs = vim.diagnostic.goto_next },
+        {
+            mode = { "n" },
+            lhs = "[d",
+            rhs = function()
+                vim.diagnostic.jump({ count = -1, float = true })
+            end,
+        },
+        {
+            mode = { "n" },
+            lhs = "]d",
+            rhs = function()
+                vim.diagnostic.jump({ count = 1, float = true })
+            end,
+        },
         { mode = { "n" }, lhs = "gD", rhs = vim.lsp.buf.declaration },
-        { mode = { "n", "i" }, lhs = "<C-k>", rhs = vim.lsp.buf.hover },
-        { mode = { "n", "i" }, lhs = "<C-j>", rhs = vim.lsp.buf.signature_help },
-        { mode = { "n", "i" }, lhs = "<C-h>", rhs = vim.lsp.buf.document_highlight },
+        {
+            mode = { "n", "i" },
+            lhs = "<C-k>",
+            rhs = function()
+                vim.lsp.buf.hover({ border = "single" })
+            end,
+        },
+        {
+            mode = { "n", "i" },
+            lhs = "<C-j>",
+            rhs = function()
+                vim.lsp.buf.signature_help({ border = "single" })
+            end,
+        },
+        {
+            mode = { "n", "i" },
+            lhs = "<C-h>",
+            rhs = vim.lsp.buf.document_highlight,
+        },
         { mode = { "n" }, lhs = "<leader>lr", rhs = vim.lsp.buf.rename },
         { mode = { "n" }, lhs = "<leader>la", rhs = vim.lsp.buf.code_action },
         { mode = { "n", "x" }, lhs = "<leader>lf", rhs = vim.lsp.buf.format },
@@ -63,7 +95,11 @@ function M:init(server, bufnr)
     if telescope then
         vim.list_extend(self.new[bufnr], {
             { mode = "n", lhs = "<leader>dl", rhs = telescope.diagnostics },
-            { mode = "n", lhs = "<leader>lD", rhs = telescope.lsp_type_definitions },
+            {
+                mode = "n",
+                lhs = "<leader>lD",
+                rhs = telescope.lsp_type_definitions,
+            },
             { mode = "n", lhs = "gd", rhs = telescope.lsp_definitions },
             { mode = "n", lhs = "gi", rhs = telescope.lsp_implementations },
             { mode = "n", lhs = "gr", rhs = telescope.lsp_references },
@@ -71,7 +107,11 @@ function M:init(server, bufnr)
     else
         vim.list_extend(self.new[bufnr], {
             { mode = "n", lhs = "<leader>dl", rhs = vim.diagnostic.setloclist },
-            { mode = "n", lhs = "<leader>ld", rhs = vim.lsp.buf.type_definition },
+            {
+                mode = "n",
+                lhs = "<leader>ld",
+                rhs = vim.lsp.buf.type_definition,
+            },
             { mode = "n", lhs = "gd", rhs = vim.lsp.buf.definition },
             { mode = "n", lhs = "gi", rhs = vim.lsp.buf.implementation },
             { mode = "n", lhs = "gr", rhs = vim.lsp.buf.references },
@@ -83,7 +123,11 @@ function M:init(server, bufnr)
     end
 
     for _, keymap in ipairs(self.new[bufnr]) do
-        keymap.opts = vim.tbl_extend("force", keymap.opts or {}, { buffer = bufnr, remap = true })
+        keymap.opts = vim.tbl_extend(
+            "force",
+            keymap.opts or {},
+            { buffer = bufnr, remap = true }
+        )
         vim.keymap.set(keymap.mode, keymap.lhs, keymap.rhs, keymap.opts)
     end
 end
