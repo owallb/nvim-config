@@ -91,7 +91,7 @@ end
 ---@param bufnr integer
 function M:on_attach(client, bufnr)
     if self.client and self.client.id ~= client.id then
-        self.client.stop(true)
+        self.client:stop(true)
     end
     self.client = client
     self.attached_buffers = self.attached_buffers or {}
@@ -290,7 +290,7 @@ function M:deinit()
     end
 
     if self.client then
-        self.client.stop(true)
+        self.client:stop(true)
         self.client = nil
     end
 
