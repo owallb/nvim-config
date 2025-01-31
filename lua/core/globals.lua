@@ -11,3 +11,4 @@ vim.g.netrw_sort_options = 'i'
 vim.g.netrw_sort_sequence = '[\\/]\\s*,*'
 vim.g.netrw_special_syntax = 1
 vim.g.netrw_timefmt = '%d-%m-%Y %H:%M'
+vim.g.c_syntax_for_h = 1

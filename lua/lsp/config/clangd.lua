@@ -12,11 +12,6 @@ return {
     lspconfig = {
         filetypes = {
             "c",
-            "cpp",
-            "objc",
-            "objcpp",
-            "cuda",
-            "proto",
         },
         cmd = {
             "clangd",

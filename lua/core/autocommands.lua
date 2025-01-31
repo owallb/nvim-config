@@ -41,8 +41,8 @@ vim.api.nvim_create_autocmd({ "BufReadPost" }, {
 })
 
 vim.api.nvim_create_autocmd("FileType", {
-    desc = "Use two space indent for C/C++ files",
-    pattern = { "c", "cpp" },
+    desc = "Use two space indent for C++ files",
+    pattern = { "cpp" },
     callback = function()
         vim.bo.tabstop = 2
         vim.bo.softtabstop = 2
