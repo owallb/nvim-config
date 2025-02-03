@@ -12,6 +12,7 @@ return {
     lspconfig = {
         filetypes = {
             "c",
+            "cpp",
         },
         cmd = {
             "clangd",
