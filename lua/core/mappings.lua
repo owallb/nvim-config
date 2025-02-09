@@ -77,6 +77,14 @@ vim.keymap.set('c', '<M-b>', '<C-Left>')
 vim.keymap.set('c', '<M-d>', '<C-Right><C-w>')
 vim.keymap.set('c', '<M-BS>', '<C-w>')
 
+vim.keymap.set('n', '<leader>ve', function()
+    if vim.o.virtualedit == 'all' then
+        vim.o.virtualedit = 'block'
+    else
+        vim.o.virtualedit = 'all'
+    end
+end)
+
 -- Default bindings that are good to know:
 -- insert mode:
 --  <C-T>           - indent, see :h i_CTRL-T
