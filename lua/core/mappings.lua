@@ -35,12 +35,8 @@ local close_pum = function()
     end
 end
 
-vim.keymap.set("n", "<C-e>", function()
-    return close_pum() or "<C-e>"
-end, { expr = true })
-
-vim.keymap.set("i", "<C-e>", function()
-    return close_pum() or "<C-o>$"
+vim.keymap.set({ "n", "i" }, "<C-x>", function()
+    return close_pum()
 end, { expr = true })
 
 vim.keymap.set("n", "<C-w>q", ":bp | bd#<CR>")
