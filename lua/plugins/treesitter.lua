@@ -37,6 +37,6 @@ return {
 
         -- To set the priority of semantic highlighting lower than treesitter (100),
         -- uncomment the line below:
-        -- vim.highlight.priorities.semantic_tokens = 99
+        -- vim.hl.priorities.semantic_tokens = 99
     end,
 }
