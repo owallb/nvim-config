@@ -47,7 +47,13 @@ vim.keymap.set({"x"}, ">", ">gv")
 
 -- Remove default mappings
 vim.keymap.set("", "<C-LeftMouse>", "")
-vim.keymap.set({ "n", }, "K", ':Man "*"<CR>')
+vim.keymap.set('n', 'K', function()
+    if vim.bo.filetype == 'vim' or vim.bo.filetype == 'help' then
+        vim.cmd('help ' .. vim.fn.expand('<cword>'))
+    else
+        vim.cmd('Man ' .. vim.fn.expand('<cword>'))
+    end
+end)
 
 -- Remove right-click menu items
 vim.cmd.aunmenu({ "PopUp.-1-", })
