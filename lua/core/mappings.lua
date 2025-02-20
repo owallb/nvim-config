@@ -109,7 +109,10 @@ end)
 --  {Visual}gq      - format word-wrap of the visually selected area
 --  gqq             - format word-wrap of the current line
 -- commands:
---  :make           - execute makeprg with given args
+--  :make           - execute makeprg with given args, and put the output in
+--                    quickfix list
+--  :grep           - execute grepprg with given args, and put the results in
+--                    quickfix list
 --  :copen          - open quickfix list
 --  :cdo {cmd}      - execute {cmd} in each valid entry in the quickfix list.
 --                    works like this:
@@ -118,6 +121,7 @@ end)
 --                      :cnext
 --                      :{cmd}
 --                      etc.
+--  :cfdo {cmd}     - same as :cdo but on each file in quickfix list
 --  :cn             - go to the next error in quickfix list that includes a file name
 --  :cp             - go to the previous error in quickfix list that includes a file name
 --  :cc [num]       - go to the specified error in quickfix list
