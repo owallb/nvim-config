@@ -113,6 +113,10 @@ end)
 --                    quickfix list
 --  :grep           - execute grepprg with given args, and put the results in
 --                    quickfix list
+--  :cex {expr}     - Create a quickfix list using the result of {expr} and
+--                    jump to the first error. For example:
+--                    :cex system('make')
+--  :cgete {expr}   - same as :cex but don't jump to the first error
 --  :copen          - open quickfix list
 --  :cdo {cmd}      - execute {cmd} in each valid entry in the quickfix list.
 --                    works like this:
