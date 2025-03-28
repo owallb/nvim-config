@@ -3,30 +3,69 @@ local utils = require("utils")
 ---@type ServerConfig
 return {
     enable = true,
-    mason = { "pyright" },
-    dependencies = { "black", "flake8", "isort" },
+    mason = { "pyright", dependencies = { "ruff" } },
     linters = {
         {
             cmd = {
-                "flake8",
-                "--max-line-length=80",
-                "--max-doc-length=80",
-                "--format",
-                "%(row)d,%(col)d,%(code)s: %(text)s",
+                "ruff",
+                "check",
+                "--output-format=json",
+                "--line-length=80",
+                "--preview",
+                "--select=YTT,ANN,ASYNC,B,A,COM,C4,DTZ,T10,FIX,FA,ISC,PIE,PYI",
+                "--extend-select=PT,RET,SIM,TC,I,C90,DOC,D,F,PL,UP,RUF",
+                "--ignore=D203,D301,D101",
+                "-q",
                 "-",
             },
             stdin = true,
             stdout = true,
-            pattern = "^(%d+),(%d+),((%w)%d+): (.*)",
-            groups = { "lnum", "col", "code", "severity", "message" },
-            source = "flake8",
-            severity_map = {
-                E = vim.diagnostic.severity.ERROR,
-                W = vim.diagnostic.severity.WARN,
-                B = vim.diagnostic.severity.HINT,
-                F = vim.diagnostic.severity.HINT,
-                D = vim.diagnostic.severity.INFO,
+            json = {
+                lnum = "location.row",
+                end_lnum = "end_location.row",
+                col = "location.column",
+                end_col = "end_location.column",
+                code = "code",
+                message = "message",
+                callback = function(diag)
+                    local map = {
+                        YTT = vim.diagnostic.severity.HINT,
+                        ANN = vim.diagnostic.severity.HINT,
+                        ASYNC = vim.diagnostic.severity.HINT,
+                        B = vim.diagnostic.severity.HINT,
+                        A = vim.diagnostic.severity.HINT,
+                        COM = vim.diagnostic.severity.HINT,
+                        C = vim.diagnostic.severity.HINT,
+                        DTZ = vim.diagnostic.severity.HINT,
+                        T = vim.diagnostic.severity.HINT,
+                        FIX = vim.diagnostic.severity.HINT,
+                        FA = vim.diagnostic.severity.HINT,
+                        ISC = vim.diagnostic.severity.HINT,
+                        PIE = vim.diagnostic.severity.HINT,
+                        PYI = vim.diagnostic.severity.HINT,
+                        PT = vim.diagnostic.severity.HINT,
+                        RET = vim.diagnostic.severity.HINT,
+                        SIM = vim.diagnostic.severity.HINT,
+                        TC = vim.diagnostic.severity.HINT,
+                        I = vim.diagnostic.severity.HINT,
+                        E = vim.diagnostic.severity.ERROR,
+                        W = vim.diagnostic.severity.WARN,
+                        DOC = vim.diagnostic.severity.HINT,
+                        D = vim.diagnostic.severity.INFO,
+                        F = vim.diagnostic.severity.HINT,
+                        PLC = vim.diagnostic.severity.HINT,
+                        PLE = vim.diagnostic.severity.ERROR,
+                        PLR = vim.diagnostic.severity.HINT,
+                        PLW = vim.diagnostic.severity.WARN,
+                        UP = vim.diagnostic.severity.HINT,
+                        RUF = vim.diagnostic.severity.HINT,
+                    }
+                    if diag.code then
+                        diag.severity = map[diag.code:match("^(%u+)")]
+                    end
+                end,
             },
+            source = "ruff",
         },
     },
     keymaps = {
@@ -36,11 +75,10 @@ return {
             rhs = function()
                 utils.format({
                     cmd = {
-                        "black",
-                        "--line-length",
-                        "80",
-                        "--stdin-filename",
-                        "%filename%",
+                        "ruff",
+                        "format",
+                        "--line-length=80",
+                        "--stdin-filename=%filename%",
                         "--quiet",
                         "-",
                     },
@@ -48,7 +86,10 @@ return {
                 })
                 utils.format({
                     cmd = {
-                        "isort",
+                        "ruff",
+                        "check",
+                        "--select=I",
+                        "--fix",
                         "--quiet",
                         "-",
                     },
@@ -62,13 +103,12 @@ return {
             rhs = function()
                 utils.format({
                     cmd = {
-                        "black",
-                        "--line-length",
-                        "80",
-                        "--stdin-filename",
-                        "%filename%",
+                        "ruff",
+                        "format",
+                        "--line-length=80",
+                        "--stdin-filename=%filename%",
                         "--quiet",
-                        "--line-ranges=%row_start%-%row_end%",
+                        "--range=%row_start%:%col_start%-%row_end%:%col_end%",
                         "-",
                     },
                     output = "stdout",
@@ -83,10 +123,11 @@ return {
         settings = {
             python = {
                 analysis = {
+                    disable = true,
                     autoSearchPaths = true,
                     diagnosticMode = "openFilesOnly",
                     useLibraryCodeForTypes = true,
-                    typeCheckingMode = "off",
+                    typeCheckingMode = "strict",
                 },
             },
         },
