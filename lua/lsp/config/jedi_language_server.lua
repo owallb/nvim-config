@@ -3,7 +3,7 @@ local utils = require("utils")
 ---@type ServerConfig
 return {
     enable = true,
-    mason = { "pyright", dependencies = { "ruff" } },
+    mason = { "jedi-language-server", dependencies = { "ruff" } },
     linters = {
         {
             cmd = {
@@ -117,18 +117,14 @@ return {
         },
     },
     lspconfig = {
-        filetypes = { "python" },
-        cmd = { "pyright-langserver", "--stdio" },
+        filetypes = {
+            "python",
+        },
+        cmd = { "jedi-language-server" },
         single_file_support = true,
-        settings = {
-            python = {
-                analysis = {
-                    disable = true,
-                    autoSearchPaths = true,
-                    diagnosticMode = "openFilesOnly",
-                    useLibraryCodeForTypes = true,
-                    typeCheckingMode = "strict",
-                },
+        init_options = {
+            diagnostics = {
+                enable = false,
             },
         },
     },
