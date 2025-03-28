@@ -14,7 +14,6 @@ return {
             "query", -- recommended default
             "luadoc",
             "phpdoc",
-            "org",
             "comment",
         },
         auto_install = true,
