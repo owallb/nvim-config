@@ -30,7 +30,8 @@ local function notify(msg, title, level)
                 and (info.source:sub(1, 1) == "@" and info.source:sub(2) or info.source)
             or nil
         local module = file and (get_module_path(file) or file) or nil
-        title = module and module .. (info.name and info.name ~= "" and ":" .. info.name or "")
+        title = module
+                and module .. (info.name and info.name ~= "" and ":" .. info.name or "")
             or nil
     end
     if title and not pcall(require, "notify") then
@@ -72,7 +73,8 @@ end
 function M.assert_any_installed(exes)
     assert(
         M.any_installed(exes),
-        "At least one of the following is required:\n" .. table.concat(exes, ", ")
+        "At least one of the following is required:\n"
+            .. table.concat(exes, ", ")
     )
 end
 
@@ -189,7 +191,8 @@ function M.format(opts)
         row_end, col_end = unpack(vim.fn.getpos("."), 2, 3)
 
         if row_start > row_end then
-            row_start, row_end, col_start, col_end = row_end, row_start, col_end, col_start
+            row_start, row_end, col_start, col_end =
+                row_end, row_start, col_end, col_start
         end
 
         if mode == "V" then
@@ -254,15 +257,12 @@ function M.format(opts)
         not opts.ignore_ret and (resp.code ~= 0 or resp.signal ~= 0)
         or (opts.output ~= "stderr" and stderr)
     then
-        local msg
-        if stdout then
-            msg = "\n" .. stdout
-        end
+        local msg = ""
         if stderr then
-            msg = "\n" .. stderr
+            msg = ":\n" .. stderr
         end
 
-        M.err(("Failed to format:%s"):format(msg or ""))
+        M.err(("Failed to format%s"):format(msg))
         return
     end
 
@@ -271,14 +271,22 @@ function M.format(opts)
     local output_lines = vim.fn.split(output, "\n", true)
 
     if opts.only_selection then
-        vim.api.nvim_buf_set_lines(0, row_start - 1, row_end, false, output_lines)
+        vim.api.nvim_buf_set_lines(
+            0,
+            row_start - 1,
+            row_end,
+            false,
+            output_lines
+        )
     else
         vim.api.nvim_buf_set_lines(0, 0, -1, false, output_lines)
     end
 
     if opts.auto_indent then
         if is_visual then
-            vim.api.nvim_command(("%d,%dnormal! =="):format(row_start, row_start + #output_lines))
+            vim.api.nvim_command(
+                ("%d,%dnormal! =="):format(row_start, row_start + #output_lines)
+            )
         else
             vim.api.nvim_command("normal! gg=G")
         end
