@@ -161,6 +161,7 @@ end
 ---@field output OutputStream What stream to use as the result. May be one of `stdout` or `stderr`.
 ---@field auto_indent? boolean Perform auto indent on formatted range. False by default.
 ---@field only_selection? boolean Only send the selected lines to `stdin`. False by default.
+---@field ignore_ret? boolean Ignore non-zero return codes
 
 --- Format buffer
 ---@param opts FormatOptions
@@ -250,8 +251,7 @@ function M.format(opts)
     end
 
     if
-        resp.code ~= 0
-        or resp.signal ~= 0
+        not opts.ignore_ret and (resp.code ~= 0 or resp.signal ~= 0)
         or (opts.output ~= "stderr" and stderr)
     then
         local msg
