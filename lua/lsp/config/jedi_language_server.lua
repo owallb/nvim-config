@@ -48,11 +48,6 @@ return {
                 "ruff",
                 "check",
                 "--output-format=json",
-                "--line-length=80",
-                "--preview",
-                "--select=YTT,ANN,ASYNC,B,A,COM,C4,DTZ,T10,FIX,FA,ISC,PIE,PYI",
-                "--extend-select=PT,RET,SIM,TC,I,C90,DOC,D,F,PL,UP,RUF",
-                "--ignore=D203,D301,D101,D202,TC006,COM812",
                 "-q",
                 "-",
             },
@@ -112,7 +107,6 @@ return {
                     cmd = {
                         "ruff",
                         "format",
-                        "--line-length=80",
                         "--stdin-filename=%filename%",
                         "--quiet",
                         "-",
@@ -140,7 +134,6 @@ return {
                     cmd = {
                         "ruff",
                         "format",
-                        "--line-length=80",
                         "--stdin-filename=%filename%",
                         "--quiet",
                         "--range=%row_start%:%col_start%-%row_end%:%col_end%",
