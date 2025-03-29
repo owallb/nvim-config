@@ -32,6 +32,10 @@ M.__index = M
 ---@field zero_idx? boolean
 ---@field callback? fun(diag: vim.Diagnostic)
 
+---@class DiagnosticTagMap
+---@field unnecessary? string[]
+---@field deprecated? string[]
+
 ---@class LinterConfig
 ---@field cmd string[]
 ---@field stdin? boolean
@@ -43,6 +47,7 @@ M.__index = M
 ---@field source? string
 ---@field debounce? number
 ---@field json? JsonConfig
+---@field tags? DiagnosticTagMap
 M.config = {}
 
 -- Extract a value from a JSON object using a path
@@ -89,6 +94,39 @@ function M:clamp_col(diag, bufnr)
 
     if diag.col > line_len then
         diag.col = line_len
+    end
+end
+
+--- Add diagnostic tags
+---@param diag vim.Diagnostic
+function M:add_tags(diag)
+    if not self.config.tags then
+        return
+    end
+
+    local have_unnecessary = vim.islist(self.config.tags.unnecessary)
+    local have_deprecated = vim.islist(self.config.tags.deprecated)
+
+    if not have_unnecessary and not have_deprecated then
+        return
+    end
+
+    diag._tags = {}
+
+    if
+        have_unnecessary
+        and vim.list_contains(self.config.tags.unnecessary, diag.code)
+    then
+        diag._tags.unnecessary = true
+        diag.severity = vim.diagnostic.severity.HINT
+    end
+
+    if
+        have_deprecated
+        and vim.list_contains(self.config.tags.deprecated, diag.code)
+    then
+        diag._tags.deprecated = true
+        diag.severity = vim.diagnostic.severity.WARN
     end
 end
 
@@ -148,6 +186,7 @@ function M:process_json_output(json, bufnr)
         end
 
         self:clamp_col(diag, bufnr)
+        self:add_tags(diag)
 
         if type(self.config.json.callback) == "function" then
             self.config.json.callback(diag)
@@ -201,6 +240,7 @@ function M.validate(name, config)
             debounce = { config.debounce, "number", true },
             source = { config.source, "string", true },
             json = { config.json, "table", true },
+            tags = { config.tags, "table", true },
         })
     end
 
@@ -279,6 +319,7 @@ function M:run(bufnr)
                 elseif resp then
                     resp.source = resp.source or self.config.source
                     self:clamp_col(resp, bufnr)
+                    self:add_tags(resp)
                     table.insert(diagnostics, resp)
                 end
             end
