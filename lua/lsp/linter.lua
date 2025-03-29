@@ -36,7 +36,9 @@ M.__index = M
 ---@field deprecated? string[]
 
 ---@class LinterConfig
----@field cmd string[]
+---@field cmd string[] Command to run. The following keywords get replaces by the specified values:
+---                    * %file%         - path to the current file
+---                    * %filename%     - name of the current file
 ---@field stdin? boolean
 ---@field stdout? boolean
 ---@field stderr? boolean
@@ -268,14 +270,22 @@ end
 function M:run(bufnr)
     local input
 
-    -- TODO: add placeholder variables for when not using stdin
     if self.config.stdin then
         input = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
     end
 
+    local cmd = self.config.cmd
+    local file = vim.fn.expand("%")
+    local filename = vim.fn.expand("%:t")
+    for i, arg in ipairs(cmd) do
+        arg = arg:gsub("%%file%%", file)
+        arg = arg:gsub("%%filename%%", filename)
+        cmd[i] = arg
+    end
+
     local ok, resp = pcall(
         vim.system,
-        self.config.cmd,
+        cmd,
         { stdin = input },
         ---@param out vim.SystemCompleted
         vim.schedule_wrap(function(out)
