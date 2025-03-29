@@ -97,6 +97,32 @@ return {
                 },
             },
         },
+        {
+            cmd = {
+                "pylint",
+                "--disable=all",
+                "--enable=E1101",
+                "--output-format=json",
+                "--from-stdin",
+                "%file%",
+            },
+            stdin = true,
+            stdout = true,
+            json = {
+                lnum = "line",
+                end_lnum = "endLine",
+                col = "column",
+                end_col = "endColumn",
+                code = "message-id",
+                message = "message",
+                severity = "type",
+            },
+            zero_idx_col = true,
+            severity_map = {
+                error = ERROR,
+            },
+            source = "pylint",
+        },
     },
     keymaps = {
         {
