@@ -79,7 +79,21 @@ function M.get_json_value(obj, path)
     return current
 end
 
+--- Clamp column to line length
+---@param diag vim.Diagnostic
+---@param bufnr number
+function M:clamp_col(diag, bufnr)
+    local lines =
+        vim.api.nvim_buf_get_lines(bufnr, diag.lnum, diag.lnum + 1, false)
+    local line_len = #lines[1] - 1
+
+    if diag.col > line_len then
+        diag.col = line_len
+    end
+end
+
 function M:process_json_output(json, bufnr)
+    ---@type vim.Diagnostic[]
     local diagnostics = {}
 
     local items = json
@@ -133,18 +147,7 @@ function M:process_json_output(json, bufnr)
             end
         end
 
-        if diag.end_lnum and diag.end_col then
-            local lines = vim.api.nvim_buf_get_lines(
-                bufnr,
-                diag.end_lnum,
-                diag.end_lnum + 1,
-                false
-            )
-
-            if #lines > 0 and #lines[1] > 0 then
-                diag.end_col = math.min(diag.end_col, #lines[1] - 1)
-            end
-        end
+        self:clamp_col(diag, bufnr)
 
         if type(self.config.json.callback) == "function" then
             self.config.json.callback(diag)
@@ -156,6 +159,10 @@ function M:process_json_output(json, bufnr)
     return diagnostics
 end
 
+--- Validate input
+---@param name string
+---@param config LinterConfig
+---@return boolean
 function M.validate(name, config)
     local ok, resp = pcall(vim.validate, {
         name = { name, "string" },
@@ -271,21 +278,11 @@ function M:run(bufnr)
                     return
                 elseif resp then
                     resp.source = resp.source or self.config.source
-
-                    local lines = vim.api.nvim_buf_get_lines(
-                        bufnr,
-                        resp.end_lnum,
-                        resp.end_lnum + 1,
-                        false
-                    )
-
-                    if #lines > 0 and #lines[1] > 0 then
-                        resp.end_col = math.min(resp.end_col, #lines[1] - 1)
-                    end
-
+                    self:clamp_col(resp, bufnr)
                     table.insert(diagnostics, resp)
                 end
             end
+
             vim.diagnostic.set(self.namespace, bufnr, diagnostics)
         end)
     )
