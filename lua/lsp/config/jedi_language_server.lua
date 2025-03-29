@@ -1,5 +1,43 @@
 local utils = require("utils")
 
+local ERROR = vim.diagnostic.severity.ERROR
+local WARN = vim.diagnostic.severity.WARN
+local INFO = vim.diagnostic.severity.INFO
+local HINT = vim.diagnostic.severity.HINT
+
+local SEVERITY_MAP = {
+    YTT = WARN,
+    ANN = WARN,
+    ASYNC = WARN,
+    B = WARN,
+    A = WARN,
+    COM = WARN,
+    C = WARN,
+    DTZ = WARN,
+    T = WARN,
+    FIX = WARN,
+    FA = WARN,
+    ISC = WARN,
+    PIE = WARN,
+    PYI = WARN,
+    PT = WARN,
+    RET = WARN,
+    SIM = WARN,
+    TC = WARN,
+    I = WARN,
+    E = ERROR,
+    W = WARN,
+    DOC = WARN,
+    D = INFO,
+    F = WARN,
+    PLC = WARN,
+    PLE = ERROR,
+    PLR = WARN,
+    PLW = WARN,
+    UP = WARN,
+    RUF = WARN,
+}
+
 ---@type ServerConfig
 return {
     enable = true,
@@ -14,7 +52,7 @@ return {
                 "--preview",
                 "--select=YTT,ANN,ASYNC,B,A,COM,C4,DTZ,T10,FIX,FA,ISC,PIE,PYI",
                 "--extend-select=PT,RET,SIM,TC,I,C90,DOC,D,F,PL,UP,RUF",
-                "--ignore=D203,D301,D101",
+                "--ignore=D203,D301,D101,D202,TC006,COM812",
                 "-q",
                 "-",
             },
@@ -28,44 +66,41 @@ return {
                 code = "code",
                 message = "message",
                 callback = function(diag)
-                    local map = {
-                        YTT = vim.diagnostic.severity.HINT,
-                        ANN = vim.diagnostic.severity.HINT,
-                        ASYNC = vim.diagnostic.severity.HINT,
-                        B = vim.diagnostic.severity.HINT,
-                        A = vim.diagnostic.severity.HINT,
-                        COM = vim.diagnostic.severity.HINT,
-                        C = vim.diagnostic.severity.HINT,
-                        DTZ = vim.diagnostic.severity.HINT,
-                        T = vim.diagnostic.severity.HINT,
-                        FIX = vim.diagnostic.severity.HINT,
-                        FA = vim.diagnostic.severity.HINT,
-                        ISC = vim.diagnostic.severity.HINT,
-                        PIE = vim.diagnostic.severity.HINT,
-                        PYI = vim.diagnostic.severity.HINT,
-                        PT = vim.diagnostic.severity.HINT,
-                        RET = vim.diagnostic.severity.HINT,
-                        SIM = vim.diagnostic.severity.HINT,
-                        TC = vim.diagnostic.severity.HINT,
-                        I = vim.diagnostic.severity.HINT,
-                        E = vim.diagnostic.severity.ERROR,
-                        W = vim.diagnostic.severity.WARN,
-                        DOC = vim.diagnostic.severity.HINT,
-                        D = vim.diagnostic.severity.INFO,
-                        F = vim.diagnostic.severity.HINT,
-                        PLC = vim.diagnostic.severity.HINT,
-                        PLE = vim.diagnostic.severity.ERROR,
-                        PLR = vim.diagnostic.severity.HINT,
-                        PLW = vim.diagnostic.severity.WARN,
-                        UP = vim.diagnostic.severity.HINT,
-                        RUF = vim.diagnostic.severity.HINT,
-                    }
-                    if diag.code then
-                        diag.severity = map[diag.code:match("^(%u+)")]
+                    if diag.severity or not diag.code then
+                        return
                     end
+                    diag.severity = SEVERITY_MAP[diag.code:match("^(%u+)")]
                 end,
             },
             source = "ruff",
+            tags = {
+                deprecated = {
+                    "PYI057",
+                    "PT020",
+                    "UP005",
+                    "UP019",
+                    "UP021",
+                    "UP023",
+                    "UP026",
+                    "UP035",
+                },
+                unnecessary = {
+                    "ARG001",
+                    "ARG002",
+                    "ARG003",
+                    "ARG004",
+                    "ARG005",
+                    "F401",
+                    "F504",
+                    "F522",
+                    "F811",
+                    "F841",
+                    "F842",
+                    "RUF029",
+                    "RUF059",
+                    "RUF100",
+                },
+            },
         },
     },
     keymaps = {
@@ -123,8 +158,11 @@ return {
         cmd = { "jedi-language-server" },
         single_file_support = true,
         init_options = {
+            completion = {
+                disableSnippets = true,
+            },
             diagnostics = {
-                enable = false,
+                enable = true,
             },
         },
     },
