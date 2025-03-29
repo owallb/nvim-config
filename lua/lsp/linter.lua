@@ -29,7 +29,6 @@ M.__index = M
 ---@field message? string
 ---@field source? string
 ---@field code? string
----@field zero_idx? boolean
 ---@field callback? fun(diag: vim.Diagnostic)
 
 ---@class DiagnosticTagMap
@@ -48,6 +47,8 @@ M.__index = M
 ---@field debounce? number
 ---@field json? JsonConfig
 ---@field tags? DiagnosticTagMap
+---@field zero_idx_lnum? boolean
+---@field zero_idx_col? boolean
 M.config = {}
 
 -- Extract a value from a JSON object using a path
@@ -130,6 +131,30 @@ function M:add_tags(diag)
     end
 end
 
+--- Resolve 0/1-based indexing for lnum/col
+---@param diag vim.Diagnostic
+function M:fix_indexing(diag)
+    if not self.config.zero_idx_lnum then
+        if diag.lnum then
+            diag.lnum = diag.lnum - 1
+        end
+
+        if diag.end_lnum then
+            diag.end_lnum = diag.end_lnum - 1
+        end
+    end
+
+    if not self.config.zero_idx_col then
+        if diag.col then
+            diag.col = diag.col - 1
+        end
+
+        if diag.end_col then
+            diag.end_col = diag.end_col - 1
+        end
+    end
+end
+
 function M:process_json_output(json, bufnr)
     ---@type vim.Diagnostic[]
     local diagnostics = {}
@@ -167,24 +192,7 @@ function M:process_json_output(json, bufnr)
             diag.severity = self.config.severity_map[diag.severity]
         end
 
-        if not self.config.json.zero_idx then
-            if diag.lnum then
-                diag.lnum = diag.lnum - 1
-            end
-
-            if diag.end_lnum then
-                diag.end_lnum = diag.end_lnum - 1
-            end
-
-            if diag.col then
-                diag.col = diag.col - 1
-            end
-
-            if diag.end_col then
-                diag.end_col = diag.end_col - 1
-            end
-        end
-
+        self:fix_indexing(diag)
         self:clamp_col(diag, bufnr)
         self:add_tags(diag)
 
@@ -320,6 +328,7 @@ function M:run(bufnr)
                     resp.source = resp.source or self.config.source
                     self:clamp_col(resp, bufnr)
                     self:add_tags(resp)
+                    self:fix_indexing(resp)
                     table.insert(diagnostics, resp)
                 end
             end
