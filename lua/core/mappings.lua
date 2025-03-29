@@ -35,7 +35,7 @@ local close_pum = function()
     end
 end
 
-vim.keymap.set({ "n", "i" }, "<C-x>", function()
+vim.keymap.set({ "n", "i" }, "<C-c>", function()
     return close_pum()
 end, { expr = true })
 
