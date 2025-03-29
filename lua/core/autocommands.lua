@@ -61,3 +61,15 @@ vim.api.nvim_create_autocmd("FileType", {
     end,
 })
 
+vim.api.nvim_create_autocmd("FileType", {
+    desc = "Customize python indentation",
+    pattern = { "python" },
+    callback = function()
+        vim.g.python_indent = {
+            open_paren = 'shiftwidth()',
+            continue = 'shiftwidth()',
+            closed_paren_align_last_line = false,
+        }
+    end,
+})
+
