@@ -93,8 +93,11 @@ end
 function M:clamp_col(diag, bufnr)
     local lines =
         vim.api.nvim_buf_get_lines(bufnr, diag.lnum, diag.lnum + 1, false)
-    local line_len = #lines[1] - 1
+    if #lines == 0 then
+        return
+    end
 
+    local line_len = #lines[1] - 1
     if diag.col > line_len then
         diag.col = line_len
     end
