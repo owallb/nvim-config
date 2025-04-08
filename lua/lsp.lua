@@ -128,7 +128,7 @@ local function setup_diagnostics()
             end,
         },
         update_in_insert = false,
-        severity_sort = false,
+        severity_sort = true,
     })
 end
 
