@@ -67,8 +67,6 @@ function M:init(server, bufnr)
             lhs = "<C-h>",
             rhs = vim.lsp.buf.document_highlight,
         },
-        { mode = { "n" }, lhs = "<leader>lr", rhs = vim.lsp.buf.rename },
-        { mode = { "n" }, lhs = "<leader>la", rhs = vim.lsp.buf.code_action },
         { mode = { "n", "x" }, lhs = "<leader>lf", rhs = vim.lsp.buf.format },
         {
             mode = { "n" },
@@ -101,8 +99,8 @@ function M:init(server, bufnr)
                 rhs = telescope.lsp_type_definitions,
             },
             { mode = "n", lhs = "gd", rhs = telescope.lsp_definitions },
-            { mode = "n", lhs = "gi", rhs = telescope.lsp_implementations },
-            { mode = "n", lhs = "gr", rhs = telescope.lsp_references },
+            { mode = "n", lhs = "gri", rhs = telescope.lsp_implementations },
+            { mode = "n", lhs = "grr", rhs = telescope.lsp_references },
         })
     else
         vim.list_extend(self.new[bufnr], {
@@ -113,8 +111,6 @@ function M:init(server, bufnr)
                 rhs = vim.lsp.buf.type_definition,
             },
             { mode = "n", lhs = "gd", rhs = vim.lsp.buf.definition },
-            { mode = "n", lhs = "gi", rhs = vim.lsp.buf.implementation },
-            { mode = "n", lhs = "gr", rhs = vim.lsp.buf.references },
         })
     end
 
