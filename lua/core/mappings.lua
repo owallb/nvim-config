@@ -91,6 +91,9 @@ vim.keymap.set('n', '<leader>ve', function()
     end
 end)
 
+-- Removed bindings
+vim.keymap.set('n', 'gr', '<Nop>')
+
 -- Default bindings that are good to know:
 -- insert mode:
 --  <C-T>           - indent, see :h i_CTRL-T
