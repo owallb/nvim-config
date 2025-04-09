@@ -129,6 +129,10 @@ local function setup_diagnostics()
         },
         update_in_insert = false,
         severity_sort = true,
+        jump = {
+            float = true,
+            wrap = false,
+        },
     })
 end
 
