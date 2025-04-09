@@ -12,3 +12,7 @@ vim.g.netrw_sort_sequence = '[\\/]\\s*,*'
 vim.g.netrw_special_syntax = 1
 vim.g.netrw_timefmt = '%d-%m-%Y %H:%M'
 vim.g.c_syntax_for_h = 1
+
+local termfeatures = vim.g.termfeatures or {}
+termfeatures.osc52 = false
+vim.g.termfeatures = termfeatures
