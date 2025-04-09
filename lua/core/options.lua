@@ -26,13 +26,13 @@ vim.opt.foldlevel = 99
 vim.opt.foldlevelstart = 99
 vim.opt.foldmethod = "indent"
 vim.opt.foldignore = ""
-vim.opt.completeopt:append({
-    "menu",
+vim.opt.completeopt = {
+    "fuzzy",
     "menuone",
-    "preview",
-    "noinsert",
     "noselect",
-})
+    "nosort",
+    "popup",
+}
 -- set nowrap
 vim.opt.matchpairs:append({ "<:>", })
 -- Only relevant with wrap enabled (default)

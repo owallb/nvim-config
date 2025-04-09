@@ -1,6 +1,35 @@
 local keymap = require("lsp.keymap")
 local utils = require("utils")
 
+---@type table<lsp.CompletionItemKind, string>
+local kind_hl = {
+    [1] = "CmpItemKindText",
+    [2] = "CmpItemKindMethod",
+    [3] = "CmpItemKindFunction",
+    [4] = "CmpItemKindConstructor",
+    [5] = "CmpItemKindField",
+    [6] = "CmpItemKindVariable",
+    [7] = "CmpItemKindClass",
+    [8] = "CmpItemKindInterface",
+    [9] = "CmpItemKindModule",
+    [10] = "CmpItemKindProperty",
+    [11] = "CmpItemKindUnit",
+    [12] = "CmpItemKindValue",
+    [13] = "CmpItemKindEnum",
+    [14] = "CmpItemKindKeyword",
+    [15] = "CmpItemKindSnippet",
+    [16] = "CmpItemKindColor",
+    [17] = "CmpItemKindFile",
+    [18] = "CmpItemKindReference",
+    [19] = "CmpItemKindFolder",
+    [20] = "CmpItemKindEnumMember",
+    [21] = "CmpItemKindConstant",
+    [22] = "CmpItemKindStruct",
+    [23] = "CmpItemKindEvent",
+    [24] = "CmpItemKindOperator",
+    [25] = "CmpItemKindTypeParameter",
+}
+
 ---@class Linter
 local Linter = require("lsp.linter")
 
@@ -116,42 +145,40 @@ function M:on_attach(client, bufnr)
     vim.cmd.highlight({ "link LspReferenceText Visual", bang = true })
     vim.cmd.highlight({ "link LspReferenceWrite Visual", bang = true })
 
-    ---@alias lsp.Client vim.lsp.Client
-    -- require("lsp_compl").attach(client, bufnr, {
-    --     server_side_fuzzy_completion = true,
-    -- })
+    vim.lsp.completion.enable(true, client.id, bufnr, {
+        autotrigger = true,
+        convert = function(item)
+            utils.debug(vim.inspect(item))
+            local res = vim.lsp.buf_request_sync(
+                bufnr,
+                vim.lsp.protocol.Methods.completionItem_resolve,
+                item,
+                500
+            )[client.id]
+            utils.debug(vim.inspect(res))
+
+            local doc = nil
+            if res.error then
+                utils.error(
+                    "Error while retrieving completion info: " .. res.error
+                )
+            else
+                doc = vim.tbl_get(res, "result", "documentation", "value")
+            end
+
+            return {
+                abbr = item.label:gsub("%b()", ""),
+                kind_hlgroup = kind_hl[item.kind],
+                info = doc,
+            }
+        end,
+    })
 end
 
 --- Configure the LSP client
 function M:configure_client()
-    local lspconfig = require("lspconfig")
-
-    local capabilities = vim.lsp.protocol.make_client_capabilities()
-    local cmp_nvim_lsp = utils.try_require("cmp_nvim_lsp")
-    if cmp_nvim_lsp then
-        capabilities = vim.tbl_deep_extend(
-            "force",
-            capabilities,
-            cmp_nvim_lsp.default_capabilities()
-        )
-    end
-
-    -- local epo = utils.try_require("epo")
-    -- if epo then
-    --     capabilities = vim.tbl_deep_extend(
-    --         "force",
-    --         capabilities,
-    --         epo.register_cap()
-    --     )
-    -- end
-
-    -- local lsp_compl = utils.try_require("lsp_compl")
-    -- if lsp_compl then
-    --     capabilities = vim.tbl_deep_extend("force", capabilities, lsp_compl.capabilities())
-    -- end
-    --
-
-    self.config.lspconfig.capabilities = capabilities
+    self.config.lspconfig.capabilities =
+        vim.lsp.protocol.make_client_capabilities()
     self.config.lspconfig.on_attach = function(client, bufnr)
         local ok, ret = pcall(self.on_attach, self, client, bufnr)
         if not ok then
@@ -162,6 +189,7 @@ function M:configure_client()
         end
     end
 
+    local lspconfig = require("lspconfig")
     local ok, ret = pcall(lspconfig[self.name].setup, self.config.lspconfig)
     if not ok then
         utils.err(

@@ -14,5 +14,7 @@ return {
     end,
     config = function()
         vim.cmd.colorscheme("moonfly")
+        vim.api.nvim_set_hl(0, "Pmenu", { link = "NormalFloat" })
+        vim.api.nvim_set_hl(0, "PmenuSel", { link = "CursorLine" })
     end,
 }
