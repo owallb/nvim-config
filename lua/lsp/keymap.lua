@@ -93,11 +93,7 @@ function M:init(server, bufnr)
     if telescope then
         vim.list_extend(self.new[bufnr], {
             { mode = "n", lhs = "<leader>dl", rhs = telescope.diagnostics },
-            {
-                mode = "n",
-                lhs = "<leader>lD",
-                rhs = telescope.lsp_type_definitions,
-            },
+            { mode = "n", lhs = "grt", rhs = telescope.lsp_type_definitions, },
             { mode = "n", lhs = "gd", rhs = telescope.lsp_definitions },
             { mode = "n", lhs = "gri", rhs = telescope.lsp_implementations },
             { mode = "n", lhs = "grr", rhs = telescope.lsp_references },
@@ -105,11 +101,7 @@ function M:init(server, bufnr)
     else
         vim.list_extend(self.new[bufnr], {
             { mode = "n", lhs = "<leader>dl", rhs = vim.diagnostic.setloclist },
-            {
-                mode = "n",
-                lhs = "<leader>ld",
-                rhs = vim.lsp.buf.type_definition,
-            },
+            { mode = "n", lhs = "grt", rhs = vim.lsp.buf.type_definition, },
             { mode = "n", lhs = "gd", rhs = vim.lsp.buf.definition },
         })
     end
