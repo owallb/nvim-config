@@ -66,6 +66,7 @@ vim.opt.diffopt:append("internal")
 -- These make diffs easier to read, please see the following:
 -- https://vimways.org/2018/the-power-of-diff/
 vim.opt.diffopt:append({ "indent-heuristic", "algorithm:histogram", })
+vim.opt.diffopt:append("linematch:40")
 vim.opt.hlsearch = true
 vim.opt.laststatus = 2
 vim.opt.textwidth = 0
