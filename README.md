@@ -1,7 +1,7 @@
 My Neovim config.
 
 ## System Requirements
-Only supports Linux, macOS and other BSD variants. Requires latest git master of neovim.
+Only supports Linux, macOS and other BSD variants. Requires neovim v0.11.
 
 Below is a list of dependencies and the respective plugins that require it.
 
