@@ -53,5 +53,6 @@ return {
             )
         end,
         attach_to_untracked = true,
+        sign_priority = 100,
     },
 }
