@@ -277,8 +277,8 @@ function M:run(bufnr)
         input = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
     end
 
-    local cmd = self.config.cmd
-    local file = vim.fn.expand("%")
+    local cmd = vim.fn.copy(self.config.cmd)
+    local file = vim.fn.expand("%:.")
     local filename = vim.fn.expand("%:t")
     for i, arg in ipairs(cmd) do
         arg = arg:gsub("%%file%%", file)
