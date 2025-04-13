@@ -99,5 +99,11 @@ return {
             hijack_netrw_behavior = "disabled",
         },
     },
-    init = toggle_neo_tree,
+    init = function()
+        vim.defer_fn(function()
+            local winnr = vim.api.nvim_get_current_win()
+            toggle_neo_tree()
+            vim.api.nvim_set_current_win(winnr)
+        end, 100)
+    end,
 }
