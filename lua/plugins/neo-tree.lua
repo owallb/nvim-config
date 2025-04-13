@@ -64,7 +64,6 @@ return {
             },
             name = {
                 use_git_status_colors = false,
-                highlight_opened_files = true,
             },
             git_status = {
                 symbols = {
