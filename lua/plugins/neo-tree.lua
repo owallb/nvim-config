@@ -7,6 +7,13 @@ local function toggle_neo_tree()
     })
 end
 
+local function focus_neo_tree()
+    require("neo-tree.command").execute({
+        action = "focus",
+        reveal = true,
+    })
+end
+
 ---@type LazyPluginSpec
 return {
     "nvim-neo-tree/neo-tree.nvim",
@@ -20,6 +27,10 @@ return {
         {
             "<leader>tt",
             toggle_neo_tree,
+        },
+        {
+            "<leader>a",
+            focus_neo_tree,
         },
     },
     ---@type neotree.Config?
