@@ -107,7 +107,7 @@ return {
                             return
                         end
 
-                        vim.fn.system({ "gio trash", vim.fn.fnameescape(path) })
+                        vim.fn.system({ "gio", "trash", vim.fn.fnameescape(path) })
                         require("neo-tree.sources.manager").refresh(state.name)
                     end)
                 end,
@@ -133,7 +133,7 @@ return {
                         end
                         for _, node in ipairs(selected_nodes) do
                             vim.fn.system({
-                                "gio trash",
+                                "gio", "trash",
                                 vim.fn.fnameescape(node.path),
                             })
                         end
