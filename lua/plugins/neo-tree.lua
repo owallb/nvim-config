@@ -147,6 +147,18 @@ return {
                 end,
             },
         },
+        event_handlers = {
+            {
+                event = "neo_tree_window_after_open",
+                handler = function(event)
+                    vim.api.nvim_set_option_value(
+                        "signcolumn",
+                        "no",
+                        { scope = "local", win = event.winid }
+                    )
+                end,
+            },
+        },
     },
     init = toggle_neo_tree,
 }
