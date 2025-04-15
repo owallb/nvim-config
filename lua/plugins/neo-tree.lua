@@ -148,11 +148,5 @@ return {
             },
         },
     },
-    init = function()
-        vim.defer_fn(function()
-            local winnr = vim.api.nvim_get_current_win()
-            toggle_neo_tree()
-            vim.api.nvim_set_current_win(winnr)
-        end, 100)
-    end,
+    init = toggle_neo_tree,
 }
