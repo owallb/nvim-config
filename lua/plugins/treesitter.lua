@@ -34,6 +34,10 @@ return {
         vim.opt.foldmethod = "expr"
         vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
 
+        -- Disable LSP semantic highlighting for lua comments because it will
+        -- otherwise override highlights from `comment`.
+        vim.api.nvim_set_hl(0, "@lsp.type.comment.lua", {})
+
         -- To set the priority of semantic highlighting lower than treesitter (100),
         -- uncomment the line below:
         -- vim.hl.priorities.semantic_tokens = 99
