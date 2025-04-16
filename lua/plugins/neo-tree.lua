@@ -10,7 +10,7 @@ end
 local function focus_neo_tree()
     require("neo-tree.command").execute({
         action = "focus",
-        reveal = true,
+        source = "last",
     })
 end
 
@@ -64,6 +64,7 @@ return {
             },
             name = {
                 use_git_status_colors = false,
+                trailing_slash = true,
             },
             git_status = {
                 symbols = {
@@ -96,6 +97,7 @@ return {
                 enabled = true,
             },
             hijack_netrw_behavior = "disabled",
+            use_libuv_file_watcher = true,
             commands = {
                 -- over write default 'delete' command to 'trash'.
                 delete = function(state)
