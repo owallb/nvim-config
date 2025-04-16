@@ -1,4 +1,4 @@
-local utils = require("utils")
+local utils = require("ow.utils")
 
 local ERROR = vim.diagnostic.severity.ERROR
 local WARN = vim.diagnostic.severity.WARN

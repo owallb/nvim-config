@@ -1,9 +1,9 @@
-local utils = require("utils")
+local utils = require("ow.utils")
 
-local CONFIG_DIR = vim.fn.stdpath("config") .. "/lua/lsp/config"
+local CONFIG_DIR = vim.fn.stdpath("config") .. "/lua/ow/lsp/config"
 
 ---@class Server
-local Server = require("lsp.server")
+local Server = require("ow.lsp.server")
 
 local M = {}
 
@@ -19,9 +19,9 @@ local function get_module_name(filepath)
 end
 
 local function get_server_config(name)
-    local module = "lsp.config." .. name
+    local module = "ow.lsp.config." .. name
     package.loaded[module] = nil
-    return utils.try_require("lsp.config." .. name)
+    return utils.try_require("ow.lsp.config." .. name)
 end
 
 local reload_server_config = utils.debounce_with_id(function(name, events)
@@ -35,7 +35,8 @@ local reload_server_config = utils.debounce_with_id(function(name, events)
     end
 
     if events.rename then
-        local _, _, err_name = vim.uv.fs_stat(("%s/%s.lua"):format(CONFIG_DIR, name))
+        local _, _, err_name =
+            vim.uv.fs_stat(("%s/%s.lua"):format(CONFIG_DIR, name))
         if err_name == "ENOENT" then
             return
         end
@@ -51,7 +52,7 @@ local reload_server_config = utils.debounce_with_id(function(name, events)
         return
     end
 
-    local on_done = function (success)
+    local on_done = function(success)
         if success then
             utils.info(("%s reloaded"):format(name))
         end
@@ -68,7 +69,10 @@ end, 1000)
 
 local function process_change(error, filename, events)
     if error then
-        utils.err(("Error on change for %s:\n%s"):format(filename, error), "lsp.on_config_change")
+        utils.err(
+            ("Error on change for %s:\n%s"):format(filename, error),
+            "ow.lsp.on_config_change"
+        )
         return
     end
 
@@ -109,7 +113,12 @@ local function load_configs()
         ::continue::
     end
 
-    vim.uv.fs_event_start(vim.uv.new_fs_event(), CONFIG_DIR, {}, vim.schedule_wrap(process_change))
+    vim.uv.fs_event_start(
+        vim.uv.new_fs_event(),
+        CONFIG_DIR,
+        {},
+        vim.schedule_wrap(process_change)
+    )
 end
 
 --- Setup diagnostics UI

@@ -1,7 +1,5 @@
 -- spec: https://github.com/eclipse/lemminx/blob/main/docs/Configuration.md
 
-local utils = require("utils")
-
 return {
     enable = true,
     mason = {

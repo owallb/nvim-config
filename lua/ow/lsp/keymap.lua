@@ -1,7 +1,7 @@
 -- Mappings.
 -- See `:help vim.lsp.*` for documentation on any of the below functions
 
-local utils = require("utils")
+local utils = require("ow.utils")
 
 ---@class Keymap
 ---@field mode string|string[]

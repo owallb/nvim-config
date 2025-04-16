@@ -2,7 +2,7 @@
 -- https://github.com/bmewburn/intelephense-docs/blob/master/installation.md
 -- https://github.com/bmewburn/vscode-intelephense/blob/master/package.json
 
-local utils = require("utils")
+local utils = require("ow.utils")
 
 return {
     enable = true,

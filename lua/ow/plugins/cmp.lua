@@ -37,7 +37,11 @@ return {
             config = function()
                 require("luasnip.loaders.from_vscode").lazy_load()
             end,
-            build = (require("utils").os_name ~= "Windows_NT" and "make install_jsregexp" or nil),
+            build = (
+                require("ow.utils").os_name ~= "Windows_NT"
+                    and "make install_jsregexp"
+                or nil
+            ),
             version = "2.*",
             dependencies = { "rafamadriz/friendly-snippets" },
         },
@@ -45,7 +49,7 @@ return {
     config = function()
         local cmp = require("cmp")
         local luasnip = require("luasnip")
-        local utils = require("utils")
+        local utils = require("ow.utils")
         local lspkind = utils.try_require("lspkind")
 
         ---@type cmp.ConfigSchema
@@ -53,7 +57,7 @@ return {
             -- enabled = function()
             --     return has_words_before()
             -- end,
-            preselect = 'None',
+            preselect = "None",
             completion = {
                 autocomplete = { "InsertEnter", "TextChanged" },
                 keyword_length = 1,

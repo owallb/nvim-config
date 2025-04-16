@@ -1,11 +1,11 @@
-local keymap = require("lsp.keymap")
-local utils = require("utils")
+local keymap = require("ow.lsp.keymap")
+local utils = require("ow.utils")
 
 ---@class Linter
-local Linter = require("lsp.linter")
+local Linter = require("ow.lsp.linter")
 
 ---@class MasonPackage
-local MasonPackage = require("lsp.package")
+local MasonPackage = require("ow.lsp.package")
 
 ---@class Server
 ---@field name? string

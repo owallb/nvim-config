@@ -1,6 +1,6 @@
 vim.loader.enable()
 
-local utils = require("utils")
+local utils = require("ow.utils")
 
 local files = {
     "globals",
@@ -10,7 +10,7 @@ local files = {
 }
 
 for _, file in ipairs(files) do
-    local pkg = "core." .. file
+    local pkg = "ow.core." .. file
     local ok, err = pcall(require, pkg)
     if not ok then
         utils.err("Error while loading package " .. pkg)
@@ -19,7 +19,7 @@ for _, file in ipairs(files) do
     end
 end
 
-local ok, err = pcall(require, "bootstrap")
+local ok, err = pcall(require, "ow.bootstrap")
 if not ok then
     utils.err("Error during bootstrap")
     utils.err(err:gsub("\t", "  "))
@@ -30,9 +30,9 @@ end
 local plugins = {
     {
         "neovim/nvim-lspconfig",
-        config = require("lsp").setup,
+        config = require("ow.lsp").setup,
     },
-    { import = "plugins" },
+    { import = "ow.plugins" },
 }
 
 ---@type LazyConfig
