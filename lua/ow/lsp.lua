@@ -5,7 +5,18 @@ local CONFIG_DIR = vim.fn.stdpath("config") .. "/lua/ow/lsp/config"
 ---@class Server
 local Server = require("ow.lsp.server")
 
+---@class LSP
+---@field diagnostic_signs vim.diagnostic.Opts.Signs
 local M = {}
+
+M.diagnostic_signs = {
+    text = {
+        [vim.diagnostic.severity.ERROR] = "E",
+        [vim.diagnostic.severity.WARN] = "W",
+        [vim.diagnostic.severity.INFO] = "I",
+        [vim.diagnostic.severity.HINT] = "H",
+    },
+}
 
 ---@type table<string, Server>
 local servers = {}
@@ -125,7 +136,7 @@ end
 local function setup_diagnostics()
     vim.diagnostic.config({
         underline = true,
-        signs = true,
+        signs = M.diagnostic_signs,
         virtual_text = false,
         float = {
             show_header = false,
