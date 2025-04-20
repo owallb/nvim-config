@@ -162,5 +162,8 @@ return {
             },
         },
     },
-    init = toggle_neo_tree,
+    config = function(_, opts)
+        require("neo-tree").setup(opts)
+        toggle_neo_tree()
+    end,
 }
