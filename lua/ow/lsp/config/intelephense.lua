@@ -4,6 +4,7 @@
 
 local utils = require("ow.utils")
 
+---@type ServerConfig
 return {
     enable = true,
     dependencies = {
@@ -29,6 +30,8 @@ return {
                 error = vim.diagnostic.severity.ERROR,
                 warning = vim.diagnostic.severity.WARN,
             },
+            zero_idx_col = true,
+            zero_idx_lnum = true,
         },
     },
     keymaps = {
