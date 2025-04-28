@@ -87,7 +87,7 @@ return {
             end,
         },
         {
-            "<leader>a",
+            "ga",
             function()
                 require("nvim-tree.api").tree.open()
             end,
@@ -162,7 +162,7 @@ return {
             hijack_cursor = true,
             hijack_netrw = false,
             view = {
-                width = 40,
+                width = 60,
                 preserve_window_proportions = true,
             },
             renderer = {
@@ -186,8 +186,8 @@ return {
                     enable = true,
                 },
                 icons = {
-                    git_placement = "right_align",
-                    diagnostics_placement = "signcolumn",
+                    git_placement = "after",
+                    diagnostics_placement = "after",
                     bookmarks_placement = "after",
                     symlink_arrow = " -> ",
                     show = {
