@@ -45,12 +45,18 @@ return {
             version = "2.*",
             dependencies = { "rafamadriz/friendly-snippets" },
         },
+        {
+            "onsails/lspkind.nvim",
+            config = function()
+                require("lspkind").init()
+            end,
+        },
     },
     config = function()
         local cmp = require("cmp")
         local luasnip = require("luasnip")
         local utils = require("ow.utils")
-        local lspkind = utils.try_require("lspkind")
+        local lspkind = require("lspkind")
 
         ---@type cmp.ConfigSchema
         local opts = {
@@ -67,19 +73,18 @@ return {
                     luasnip.lsp_expand(args.body)
                 end,
             },
+            ---@diagnostic disable-next-line: missing-fields
             formatting = {
                 format = function(entry, vim_item)
-                    if lspkind then
-                        vim_item = lspkind.cmp_format({
-                            mode = "symbol",
-                            maxwidth = 50,
-                            ellipsis_char = "...",
-                            before = function(_, item)
-                                item.dup = 0 -- remove duplicates, see nvim-cmp #511
-                                return item
-                            end,
-                        })(entry, vim_item)
-                    end
+                    vim_item = lspkind.cmp_format({
+                        mode = "symbol",
+                        maxwidth = 50,
+                        ellipsis_char = "...",
+                        before = function(_, item)
+                            item.dup = 0 -- remove duplicates, see nvim-cmp #511
+                            return item
+                        end,
+                    })(entry, vim_item)
 
                     return vim_item
                 end,
