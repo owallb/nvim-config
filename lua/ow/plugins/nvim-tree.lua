@@ -75,7 +75,10 @@ end
 ---@type LazyPluginSpec
 return {
     "nvim-tree/nvim-tree.lua",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
+    dependencies = {
+        "tpope/vim-fugitive",
+        "nvim-tree/nvim-web-devicons",
+    },
     event = "VimEnter",
     keys = {
         {
@@ -168,7 +171,14 @@ return {
             },
             renderer = {
                 full_name = true,
-                root_folder_label = ":~",
+                root_folder_label = function(path)
+                    local label = vim.fn.fnamemodify(path, ":~")
+                    local git_head = vim.fn.FugitiveHead()
+                    if git_head ~= "" then
+                        label = label .. (" (%s)"):format(git_head)
+                    end
+                    return label
+                end,
                 special_files = {},
                 decorators = {
                     "Git",
