@@ -75,6 +75,7 @@ end
 ---@type LazyPluginSpec
 return {
     "nvim-tree/nvim-tree.lua",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
     event = "VimEnter",
     keys = {
         {
@@ -162,7 +163,7 @@ return {
             hijack_cursor = true,
             hijack_netrw = false,
             view = {
-                width = 60,
+                width = 50,
                 preserve_window_proportions = true,
             },
             renderer = {
@@ -184,17 +185,26 @@ return {
                 highlight_clipboard = "all",
                 indent_markers = {
                     enable = true,
+                    icons = {
+                        corner = "│",
+                        none = "│",
+                    },
                 },
                 icons = {
                     git_placement = "after",
-                    diagnostics_placement = "after",
+                    diagnostics_placement = "signcolumn",
                     bookmarks_placement = "after",
                     symlink_arrow = " -> ",
                     show = {
-                        file = false,
-                        folder = false,
+                        file = true,
+                        folder = true,
                         folder_arrow = false,
                         bookmarks = false,
+                    },
+                    web_devicons = {
+                        file = {
+                            color = false,
+                        },
                     },
                     glyphs = {
                         modified = "*",
