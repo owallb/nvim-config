@@ -146,7 +146,7 @@ return {
                     local label = vim.fn.fnamemodify(path, ":~")
                     local git_head = vim.fn.FugitiveHead()
                     if git_head ~= "" then
-                        label = label .. (" (%s)"):format(git_head)
+                        label = label .. ("  %s"):format(git_head)
                     end
                     return label
                 end,
