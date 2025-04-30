@@ -1,51 +1,24 @@
+local function find_link_source(name)
+    local hl = vim.api.nvim_get_hl(0, { name = "NvimTreeFileIcon" })
+    while hl.link do
+        hl = vim.api.nvim_get_hl(0, { name = hl.link })
+    end
+
+    return hl
+end
+
 local function override_highlights()
-    -- Git
-    vim.cmd.highlight({
-        "link NvimTreeGitDeletedIcon MoonflyTurquoise",
-        bang = true,
-    })
-    vim.cmd.highlight({
-        "link NvimTreeGitDirtyIcon MoonflyTurquoise",
-        bang = true,
-    })
-    vim.cmd.highlight({
-        "link NvimTreeGitIgnoredIcon Comment",
-        bang = true,
-    })
-    vim.cmd.highlight({
-        "link NvimTreeGitMergeIcon MoonflyCrimson",
-        bang = true,
-    })
-    vim.cmd.highlight({
-        "link NvimTreeGitNewIcon MoonflyOrchid",
-        bang = true,
-    })
-    vim.cmd.highlight({
-        "link NvimTreeGitRenamedIcon MoonflyTurquoise",
-        bang = true,
-    })
-    vim.cmd.highlight({
-        "link NvimTreeGitStagedIcon MoonflyGreen",
-        bang = true,
-    })
+    -- File Icon
+    local hl = find_link_source("NvimTreeFileIcon")
+    vim.api.nvim_set_hl(0, "NvimTreeFileIcon", { fg = hl.fg, bg = nil })
 
-    -- Bookmarks
-    vim.cmd.highlight({
-        "link NvimTreeBookmarkHL MoonflyYellowLineActive",
-        bang = true,
-    })
-
-    -- Clipboard
-    vim.cmd.highlight({
-        "link NvimTreeCutHL MoonflyRedLineActive",
-        bang = true,
-    })
-
-    -- Modified
-    vim.cmd.highlight({
-        "link NvimTreeModifiedIcon MoonflyTurquoise",
-        bang = true,
-    })
+    -- Symlink Icon
+    hl = find_link_source("NvimTreeSymlinkIcon")
+    vim.api.nvim_set_hl(
+        0,
+        "NvimTreeSymlinkIcon",
+        { fg = hl.fg, bg = nil }
+    )
 end
 
 local function disable_highlights()
@@ -126,8 +99,6 @@ return {
                 return self.folder_hl
             end
         end
-
-        override_highlights()
 
         local signs = require("ow.lsp").diagnostic_signs
         require("nvim-tree").setup({
@@ -280,6 +251,7 @@ return {
             },
         })
 
+        override_highlights()
         disable_highlights()
 
         require("nvim-tree.api").tree.toggle({

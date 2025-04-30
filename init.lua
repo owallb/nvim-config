@@ -38,7 +38,7 @@ local plugins = {
 ---@type LazyConfig
 local opts = {
     install = {
-        colorscheme = { "moonfly" },
+        colorscheme = { "onedark" },
     },
     ui = {
         icons = {
