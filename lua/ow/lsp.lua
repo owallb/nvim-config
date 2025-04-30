@@ -146,6 +146,7 @@ local function setup_diagnostics()
             format = function(diagnostic)
                 return string.format("%s", diagnostic.message)
             end,
+            width = 80,
         },
         update_in_insert = false,
         severity_sort = true,
