@@ -1,8 +1,7 @@
 ---@type LazyPluginSpec
 return {
     "navarasu/onedark.nvim",
-    -- enabled = false,
-    priority = 1000, -- make sure to load this before all the other start plugins
+    priority = 1000,
     config = function()
         local c = require("onedark.palette").dark
         local opts = {
@@ -14,7 +13,6 @@ return {
             },
         }
         require("onedark").setup(opts)
-        -- Enable theme
         require("onedark").load()
     end,
 }
