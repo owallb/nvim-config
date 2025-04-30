@@ -38,7 +38,7 @@ vim.opt.matchpairs:append({ "<:>", })
 -- Only relevant with wrap enabled (default)
 vim.opt.linebreak = true
 vim.opt.breakindent = true
-vim.opt.showbreak = "↪"
+vim.opt.showbreak = "  "
 -- Minimum amount of lines to show offset +/- to cursorline
 vim.opt.scrolloff = 3
 vim.opt.visualbell = true
