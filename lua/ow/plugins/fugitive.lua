@@ -3,7 +3,7 @@
 local function git_status_tab()
     vim.cmd.tabnew()
     vim.cmd("leftabove vertical G")
-    vim.cmd("vertical resize 40")
+    vim.cmd("vertical resize 50")
     vim.cmd.set("wfw")
 end
 
