@@ -11,6 +11,7 @@ return {
                 FloatBorder = { bg = c.bg0 },
                 TabLineSel = { fg = c.fg, bg = c.bg0 },
                 EndOfBuffer = nil,
+                NvimTreeIndentMarker = { fg = c.bg3 },
             },
         }
         require("onedark").setup(opts)
