@@ -3,13 +3,14 @@ return {
     "navarasu/onedark.nvim",
     priority = 1000,
     config = function()
-        local c = require("onedark.palette").dark
+        local c = require("onedark.palette").darker
         local opts = {
-            style = "dark",
+            style = "darker",
             highlights = {
                 NormalFloat = { bg = c.bg0 },
                 FloatBorder = { bg = c.bg0 },
-                TabLineSel = { fg = c.fg, bg = c.bg0 }
+                TabLineSel = { fg = c.fg, bg = c.bg0 },
+                EndOfBuffer = nil,
             },
         }
         require("onedark").setup(opts)
