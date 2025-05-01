@@ -1,5 +1,3 @@
--- https://github.com/NvChad/nvim-colorizer.lua
-
 ---@type LazyPluginSpec
 return {
     "stevearc/oil.nvim",
@@ -12,6 +10,7 @@ return {
             mode = "n",
         },
     },
+    ---@type oil.SetupOpts
     opts = {
         default_file_explorer = true,
         columns = {
@@ -20,11 +19,10 @@ return {
             "size",
             "mtime",
         },
-        constrain_cursor = "name",
         delete_to_trash = true,
         float = {
             max_width = 80,
-            max_height = 40,
+            max_height = 20,
         },
         skip_confirm_for_simple_edits = true,
         watch_for_changes = false,
