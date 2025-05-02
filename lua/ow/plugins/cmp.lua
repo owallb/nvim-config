@@ -151,17 +151,11 @@ return {
                 { name = "orgmode" },
                 { name = "path" },
             },
+            window = {
+                completion = cmp.config.window.bordered(),
+                documentation = cmp.config.window.bordered(),
+            }
         }
-
-        if utils.has_module("moonfly") then
-            local winhighlight = {
-                winhighlight = "Normal:NormalFloat,FloatBorder:FloatBorder,CursorLine:PmenuSel",
-            }
-            opts.window = {
-                completion = cmp.config.window.bordered(winhighlight),
-                documentation = cmp.config.window.bordered(winhighlight),
-            }
-        end
 
         cmp.setup(opts)
         cmp.setup.cmdline("/", {

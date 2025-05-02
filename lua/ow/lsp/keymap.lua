@@ -52,14 +52,14 @@ function M:init(server, bufnr)
             mode = { "n", "i" },
             lhs = "<C-k>",
             rhs = function()
-                vim.lsp.buf.hover({ border = "single", max_width = 80 })
+                vim.lsp.buf.hover({ border = "rounded", max_width = 80 })
             end,
         },
         {
             mode = { "n", "i" },
             lhs = "<C-j>",
             rhs = function()
-                vim.lsp.buf.signature_help({ border = "single", max_width = 80 })
+                vim.lsp.buf.signature_help({ border = "rounded", max_width = 80 })
             end,
         },
         {

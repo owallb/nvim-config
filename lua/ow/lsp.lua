@@ -141,7 +141,7 @@ local function setup_diagnostics()
         float = {
             show_header = false,
             source = true,
-            border = "single",
+            border = "rounded",
             focusable = false,
             format = function(diagnostic)
                 return string.format("%s", diagnostic.message)

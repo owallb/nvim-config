@@ -23,7 +23,7 @@ return {
             DISCARDED = ":foreground grey :weight bold",
         },
         win_split_mode = "float",
-        win_border = "single",
+        win_border = "rounded",
         org_archive_location = "~/Documents/org/archive.org::",
         org_log_done = "note",
         org_log_into_drawer = "LOGBOOK",
