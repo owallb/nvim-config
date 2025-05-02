@@ -395,4 +395,14 @@ function M.debounce_with_id(fn, delay)
     end
 end
 
+function M.get_hl_source(name)
+    local hl = vim.api.nvim_get_hl(0, { name = name })
+    while hl.link do
+        hl = vim.api.nvim_get_hl(0, { name = hl.link })
+    end
+
+    return hl
+end
+
+
 return M

@@ -1,19 +1,12 @@
-local function find_link_source(name)
-    local hl = vim.api.nvim_get_hl(0, { name = "NvimTreeFileIcon" })
-    while hl.link do
-        hl = vim.api.nvim_get_hl(0, { name = hl.link })
-    end
-
-    return hl
-end
+local utils = require("ow.utils")
 
 local function override_highlights()
     -- File Icon
-    local hl = find_link_source("NvimTreeFileIcon")
+    local hl = utils.get_hl_source("NvimTreeFileIcon")
     vim.api.nvim_set_hl(0, "NvimTreeFileIcon", { fg = hl.fg, bg = nil })
 
     -- Symlink Icon
-    hl = find_link_source("NvimTreeSymlinkIcon")
+    hl = utils.get_hl_source("NvimTreeSymlinkIcon")
     vim.api.nvim_set_hl(
         0,
         "NvimTreeSymlinkIcon",
