@@ -16,6 +16,11 @@ return {
             TelescopePromptBorder = { fg = c.grey },
             TelescopeResultsBorder = { fg = c.grey },
             TelescopePreviewBorder = { fg = c.grey },
+            TreesitterContext = { bg = c.bg1 },
+            TreesitterContextLineNumber = { bg = c.bg1 },
+            TreesitterContextSeparator = { bg = c.bg1 },
+            TreesitterContextBottom = { fmt = "underline", sp=c.grey },
+            TreesitterContextLineNumberBottom = { fmt = "underline", sp=c.grey },
         }
         require("onedark").set_options("highlights", highlights)
 
