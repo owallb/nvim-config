@@ -21,7 +21,7 @@ return {
         },
         delete_to_trash = true,
         float = {
-            max_width = 80,
+            max_width = 60,
             max_height = 20,
         },
         skip_confirm_for_simple_edits = true,
