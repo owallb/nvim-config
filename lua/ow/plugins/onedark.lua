@@ -12,6 +12,10 @@ return {
             TabLineSel = { fg = c.fg, bg = c.bg0 },
             EndOfBuffer = { fg = "NONE", bg = "NONE" },
             NvimTreeIndentMarker = { fg = c.bg3 },
+            TelescopeBorder = { fg = c.orange },
+            TelescopePromptBorder = { fg = c.grey },
+            TelescopeResultsBorder = { fg = c.grey },
+            TelescopePreviewBorder = { fg = c.grey },
         }
         require("onedark").set_options("highlights", highlights)
 
