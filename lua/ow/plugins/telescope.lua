@@ -26,6 +26,9 @@ return {
                         ["<C-l>"] = actions.select_default,
                     },
                 },
+                file_ignore_patterns = {
+                    "^%.git/",
+                }
             },
             extensions = {
                 undo = {
