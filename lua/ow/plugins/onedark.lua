@@ -21,6 +21,9 @@ return {
             TreesitterContextSeparator = { bg = c.bg1 },
             TreesitterContextBottom = { fmt = "underline", sp=c.grey },
             TreesitterContextLineNumberBottom = { fmt = "underline", sp=c.grey },
+            DiffAdd = { bg = "#1e3a2a" },
+            DiffChange = { bg = "#15304a" },
+            DiffDelete = { bg = "#3d2224" },
         }
         require("onedark").set_options("highlights", highlights)
 
