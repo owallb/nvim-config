@@ -152,9 +152,22 @@ return {
                 { name = "path" },
             },
             window = {
-                completion = cmp.config.window.bordered(),
-                documentation = cmp.config.window.bordered(),
-            }
+                completion = cmp.config.window.bordered({
+                    border = "none",
+                    winhighlight = "Normal:Pmenu,CursorLine:PmenuSel,Search:None",
+                    zindex = 1001,
+                    scrolloff = 0,
+                    col_offset = 0,
+                    side_padding = 1,
+                    scrollbar = true,
+                }),
+                documentation = cmp.config.window.bordered({
+                    border = "rounded",
+                    winhighlight = "CursorLine:Visual,Search:None",
+                    zindex = 1001,
+                    max_height = 80,
+                }),
+            },
         }
 
         cmp.setup(opts)
