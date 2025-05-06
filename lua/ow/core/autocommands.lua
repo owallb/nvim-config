@@ -53,15 +53,6 @@ vim.api.nvim_create_autocmd("VimEnter", {
 })
 
 vim.api.nvim_create_autocmd("FileType", {
-    desc = "Make markdown files a bit prettier",
-    pattern = { "markdown" },
-    callback = function()
-        vim.wo.conceallevel = 2
-        vim.wo.concealcursor = "n"
-    end,
-})
-
-vim.api.nvim_create_autocmd("FileType", {
     desc = "Customize python indentation",
     pattern = { "python" },
     callback = function()
