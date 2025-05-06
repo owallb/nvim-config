@@ -238,6 +238,7 @@ return {
             help = {
                 sort_by = "desc",
             },
+            sync_root_with_cwd = true,
         })
 
         override_highlights()
