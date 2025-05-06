@@ -77,6 +77,7 @@ vim.opt.autoread = true
 -- causing "Press ENTER to continue" messages for small messages.
 vim.opt.jumpoptions = {'stack', 'view', 'clean'}
 vim.opt.updatetime = 100
+vim.opt.guicursor:append("a:Cursor")
 
 function _G._status_line_git()
     local status = vim.b.gitsigns_status_dict
