@@ -280,7 +280,7 @@ function M.format(opts)
     end
 
     if
-        not opts.ignore_ret and (resp.code ~= 0 or resp.signal ~= 0)
+        not opts.ignore_ret and resp.code ~= 0
         or (opts.output ~= "stderr" and stderr)
     then
         local msg = ""
@@ -288,7 +288,7 @@ function M.format(opts)
             msg = ":\n" .. stderr
         end
 
-        M.err(("Failed to format%s"):format(msg))
+        M.err(("Failed to format (%d)%s"):format(resp.code, msg))
         return
     end
 
