@@ -13,7 +13,7 @@ return {
     event = "VeryLazy",
     ---@type LazyKeysSpec[]
     keys = {
-        { "<leader>gd", vim.cmd.Gvdiffsplit,                         mode = "n" },
+        { "<leader>gd", vim.cmd.Gvdiffsplit,                        mode = "n" },
         { "<leader>gc", function() vim.cmd.G("commit") end,         mode = "n" },
         { "<leader>ga", function() vim.cmd.G("commit --amend") end, mode = "n" },
         { "<leader>gp", function() vim.cmd.G("push") end,           mode = "n" },
