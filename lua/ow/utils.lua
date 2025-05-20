@@ -161,9 +161,9 @@ end
 ---                    * %col_end%      - last column position of selection
 ---                    * %byte_start%   - byte count of first cell in selection
 ---                    * %byte_end%     - byte count of last cell in selection
----@field output OutputStream What stream to use as the result. May be one of `stdout` or `stderr`.
----@field auto_indent? boolean Perform auto indent on formatted range. False by default.
----@field only_selection? boolean Only send the selected lines to `stdin`. False by default.
+---@field output OutputStream What stream to use as the result. May be one of `stdout`, `stderr` or `in_place`.
+---@field auto_indent? boolean Perform auto indent on formatted range
+---@field only_selection? boolean Only send the selected lines to `stdin`
 ---@field ignore_ret? boolean Ignore non-zero return codes
 ---@field ignore_stderr? boolean Ignore stderr output when not using stderr for output
 ---@field env? table<string, string> Map of environment variables
@@ -194,6 +194,7 @@ function M.format(opts)
 
     local file = vim.fn.expand("%")
     local filename = vim.fn.expand("%:t")
+
     local mode = vim.fn.mode()
     local is_visual = mode == "v" or mode == "V" or mode == ""
 
@@ -257,12 +258,12 @@ function M.format(opts)
             end
         end,
         stderr = not opts.ignore_stderr and function(e, data)
-            if data then
-                stderr = stderr and stderr .. data or data
-            end
-
             if e then
                 err = err and err .. e or e
+            end
+
+            if data then
+                stderr = stderr and stderr .. data or data
             end
         end,
         env = opts.env,
@@ -438,6 +439,5 @@ function M.get_hl_source(name)
 
     return hl
 end
-
 
 return M
