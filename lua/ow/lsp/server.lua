@@ -349,6 +349,10 @@ end
 function M.new(name, config)
     config = config or {}
 
+    if config.enable == nil then
+        config.enable = true
+    end
+
     if not M.validate(name, config) then
         return
     end
