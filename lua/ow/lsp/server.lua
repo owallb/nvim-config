@@ -25,6 +25,7 @@ M.__index = M
 ---@field mason? string|MasonPackageConfig
 ---@field keymaps? Keymap[]
 ---@field linters? LinterConfig[]
+---@field settings_file? string
 ---@field lspconfig? lspconfig.Config
 M.config = {}
 
@@ -161,6 +162,40 @@ function M:configure_client()
             )
         end
     end
+
+    if self.config.settings_file then
+        local file = io.open(self.config.settings_file, "r")
+        if not file then
+            utils.warn(
+                ("Failed to open file for reading: %s"):format(
+                    self.config.settings_file
+                )
+            )
+        else
+            local json = file:read("*all")
+            file:close()
+            local ok, resp = pcall(
+                vim.json.decode,
+                json,
+                { luanil = { object = true, array = true } }
+            )
+            if not ok then
+                utils.warn(
+                    ("Failed to parse json file %s:%s"):format(
+                        self.config.settings_file,
+                        resp
+                    )
+                )
+            else
+                self.config.lspconfig.settings = vim.tbl_deep_extend(
+                    "force",
+                    self.config.lspconfig.settings or {},
+                    resp
+                )
+            end
+        end
+    end
+
 
     local ok, ret = pcall(lspconfig[self.name].setup, self.config.lspconfig)
     if not ok then
