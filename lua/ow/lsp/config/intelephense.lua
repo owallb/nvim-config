@@ -10,7 +10,7 @@ return {
     dependencies = {
         "npm",
     },
-    mason = { "intelephense", dependencies = { {"phpcs", "pretty-php" } } },
+    mason = { "intelephense", dependencies = { "phpcs" } },
     linters = {
         {
             cmd = {
@@ -39,35 +39,22 @@ return {
             mode = "n",
             lhs = "<leader>lf",
             rhs = function()
+                vim.lsp.buf.format()
                 utils.format({
                     cmd = {
-                        "pretty-php",
-                        "--psr12",
-                        "--enable=align-comments",
-                        "-qq",
-                        "-",
+                        "php-cs-fixer",
+                        "fix",
+                        "%file%",
+                        "--quiet",
                     },
-                    output = "stdout",
-                })
-            end,
-        },
-        {
-            mode = "x",
-            lhs = "<leader>lf",
-            rhs = function()
-                utils.format({
-                    cmd = {
-                        "pretty-php",
-                        "--psr12",
-                        "--enable=align-comments",
-                        "-qq",
-                        "-",
-                    },
-                    output = "stdout",
+                    output = "in_place",
+                    ignore_stderr = true,
+                    env = { PHP_CS_FIXER_IGNORE_ENV = "1" },
                 })
             end,
         },
     },
+    settings_file = ".intelephense.json",
     lspconfig = {
         filetypes = {
             "php",
@@ -77,10 +64,11 @@ return {
         settings = {
             intelephense = {
                 environment = {
-                    phpVersion = "7.4",
+                    phpVersion = "8.4",
                 },
                 format = {
-                    enable = false,
+                    enable = true,
+                    braces = "psr12",
                 },
             },
         },
