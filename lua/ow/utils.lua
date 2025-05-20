@@ -165,6 +165,7 @@ end
 ---@field auto_indent? boolean Perform auto indent on formatted range. False by default.
 ---@field only_selection? boolean Only send the selected lines to `stdin`. False by default.
 ---@field ignore_ret? boolean Ignore non-zero return codes
+---@field ignore_stderr? boolean Ignore stderr output when not using stderr for output
 ---@field env? table<string, string> Map of environment variables
 
 --- Format buffer
@@ -175,6 +176,7 @@ function M.format(opts)
         output = opts.output,
         auto_indent = opts.auto_indent or false,
         only_selection = opts.only_selection or false,
+        ignore_stderr = opts.ignore_stderr,
         env = opts.env,
     }
 
@@ -253,7 +255,7 @@ function M.format(opts)
                 err = err and err .. e or e
             end
         end,
-        stderr = function(e, data)
+        stderr = not opts.ignore_stderr and function(e, data)
             if data then
                 stderr = stderr and stderr .. data or data
             end
