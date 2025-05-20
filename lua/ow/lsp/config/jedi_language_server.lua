@@ -47,6 +47,7 @@ return {
             cmd = {
                 "ruff",
                 "check",
+                "--stdin-filename=%file%",
                 "--output-format=json",
                 "-q",
                 "-",
@@ -107,7 +108,7 @@ return {
                     cmd = {
                         "ruff",
                         "format",
-                        "--stdin-filename=%filename%",
+                        "--stdin-filename=%file%",
                         "--quiet",
                         "-",
                     },
@@ -117,6 +118,7 @@ return {
                     cmd = {
                         "ruff",
                         "check",
+                        "--stdin-filename=%file%",
                         "--select=I",
                         "--fix",
                         "--quiet",
@@ -134,7 +136,7 @@ return {
                     cmd = {
                         "ruff",
                         "format",
-                        "--stdin-filename=%filename%",
+                        "--stdin-filename=%file%",
                         "--quiet",
                         "--range=%row_start%:%col_start%-%row_end%:%col_end%",
                         "-",
