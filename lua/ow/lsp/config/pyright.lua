@@ -16,6 +16,7 @@ return {
                     diagnosticMode = "openFilesOnly",
                     useLibraryCodeForTypes = true,
                     typeCheckingMode = "strict",
+                    stubPath = "stubs",
                 },
             },
             pyright = {
