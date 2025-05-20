@@ -149,6 +149,7 @@ end
 ---@alias OutputStream
 ---| '"stdout"'
 ---| '"stderr"'
+---| '"in_place"'
 
 ---@class FormatOptions
 ---@field cmd string[] Command to run. The following keywords get replaces by the specified values:
@@ -175,8 +176,14 @@ function M.format(opts)
         only_selection = opts.only_selection or false,
     }
 
-    if opts.output ~= "stdout" and opts.output ~= "stderr" then
-        M.err("`output` must be set to either `stdout` or `stderr`.")
+    if
+        opts.output ~= "stdout"
+        and opts.output ~= "stderr"
+        and opts.output ~= "in_place"
+    then
+        M.err(
+            "`output` must be set to either `stdout`, `stderr` or `in_place`."
+        )
         return
     end
 
@@ -209,6 +216,13 @@ function M.format(opts)
         input = vim.api.nvim_buf_get_lines(0, row_start - 1, row_end, false)
     else
         input = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+    end
+
+    local tmp
+    if opts.output == "in_place" then
+        tmp = os.tmpname()
+        vim.fn.writefile(input, tmp, "s")
+        file = tmp
     end
 
     for i, arg in ipairs(opts.cmd) do
@@ -248,6 +262,12 @@ function M.format(opts)
         end,
     }):wait()
 
+    local tmp_out
+    if tmp then
+        tmp_out = table.concat(vim.fn.readfile(tmp), "\n")
+        os.remove(tmp)
+    end
+
     if err then
         M.err("Error during formatting:\n%s" .. err)
         return
@@ -266,7 +286,16 @@ function M.format(opts)
         return
     end
 
-    local output = opts.output == "stdout" and stdout or stderr or ""
+    local output
+    if opts.output == "stdout" then
+        output = stdout
+    elseif opts.output == "stderr" then
+        output = stderr
+    elseif opts.output == "in_place" then
+        output = tmp_out
+    end
+
+    output = output or ""
     output = output:gsub("\n$", "")
     local output_lines = vim.fn.split(output, "\n", true)
 
