@@ -176,6 +176,7 @@ function M.format(opts)
         output = opts.output,
         auto_indent = opts.auto_indent or false,
         only_selection = opts.only_selection or false,
+        ignore_ret = opts.ignore_ret,
         ignore_stderr = opts.ignore_stderr,
         env = opts.env,
     }
