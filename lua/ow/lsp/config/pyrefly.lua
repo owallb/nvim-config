@@ -2,6 +2,7 @@ local util = require("lspconfig.util")
 
 ---@type ServerConfig
 return {
+    enable = false,
     dependencies = { "pyrefly" },
     lspconfig = {
         cmd = { "pyrefly", "lsp" },
