@@ -196,7 +196,6 @@ function M:configure_client()
         end
     end
 
-
     local ok, ret = pcall(lspconfig[self.name].setup, self.config.lspconfig)
     if not ok then
         utils.err(
@@ -358,16 +357,22 @@ function M.new(name, config)
     end
 
     local ok, resp = pcall(require, "lspconfig.configs." .. name)
-
-    if not ok then
+    if not ok and config.lspconfig then
+        local configs = require("lspconfig.configs")
+        configs[name] = { default_config = config.lspconfig }
+    elseif ok then
+        config.lspconfig = vim.tbl_deep_extend(
+            "keep",
+            config.lspconfig or {},
+            resp.default_config
+        )
+    else
         utils.err(
             ("Server with name %s does not exist in lspconfig"):format(name)
         )
         return
     end
 
-    config.lspconfig =
-        vim.tbl_deep_extend("keep", config.lspconfig or {}, resp.default_config)
     local server = { name = name, config = config }
 
     if server.config.mason then
