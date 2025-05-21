@@ -359,8 +359,11 @@ function M.new(name, config)
 
     local ok, resp = pcall(require, "lspconfig.configs." .. name)
     if not ok and config.lspconfig then
-        local configs = require("lspconfig.configs")
-        configs[name] = { default_config = vim.deepcopy(config.lspconfig) }
+        require("lspconfig.configs")[name] = vim.tbl_deep_extend(
+            "keep",
+            { default_config = {} },
+            config.lspconfig
+        )
     elseif ok then
         config.lspconfig = vim.tbl_deep_extend(
             "keep",
