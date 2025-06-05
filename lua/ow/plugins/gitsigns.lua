@@ -5,6 +5,9 @@ return {
     "lewis6991/gitsigns.nvim",
     event = "VeryLazy",
     opts = {
+        preview_config = {
+            border = "single",
+        },
         on_attach = function(bufnr)
             local gs = package.loaded.gitsigns
             vim.keymap.set("n", "<leader>gv", gs.select_hunk, { buffer = bufnr })
