@@ -12,9 +12,7 @@ return {
             -- "clangd",
             {
                 "cmake-language-server",
-                dependencies = {
-                    { "golines" },
-                },
+                dependencies = { "golines", },
             },
             "gopls",
             {
