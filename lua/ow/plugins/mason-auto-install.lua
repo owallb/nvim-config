@@ -6,7 +6,6 @@ return {
         packages = {
             {
                 "bash-language-server",
-                filetypes = { "sh", "bash", "zsh" },
                 dependencies = { "shellcheck", "shfmt" },
             },
             -- "clangd",
