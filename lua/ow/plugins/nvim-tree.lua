@@ -1,12 +1,12 @@
-local utils = require("ow.utils")
+local util = require("ow.util")
 
 local function override_highlights()
     -- File Icon
-    local hl = utils.get_hl_source("NvimTreeFileIcon")
+    local hl = util.get_hl_source("NvimTreeFileIcon")
     vim.api.nvim_set_hl(0, "NvimTreeFileIcon", { fg = hl.fg, bg = nil })
 
     -- Symlink Icon
-    hl = utils.get_hl_source("NvimTreeSymlinkIcon")
+    hl = util.get_hl_source("NvimTreeSymlinkIcon")
     vim.api.nvim_set_hl(0, "NvimTreeSymlinkIcon", { fg = hl.fg, bg = nil })
 end
 

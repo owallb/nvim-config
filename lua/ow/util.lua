@@ -97,34 +97,6 @@ function M.assert_python3_module_installed(mod)
     end
 end
 
---- Send a debug notification
----@param msg string Message to send
----@param title? string Title of notification
-function M.debug(msg, title)
-    notify(msg, title, vim.log.levels.DEBUG)
-end
-
---- Send an info notification
----@param msg string Message to send
----@param title? string Title of notification
-function M.info(msg, title)
-    notify(msg, title, vim.log.levels.INFO)
-end
-
---- Send a warning notification
----@param msg string Message to send
----@param title? string Title of notification
-function M.warn(msg, title)
-    notify(msg, title, vim.log.levels.WARN)
-end
-
---- Send an error notification
----@param msg string Message to send
----@param title? string Title of notification
-function M.err(msg, title)
-    notify(msg, title, vim.log.levels.ERROR)
-end
-
 --- Attempts to load a module and logs errors on failure.
 ---@param module string The module to attempt to load.
 ---@return any module The loaded module if successful, otherwise nil.

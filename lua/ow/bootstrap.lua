@@ -6,20 +6,20 @@ if version.major == 0 then
     end
 end
 
-local utils = require("ow.utils")
+local util = require("ow.util")
 
 -- Install lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.uv.fs_stat(lazypath) then
-    utils.assert_installed("git")
+    util.assert_installed("git")
     if not os.getenv("CC") then
-        utils.assert_installed("cc")
+        util.assert_installed("cc")
     end
-    utils.assert_installed("make")
-    utils.assert_any_installed({ "curl", "wget", })
-    utils.assert_installed("unzip")
-    utils.assert_installed("tar")
-    utils.assert_installed("gzip")
+    util.assert_installed("make")
+    util.assert_any_installed({ "curl", "wget", })
+    util.assert_installed("unzip")
+    util.assert_installed("tar")
+    util.assert_installed("gzip")
 
     local resp = vim.system({
         "git",

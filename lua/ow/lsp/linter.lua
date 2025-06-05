@@ -1,10 +1,10 @@
-local utils = require("ow.utils")
+local util = require("ow.util")
+local log = require("ow.log")
 
 ---@class Linter
----@field name string
 ---@field namespace number
 ---@field augroup number
----@field buffers number[]
+---@field bufnr number
 ---@field config LinterConfig
 M = {}
 M.__index = M
@@ -89,10 +89,9 @@ end
 
 --- Clamp column to line length
 ---@param diag vim.Diagnostic
----@param bufnr number
-function M:clamp_col(diag, bufnr)
+function M:clamp_col(diag)
     local lines =
-        vim.api.nvim_buf_get_lines(bufnr, diag.lnum, diag.lnum + 1, false)
+        vim.api.nvim_buf_get_lines(self.bufnr, diag.lnum, diag.lnum + 1, false)
     if #lines == 0 then
         return
     end
@@ -160,7 +159,7 @@ function M:fix_indexing(diag)
     end
 end
 
-function M:process_json_output(json, bufnr)
+function M:process_json_output(json)
     ---@type vim.Diagnostic[]
     local diagnostics = {}
 
@@ -170,7 +169,7 @@ function M:process_json_output(json, bufnr)
     end
 
     if type(items) ~= "table" then
-        utils.err("diagnostics root is not an array or object")
+        log.error("diagnostics root is not an array or object")
         return
     end
 
@@ -198,7 +197,7 @@ function M:process_json_output(json, bufnr)
         end
 
         self:fix_indexing(diag)
-        self:clamp_col(diag, bufnr)
+        self:clamp_col(diag)
         self:add_tags(diag)
 
         if type(self.config.json.callback) == "function" then
@@ -212,12 +211,10 @@ function M:process_json_output(json, bufnr)
 end
 
 --- Validate input
----@param name string
 ---@param config LinterConfig
 ---@return boolean
-function M.validate(name, config)
+function M.validate(config)
     local ok, resp = pcall(vim.validate, {
-        name = { name, "string" },
         config = { config, "table" },
     })
 
@@ -226,7 +223,7 @@ function M.validate(name, config)
             cmd = {
                 config.cmd,
                 function(t)
-                    return utils.is_list(t, "string")
+                    return util.is_list(t, "string")
                 end,
                 "list of strings",
             },
@@ -237,7 +234,7 @@ function M.validate(name, config)
             groups = {
                 config.groups,
                 function(t)
-                    return utils.is_list(t, "string")
+                    return util.is_list(t, "string")
                 end,
                 true,
                 "list of strings",
@@ -245,7 +242,7 @@ function M.validate(name, config)
             severity_map = {
                 config.severity_map,
                 function(t)
-                    return utils.is_map(t, "string", "number")
+                    return util.is_map(t, "string", "number")
                 end,
                 true,
                 "map of string and number",
@@ -258,23 +255,24 @@ function M.validate(name, config)
     end
 
     if not ok then
-        utils.err(("Invalid config for linter:\n%s"):format(resp))
+        log.error("Invalid config for linter: %s", resp)
         return false
     end
 
     if not config.json and (not config.pattern or not config.groups) then
-        utils.err("Either json or pattern and groups must be provided")
+        log.error("Either json or pattern and groups must be provided")
         return false
     end
 
     return true
 end
 
-function M:run(bufnr)
+---@return boolean success
+function M:run()
     local input
 
     if self.config.stdin then
-        input = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+        input = vim.api.nvim_buf_get_lines(self.bufnr, 0, -1, false)
     end
 
     local cmd = vim.fn.copy(self.config.cmd)
@@ -286,6 +284,7 @@ function M:run(bufnr)
         cmd[i] = arg
     end
 
+    local success = true
     local ok, resp = pcall(
         vim.system,
         cmd,
@@ -301,7 +300,7 @@ function M:run(bufnr)
             if self.config.stderr then
                 output = out.stderr or ""
             elseif out.stderr and out.stderr ~= "" then
-                utils.err(out.stderr)
+                log.error(out.stderr)
             end
 
             if self.config.json then
@@ -311,13 +310,14 @@ function M:run(bufnr)
                     { luanil = { object = true, array = true } }
                 )
                 if not ok then
-                    utils.err("Failed to parse JSON: " .. json)
+                    log.error("Failed to parse JSON: " .. json)
+                    success = false
                     return
                 end
 
-                local diagnostics = self:process_json_output(json, bufnr)
+                local diagnostics = self:process_json_output(json)
                 if diagnostics then
-                    vim.diagnostic.set(self.namespace, bufnr, diagnostics)
+                    vim.diagnostic.set(self.namespace, self.bufnr, diagnostics)
                 end
 
                 return
@@ -335,67 +335,64 @@ function M:run(bufnr)
                 )
 
                 if not ok then
-                    utils.err(tostring(resp))
+                    log.error(tostring(resp))
+                    success = false
                     return
                 elseif resp then
                     resp.source = resp.source or self.config.source
-                    self:clamp_col(resp, bufnr)
+                    self:clamp_col(resp)
                     self:add_tags(resp)
                     self:fix_indexing(resp)
                     table.insert(diagnostics, resp)
                 end
             end
 
-            vim.diagnostic.set(self.namespace, bufnr, diagnostics)
+            vim.diagnostic.set(self.namespace, self.bufnr, diagnostics)
         end)
     )
 
     if not ok then
-        utils.err(("Failed to run %s:\n%s"):format(self.config.cmd[1], resp))
+        log.error("Failed to run %s: %s", self.config.cmd[1], resp)
+        success = false
     end
+
+    return success
 end
 
-function M:init(bufnr)
-    table.insert(self.buffers, bufnr)
-    vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI" }, {
-        buffer = bufnr,
-        callback = utils.debounce(function()
-            self:run(bufnr)
-        end, self.config.debounce),
-        group = self.augroup,
-    })
-    self:run(bufnr)
-end
-
-function M:deinit()
-    for _, bufnr in ipairs(self.buffers) do
-        vim.api.nvim_buf_clear_namespace(bufnr, self.namespace, 0, -1)
-    end
-    self.buffers = {}
-
-    vim.api.nvim_clear_autocmds({ group = self.augroup })
-end
-
---- Create a new instance
----@param name string
+---@param bufnr integer
 ---@param config LinterConfig
----@return Linter|nil
-function M.new(name, config)
-    if not M.validate(name, config) then
+function M.add(bufnr, config)
+    if not M.validate(config) then
         return
     end
 
     config.debounce = config.debounce or 100
 
     local linter = {
-        name = name,
-        namespace = vim.api.nvim_create_namespace(name),
-        augroup = vim.api.nvim_create_augroup(name, {}),
-        buffers = {},
+        namespace = vim.api.nvim_create_namespace("ow.lsp.linter"),
+        augroup = vim.api.nvim_create_augroup(
+            "ow.lsp.linter",
+            { clear = false }
+        ),
+        bufnr = bufnr,
         config = config,
     }
 
-    return setmetatable(linter, M)
+    linter = setmetatable(linter, M)
+
+    local success = linter:run()
+    if not success then
+        log.error("Not adding linter because of previous errors")
+        return
+    end
+
+    vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI" }, {
+        buffer = linter.bufnr,
+        callback = util.debounce(function()
+            linter:run()
+        end, linter.config.debounce),
+        group = linter.augroup,
+    })
 end
 
 return M

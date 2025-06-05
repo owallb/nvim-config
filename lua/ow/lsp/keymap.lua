@@ -1,7 +1,4 @@
--- Mappings.
--- See `:help vim.lsp.*` for documentation on any of the below functions
-
-local utils = require("ow.utils")
+local util = require("ow.util")
 
 ---@class Keymap
 ---@field mode string|string[]
@@ -9,29 +6,25 @@ local utils = require("ow.utils")
 ---@field rhs string|function
 ---@field opts? vim.keymap.set.Opts
 
-local MODE_TYPES = { "n", "v", "s", "x", "o", "i", "l", "c" }
-
 local M = {}
 
----@type table<number, vim.api.keyset.keymap[]>
-M.old = {}
-
----@type table<number, Keymap[]>
-M.new = {}
-
---- Load LSP keybinds
----@param server Server
-function M:init(server, bufnr)
-    self.old[bufnr] = {}
-    for _, mode in ipairs(MODE_TYPES) do
-        vim.tbl_extend(
-            "error",
-            self.old[bufnr],
-            vim.api.nvim_buf_get_keymap(bufnr, mode)
+---@param bufnr integer
+---@param keymaps Keymap[]
+function M.set(bufnr, keymaps)
+    for _, keymap in ipairs(keymaps) do
+        keymap.opts = vim.tbl_extend(
+            "force",
+            keymap.opts or {},
+            { buffer = bufnr, remap = true }
         )
+        vim.keymap.set(keymap.mode, keymap.lhs, keymap.rhs, keymap.opts)
     end
+end
 
-    self.new[bufnr] = {
+---@param bufnr integer
+function M.set_defaults(bufnr)
+    ---@type Keymap[]
+    local keymaps = {
         { mode = { "n" }, lhs = "<leader>df", rhs = vim.diagnostic.open_float },
         {
             mode = { "n" },
@@ -88,10 +81,10 @@ function M:init(server, bufnr)
         },
     }
 
-    local telescope = utils.try_require("telescope.builtin")
+    local telescope = util.try_require("telescope.builtin")
 
     if telescope then
-        vim.list_extend(self.new[bufnr], {
+        vim.list_extend(keymaps, {
             { mode = "n", lhs = "<leader>dl", rhs = telescope.diagnostics },
             { mode = "n", lhs = "grt", rhs = telescope.lsp_type_definitions, },
             { mode = "n", lhs = "gd", rhs = telescope.lsp_definitions },
@@ -99,43 +92,14 @@ function M:init(server, bufnr)
             { mode = "n", lhs = "grr", rhs = telescope.lsp_references },
         })
     else
-        vim.list_extend(self.new[bufnr], {
+        vim.list_extend(keymaps, {
             { mode = "n", lhs = "<leader>dl", rhs = vim.diagnostic.setloclist },
             { mode = "n", lhs = "grt", rhs = vim.lsp.buf.type_definition, },
             { mode = "n", lhs = "gd", rhs = vim.lsp.buf.definition },
         })
     end
 
-    if server.config.keymaps then
-        vim.list_extend(self.new[bufnr], server.config.keymaps)
-    end
-
-    for _, keymap in ipairs(self.new[bufnr]) do
-        keymap.opts = vim.tbl_extend(
-            "force",
-            keymap.opts or {},
-            { buffer = bufnr, remap = true }
-        )
-        vim.keymap.set(keymap.mode, keymap.lhs, keymap.rhs, keymap.opts)
-    end
-end
-
-function M:deinit(bufnr)
-    if self.new[bufnr] then
-        for _, keymap in ipairs(self.new[bufnr]) do
-            -- pcall to avoid error if keymap was already removed,
-            -- for example if server.config.keymaps overrides a default LSP keymap
-            pcall(vim.keymap.del, keymap.mode, keymap.lhs, { buffer = bufnr })
-        end
-        self.new[bufnr] = nil
-    end
-
-    if self.old[bufnr] then
-        for _, keymap in ipairs(self.old[bufnr]) do
-            vim.cmd.mapset(keymap)
-        end
-        self.old[bufnr] = nil
-    end
+    M.set(bufnr, keymaps)
 end
 
 return M
