@@ -18,7 +18,7 @@ return {
             TelescopeResultsBorder = { fg = c.grey },
             TelescopePreviewBorder = { fg = c.grey },
             TreesitterContextBottom = { fmt = "underline", sp = c.bg3 },
-            TreesitterContextLineNumberBottom = { fmt = "underline", sp = c.bg3 },
+            TreesitterContextLineNumberBottom = {
                 fmt = "underline",
                 sp = c.bg3,
             },
