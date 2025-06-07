@@ -1,6 +1,9 @@
 ---@type LazyPluginSpec
 return {
     "owallb/mason-auto-install.nvim",
+    dependencies = {
+        "neovim/nvim-lspconfig",
+    },
     ---@type MasonAutoInstall.Config
     opts = {
         packages = {
@@ -11,7 +14,7 @@ return {
             -- "clangd",
             {
                 "cmake-language-server",
-                dependencies = { "golines", },
+                dependencies = { "golines" },
             },
             "gopls",
             {
@@ -23,14 +26,9 @@ return {
                 "lemminx",
                 dependencies = { "xmlformatter" },
             },
-            {
-                "lua-language-server",
-                post_install_hooks = {
-                    { "cargo", "install", "stylua", "--features", "lua54" },
-                },
-            },
+            "lua-language-server",
             "mesonlsp",
-            "ruff" ,
+            "ruff",
             "pyright",
             "pyrefly",
             "rust-analyzer",
