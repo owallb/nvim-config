@@ -26,7 +26,10 @@ return {
                 "lemminx",
                 dependencies = { "xmlformatter" },
             },
-            "lua-language-server",
+            {
+                "lua-language-server",
+                dependencies = { "stylua" },
+            },
             "mesonlsp",
             "ruff",
             "pyright",
