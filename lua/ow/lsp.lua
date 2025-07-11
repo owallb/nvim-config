@@ -167,7 +167,7 @@ function M.setup()
                 {
                     mode = "n",
                     lhs = "gs",
-                    rhs = vim.cmd.ClangdSwitchSourceHeader,
+                    rhs = vim.cmd.LspClangdSwitchSourceHeader,
                 },
             })
         end),
