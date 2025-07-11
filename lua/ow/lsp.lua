@@ -17,10 +17,16 @@ M.diagnostic_signs = {
     },
 }
 
+---@param server string
 ---@param fn? fun(client: vim.lsp.Client, bufnr: integer)
 ---@return fun(client: vim.lsp.Client, bufnr: integer)
-function M.with_defaults(fn)
+function M.with_defaults(server, fn)
+    local default_cb = vim.lsp.config[server].on_attach
     return function(client, bufnr)
+        if default_cb then
+            default_cb(client, bufnr)
+        end
+
         keymap.set_defaults(bufnr)
 
         -- For document highlight
@@ -116,7 +122,7 @@ function M.setup()
     end
 
     vim.lsp.config("*", {
-        on_attach = M.with_defaults(),
+        on_attach = M.with_defaults("*"),
         capabilities = capabilities,
     })
 
@@ -126,7 +132,7 @@ function M.setup()
             "bash",
             "zsh",
         },
-        on_attach = M.with_defaults(function(_, bufnr)
+        on_attach = M.with_defaults("bashls", function(_, bufnr)
             keymap.set(bufnr, {
                 {
                     mode = "n",
@@ -156,7 +162,7 @@ function M.setup()
             "--compile-commands-dir=build",
         },
         single_file_support = true,
-        on_attach = M.with_defaults(function(_, bufnr)
+        on_attach = M.with_defaults("clangd", function(_, bufnr)
             keymap.set(bufnr, {
                 {
                     mode = "n",
@@ -180,7 +186,7 @@ function M.setup()
                 semanticTokens = true,
             },
         },
-        on_attach = M.with_defaults(function(_, bufnr)
+        on_attach = M.with_defaults("gopls", function(_, bufnr)
             keymap.set(bufnr, {
                 {
                     mode = "n",
@@ -214,7 +220,7 @@ function M.setup()
                 },
             },
         },
-        on_attach = M.with_defaults(function(_, bufnr)
+        on_attach = M.with_defaults("intelephense", function(_, bufnr)
             linter.add(bufnr, {
                 cmd = {
                     "phpcs",
@@ -329,7 +335,7 @@ function M.setup()
                 telemetry = { enable = false },
             },
         },
-        on_attach = M.with_defaults(function(_, bufnr)
+        on_attach = M.with_defaults("lua_ls", function(_, bufnr)
             keymap.set(bufnr, {
                 {
                     mode = "n",
@@ -388,7 +394,7 @@ function M.setup()
     })
 
     vim.lsp.config("ruff", {
-        on_attach = M.with_defaults(function(_, bufnr)
+        on_attach = M.with_defaults("ruff", function(_, bufnr)
             keymap.set(bufnr, {
                 {
                     mode = "n",
