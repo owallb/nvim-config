@@ -244,11 +244,6 @@ return {
         override_highlights()
         disable_highlights()
 
-        require("nvim-tree.api").tree.toggle({
-            find_file = true,
-            focus = false,
-        })
-
         vim.api.nvim_create_autocmd("QuitPre", {
             callback = function()
                 local tree_wins = {}
