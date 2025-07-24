@@ -1,3 +1,5 @@
+local log = require("ow.log")
+
 local M = {}
 
 M.os_name = vim.uv.os_uname().sysname
@@ -107,7 +109,7 @@ function M.try_require(module)
         return resp
     end
 
-    M.err(("Failed to load module %s:\n%s"):format(module, resp))
+    log.error("Failed to load module %s:\n%s", module, resp)
 end
 
 --- Checks if it is possible to require a module
@@ -158,7 +160,7 @@ function M.format(opts)
         and opts.output ~= "stderr"
         and opts.output ~= "in_place"
     then
-        M.err(
+        log.error(
             "`output` must be set to either `stdout`, `stderr` or `in_place`."
         )
         return
@@ -248,7 +250,7 @@ function M.format(opts)
     end
 
     if err then
-        M.err("Error during formatting:\n%s" .. err)
+        log.error("Error during formatting:\n%s", err)
         return
     end
 
@@ -261,7 +263,7 @@ function M.format(opts)
             msg = ":\n" .. stderr
         end
 
-        M.err(("Failed to format (%d)%s"):format(resp.code, msg))
+        log.error("Failed to format (%d)%s", resp.code, msg)
         return
     end
 
