@@ -70,4 +70,11 @@ return {
             mode = "n",
         },
     },
+    config = function()
+        vim.api.nvim_create_autocmd("BufWritePost", {
+            callback = function()
+                vim.fn["fugitive#ReloadStatus"]()
+            end,
+        })
+    end,
 }
