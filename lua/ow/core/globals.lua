@@ -12,6 +12,11 @@ vim.g.netrw_sort_sequence = '[\\/]\\s*,*'
 vim.g.netrw_special_syntax = 1
 vim.g.netrw_timefmt = '%d-%m-%Y %H:%M'
 vim.g.c_syntax_for_h = 1
+vim.g.python_indent = {
+    open_paren = "shiftwidth()",
+    continue = "shiftwidth()",
+    closed_paren_align_last_line = false,
+}
 
 local termfeatures = vim.g.termfeatures or {}
 termfeatures.osc52 = false
