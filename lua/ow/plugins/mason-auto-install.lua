@@ -17,6 +17,7 @@ return {
                 dependencies = { "golines" },
             },
             "gopls",
+            "hyprls",
             {
                 "intelephense",
                 dependencies = { "phpcs" },

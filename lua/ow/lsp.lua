@@ -98,6 +98,7 @@ function M.setup()
         "clangd",
         "cmake",
         "gopls",
+        "hyprls",
         "intelephense",
         -- "jedi_language_server",
         "lemminx",
