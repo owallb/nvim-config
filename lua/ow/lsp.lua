@@ -370,6 +370,7 @@ function M.setup()
     })
 
     vim.lsp.config("mesonlsp", {
+        on_attach = M.with_defaults("mesonlsp"),
         settings = {
             others = {
                 disableInlayHints = true,
@@ -378,6 +379,7 @@ function M.setup()
     })
 
     vim.lsp.config("pyright", {
+        on_attach = M.with_defaults("pyright"),
         settings = {
             python = {
                 analysis = {
@@ -421,6 +423,7 @@ function M.setup()
     })
 
     vim.lsp.config("rust_analyzer", {
+        on_attach = M.with_defaults("rust_analyzer"),
         settings = {
             ["rust-analyzer"] = {
                 inlayHints = {
@@ -439,6 +442,7 @@ function M.setup()
     })
 
     vim.lsp.config("zls", {
+        on_attach = M.with_defaults("zls"),
         settings = {
             zls = {
                 warn_style = true,
