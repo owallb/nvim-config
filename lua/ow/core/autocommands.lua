@@ -59,3 +59,11 @@ vim.api.nvim_create_autocmd("FileType", {
         vim.opt_local.indentkeys:remove("<:>")
     end,
 })
+
+vim.api.nvim_create_autocmd("TermLeave", {
+    desc = "Reload buffers when leaving terminal",
+    pattern = "*",
+    callback = function ()
+        vim.cmd.checktime()
+    end
+})
