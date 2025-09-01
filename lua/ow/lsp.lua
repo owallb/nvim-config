@@ -164,6 +164,30 @@ function M.setup()
         },
         single_file_support = true,
         on_attach = M.with_defaults("clangd", function(_, bufnr)
+            linter.add(bufnr, {
+                cmd = {
+                    "clang-tidy",
+                    "-p=build",
+                    "--quiet",
+                    "--checks=-*,clang-analyzer-*",
+                    "%file%",
+                },
+                events = { "BufWritePost" },
+                clear_events = { "TextChanged", "TextChangedI" },
+                stdin = false,
+                stdout = true,
+                pattern = "^.+:(%d+):(%d+): (%w+): (.*) %[(.*)%]$",
+                groups = { "lnum", "col", "severity", "message", "code" },
+                source = "clang-tidy",
+                severity_map = {
+                    error = vim.diagnostic.severity.ERROR,
+                    warning = vim.diagnostic.severity.WARN,
+                    note = vim.diagnostic.severity.HINT,
+                },
+                zero_idx_col = true,
+                zero_idx_lnum = true,
+                ignore_stderr = true,
+            })
             keymap.set(bufnr, {
                 {
                     mode = "n",

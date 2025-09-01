@@ -1,5 +1,5 @@
-local util = require("ow.util")
 local log = require("ow.log")
+local util = require("ow.util")
 
 ---@class Linter
 ---@field namespace number
@@ -36,21 +36,42 @@ M.__index = M
 ---@field deprecated? string[]
 
 ---@class LinterConfig
----@field cmd string[] Command to run. The following keywords get replaces by the specified values:
----                    * %file%         - path to the current file
----                    * %filename%     - name of the current file
+--- Command to run. The following keywords get replaces by the specified values:
+--- * %file%         - path to the current file
+--- * %filename%     - name of the current file
+---@field cmd string[]
+---  Events that trigger the linter (default: TextChanged, TextChangedI)
+---@field events? string[]
+--- Events that clear diagnostics
+---@field clear_events? string[]
+--- Pass buffer content via stdin (default: false)
 ---@field stdin? boolean
+--- Read diagnostics from stdout (default: false)
 ---@field stdout? boolean
+--- Read diagnostics from stderr (default: false)
 ---@field stderr? boolean
+--- Regex pattern to parse diagnostic lines (required if not using json)
 ---@field pattern? string
+--- Named capture groups for pattern matching (required if not using json)
 ---@field groups? Group[]
+--- Map severity strings to vim diagnostic levels
 ---@field severity_map? table<string, vim.diagnostic.Severity>
+--- Source name for diagnostics (default: command name)
 ---@field source? string
+--- Debounce delay in ms (default: 100)
 ---@field debounce? number
+--- Configuration for JSON output parsing
 ---@field json? JsonConfig
+--- Map diagnostic codes to tags (unnecessary/deprecated)
 ---@field tags? DiagnosticTagMap
+--- Line numbers are 0-indexed (default: false, 1-indexed)
 ---@field zero_idx_lnum? boolean
+--- Column numbers are 0-indexed (default: false, 1-indexed)
 ---@field zero_idx_col? boolean
+--- Don't log stderr as errors (default: false)
+---@field ignore_stderr? boolean
+--- Post-process diagnostics
+---@field hook? fun(self: Linter, diagnostics: vim.Diagnostic[])
 M.config = {}
 
 -- Extract a value from a JSON object using a path
@@ -227,6 +248,22 @@ function M.validate(config)
                 end,
                 "list of strings",
             },
+            events = {
+                config.events,
+                function(t)
+                    return util.is_list(t, "string")
+                end,
+                true,
+                "list of strings",
+            },
+            clear_events = {
+                config.clear_events,
+                function(t)
+                    return util.is_list(t, "string")
+                end,
+                true,
+                "list of strings",
+            },
             stdin = { config.stdin, "boolean", true },
             stdout = { config.stdout, "boolean", true },
             stderr = { config.stderr, "boolean", true },
@@ -251,6 +288,9 @@ function M.validate(config)
             source = { config.source, "string", true },
             json = { config.json, "table", true },
             tags = { config.tags, "table", true },
+            zero_idx_lnum = { config.zero_idx_lnum, "boolean", true },
+            zero_idx_col = { config.zero_idx_col, "boolean", true },
+            ignore_stderr = { config.ignore_stderr, "boolean", true },
         })
     end
 
@@ -299,7 +339,11 @@ function M:run()
 
             if self.config.stderr then
                 output = out.stderr or ""
-            elseif out.stderr and out.stderr ~= "" then
+            elseif
+                not self.config.ignore_stderr
+                and out.stderr
+                and out.stderr ~= ""
+            then
                 log.error(out.stderr)
             end
 
@@ -317,6 +361,9 @@ function M:run()
 
                 local diagnostics = self:process_json_output(json)
                 if diagnostics then
+                    if self.config.hook then
+                        self.config.hook(self, diagnostics)
+                    end
                     vim.diagnostic.set(self.namespace, self.bufnr, diagnostics)
                 end
 
@@ -347,6 +394,9 @@ function M:run()
                 end
             end
 
+            if self.config.hook then
+                self.config.hook(self, diagnostics)
+            end
             vim.diagnostic.set(self.namespace, self.bufnr, diagnostics)
         end)
     )
@@ -367,6 +417,7 @@ function M.add(bufnr, config)
     end
 
     config.debounce = config.debounce or 100
+    config.events = config.events or { "TextChanged", "TextChangedI" }
 
     local linter = {
         namespace = vim.api.nvim_create_namespace("ow.lsp.linter"),
@@ -386,13 +437,23 @@ function M.add(bufnr, config)
         return
     end
 
-    vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI" }, {
+    vim.api.nvim_create_autocmd(config.events, {
         buffer = linter.bufnr,
         callback = util.debounce(function()
             linter:run()
         end, linter.config.debounce),
         group = linter.augroup,
     })
+
+    if config.clear_events then
+        vim.api.nvim_create_autocmd(config.clear_events, {
+            buffer = linter.bufnr,
+            callback = function()
+                vim.diagnostic.reset(linter.namespace, linter.bufnr)
+            end,
+            group = linter.augroup,
+        })
+    end
 end
 
 return M
