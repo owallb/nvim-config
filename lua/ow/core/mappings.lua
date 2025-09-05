@@ -100,6 +100,15 @@ vim.keymap.set('n', '<leader>ve', function()
     end
 end)
 
+-- Replace all occurrences of word
+vim.keymap.set("n", "<Leader>r", function()
+    local word = vim.fn.expand("<cword>")
+    local replacement = vim.fn.input('Replace "' .. word .. '" by? ')
+    if replacement ~= "" then
+        vim.cmd(":%s/\\<" .. word .. "\\>/" .. replacement .. "/g")
+    end
+end)
+
 -- Removed bindings
 vim.keymap.set('n', 'gr', '<Nop>')
 
