@@ -3,18 +3,18 @@ vim.keymap.set("n", "tn", vim.cmd.tabnew)
 vim.keymap.set("n", "tq", vim.cmd.tabclose)
 
 -- Clipboard
-if vim.env.TMUX and vim.fn.executable('tmux') then
+if vim.env.TMUX and vim.fn.executable("tmux") then
     vim.keymap.set(
         { "n", "x" },
         "<leader>y",
         "\"+y:call system('tmux load-buffer -w -', @+)<CR>"
     )
 else
-    vim.keymap.set({ "n", "x", }, "<leader>y", '"+y')
+    vim.keymap.set({ "n", "x" }, "<leader>y", '"+y')
 end
-vim.keymap.set({ "n", "x", }, "<leader>p", '"+p')
-vim.keymap.set({ "n", "x", }, "<leader>P", '"+P')
-vim.keymap.set({ "n", "x", }, "<leader>+", ":call setreg('+', @\")<CR>")
+vim.keymap.set({ "n", "x" }, "<leader>p", '"+p')
+vim.keymap.set({ "n", "x" }, "<leader>P", '"+P')
+vim.keymap.set({ "n", "x" }, "<leader>+", ":call setreg('+', @\")<CR>")
 
 -- Allow exiting insert mode in terminal by hitting <ESC>
 vim.keymap.set("t", "<Esc>", "<C-\\><C-n>")
@@ -29,8 +29,8 @@ vim.keymap.set("t", "<C-\\>", function()
 end)
 
 -- Use :diffput/get instead of normal one to allow staging visual selection
-vim.keymap.set({"n", "x"}, "<leader>dp", ":diffput<CR>")
-vim.keymap.set({"n", "x"}, "<leader>do", ":diffget<CR>")
+vim.keymap.set({ "n", "x" }, "<leader>dp", ":diffput<CR>")
+vim.keymap.set({ "n", "x" }, "<leader>do", ":diffget<CR>")
 
 local close_pum = function()
     if vim.fn.pumvisible() ~= 0 then
@@ -51,52 +51,52 @@ end, { expr = true })
 vim.keymap.set("n", "<C-w>q", ":bp | bd#<CR>")
 
 -- Allow (de)indenting without deselecting
-vim.keymap.set({"x"}, "<", "<gv")
-vim.keymap.set({"x"}, ">", ">gv")
+vim.keymap.set({ "x" }, "<", "<gv")
+vim.keymap.set({ "x" }, ">", ">gv")
 
 -- Remove default mappings
 vim.keymap.set("", "<C-LeftMouse>", "")
-vim.keymap.set('n', 'K', function()
-    if vim.bo.filetype == 'vim' or vim.bo.filetype == 'help' then
-        vim.cmd('help ' .. vim.fn.expand('<cword>'))
+vim.keymap.set("n", "K", function()
+    if vim.bo.filetype == "vim" or vim.bo.filetype == "help" then
+        vim.cmd("help " .. vim.fn.expand("<cword>"))
     else
-        vim.cmd('Man ' .. vim.fn.expand('<cword>'))
+        vim.cmd("Man " .. vim.fn.expand("<cword>"))
     end
 end)
 
 -- Remove right-click menu items
-vim.cmd.aunmenu({ "PopUp.-1-", })
-vim.cmd.aunmenu({ "PopUp.How-to\\ disable\\ mouse", })
+vim.cmd.aunmenu({ "PopUp.-1-" })
+vim.cmd.aunmenu({ "PopUp.How-to\\ disable\\ mouse" })
 
 -- Insert-mode Emacs bindings
-vim.keymap.set('i', '<C-f>', '<Right>')
-vim.keymap.set('i', '<C-b>', '<Left>')
-vim.keymap.set('i', '<C-a>', '<C-o>^')
-vim.keymap.set('i', '<C-e>', '<C-o>$')
+vim.keymap.set("i", "<C-f>", "<Right>")
+vim.keymap.set("i", "<C-b>", "<Left>")
+vim.keymap.set("i", "<C-a>", "<C-o>^")
+vim.keymap.set("i", "<C-e>", "<C-o>$")
 -- vim.keymap.set('i', '<C-d>', '<C-o>x') -- Overrides de-indent
-vim.keymap.set('i', '<M-f>', '<C-o>w')
-vim.keymap.set('i', '<M-b>', '<C-o>b')
-vim.keymap.set('i', '<M-d>', '<C-o>dw')
-vim.keymap.set('i', '<M-BS>', '<C-o>db')
+vim.keymap.set("i", "<M-f>", "<C-o>w")
+vim.keymap.set("i", "<M-b>", "<C-o>b")
+vim.keymap.set("i", "<M-d>", "<C-o>dw")
+vim.keymap.set("i", "<M-BS>", "<C-o>db")
 
 -- Command-mode Emacs bindings
-vim.keymap.set('c', '<C-f>', '<Right>')
-vim.keymap.set('c', '<C-b>', '<Left>')
-vim.keymap.set('c', '<C-a>', '<Home>')
-vim.keymap.set('c', '<C-e>', '<End>')
-vim.keymap.set('c', '<C-d>', '<Delete>')
-vim.keymap.set('c', '<C-n>', '<Down>')
-vim.keymap.set('c', '<C-p>', '<Up>')
-vim.keymap.set('c', '<M-f>', '<C-Right>')
-vim.keymap.set('c', '<M-b>', '<C-Left>')
-vim.keymap.set('c', '<M-d>', '<C-Right><C-w>')
-vim.keymap.set('c', '<M-BS>', '<C-w>')
+vim.keymap.set("c", "<C-f>", "<Right>")
+vim.keymap.set("c", "<C-b>", "<Left>")
+vim.keymap.set("c", "<C-a>", "<Home>")
+vim.keymap.set("c", "<C-e>", "<End>")
+vim.keymap.set("c", "<C-d>", "<Delete>")
+vim.keymap.set("c", "<C-n>", "<Down>")
+vim.keymap.set("c", "<C-p>", "<Up>")
+vim.keymap.set("c", "<M-f>", "<C-Right>")
+vim.keymap.set("c", "<M-b>", "<C-Left>")
+vim.keymap.set("c", "<M-d>", "<C-Right><C-w>")
+vim.keymap.set("c", "<M-BS>", "<C-w>")
 
-vim.keymap.set('n', '<leader>ve', function()
-    if vim.o.virtualedit == 'all' then
-        vim.o.virtualedit = 'block'
+vim.keymap.set("n", "<leader>ve", function()
+    if vim.o.virtualedit == "all" then
+        vim.o.virtualedit = "block"
     else
-        vim.o.virtualedit = 'all'
+        vim.o.virtualedit = "all"
     end
 end)
 
@@ -110,7 +110,7 @@ vim.keymap.set("n", "<Leader>r", function()
 end)
 
 -- Removed bindings
-vim.keymap.set('n', 'gr', '<Nop>')
+vim.keymap.set("n", "gr", "<Nop>")
 
 -- Default bindings that are good to know:
 -- insert mode:

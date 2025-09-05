@@ -2450,7 +2450,13 @@ uv_udp_t.getpeername = uv.udp_getpeername
 ---@param interface_addr string|nil
 ---@param membership uv.aliases.udp_membership
 ---@return 0|nil success, string? err_name, string? err_msg
-function uv.udp_set_membership(udp, multicast_addr, interface_addr, membership) end
+function uv.udp_set_membership(
+    udp,
+    multicast_addr,
+    interface_addr,
+    membership
+)
+end
 uv_udp_t.set_membership = uv.udp_set_membership
 
 ---
@@ -2464,7 +2470,14 @@ uv_udp_t.set_membership = uv.udp_set_membership
 ---@param source_addr string
 ---@param membership uv.aliases.udp_membership
 ---@return 0|nil success, string? err_name, string? err_msg
-function uv.udp_set_source_membership(udp, multicast_addr, interface_addr, source_addr, membership) end
+function uv.udp_set_source_membership(
+    udp,
+    multicast_addr,
+    interface_addr,
+    source_addr,
+    membership
+)
+end
 uv_udp_t.set_source_membership = uv.udp_set_source_membership
 
 ---
@@ -4141,4 +4154,3 @@ function uv.metrics_idle_time() end
 uv.constants = {}
 
 return uv
-

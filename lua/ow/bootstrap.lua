@@ -2,7 +2,9 @@ local version = vim.version()
 
 if version.major == 0 then
     if version.minor < 11 then
-        error("Neovim version 0.11 or above is required with this configuration.")
+        error(
+            "Neovim version 0.11 or above is required with this configuration."
+        )
     end
 end
 
@@ -16,7 +18,7 @@ if not vim.uv.fs_stat(lazypath) then
         util.assert_installed("cc")
     end
     util.assert_installed("make")
-    util.assert_any_installed({ "curl", "wget", })
+    util.assert_any_installed({ "curl", "wget" })
     util.assert_installed("unzip")
     util.assert_installed("tar")
     util.assert_installed("gzip")

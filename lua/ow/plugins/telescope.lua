@@ -28,7 +28,7 @@ return {
                 },
                 file_ignore_patterns = {
                     "^%.git/",
-                }
+                },
             },
             extensions = {
                 undo = {

@@ -52,7 +52,10 @@ function M.set_defaults(bufnr)
             mode = { "n", "i" },
             lhs = "<C-j>",
             rhs = function()
-                vim.lsp.buf.signature_help({ border = "rounded", max_width = 80 })
+                vim.lsp.buf.signature_help({
+                    border = "rounded",
+                    max_width = 80,
+                })
             end,
         },
         {
@@ -86,7 +89,7 @@ function M.set_defaults(bufnr)
     if telescope then
         vim.list_extend(keymaps, {
             { mode = "n", lhs = "<leader>dl", rhs = telescope.diagnostics },
-            { mode = "n", lhs = "grt", rhs = telescope.lsp_type_definitions, },
+            { mode = "n", lhs = "grt", rhs = telescope.lsp_type_definitions },
             { mode = "n", lhs = "gd", rhs = telescope.lsp_definitions },
             { mode = "n", lhs = "gri", rhs = telescope.lsp_implementations },
             { mode = "n", lhs = "grr", rhs = telescope.lsp_references },
@@ -94,7 +97,7 @@ function M.set_defaults(bufnr)
     else
         vim.list_extend(keymaps, {
             { mode = "n", lhs = "<leader>dl", rhs = vim.diagnostic.setloclist },
-            { mode = "n", lhs = "grt", rhs = vim.lsp.buf.type_definition, },
+            { mode = "n", lhs = "grt", rhs = vim.lsp.buf.type_definition },
             { mode = "n", lhs = "gd", rhs = vim.lsp.buf.definition },
         })
     end

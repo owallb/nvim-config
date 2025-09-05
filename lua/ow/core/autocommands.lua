@@ -63,7 +63,7 @@ vim.api.nvim_create_autocmd("FileType", {
 vim.api.nvim_create_autocmd("TermLeave", {
     desc = "Reload buffers when leaving terminal",
     pattern = "*",
-    callback = function ()
+    callback = function()
         vim.cmd.checktime()
-    end
+    end,
 })

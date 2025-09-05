@@ -31,6 +31,5 @@ return {
         org_agenda_span = "week",
         org_agenda_skip_scheduled_if_done = true,
         org_agenda_skip_deadline_if_done = true,
-
     },
 }
