@@ -24,10 +24,17 @@ return {
                         q = actions.close,
                         ["<C-c>"] = actions.close,
                         ["<C-l>"] = actions.select_default,
+                        ["<C-u>"] = actions.results_scrolling_up,
+                        ["<C-d>"] = actions.results_scrolling_down,
                     },
                 },
                 file_ignore_patterns = {
                     "^%.git/",
+                },
+                layout_config = {
+                    height = 30,
+                    width = 80,
+                    scroll_speed = 3,
                 },
             },
             extensions = {
@@ -53,13 +60,14 @@ return {
                     initial_mode = "normal",
                     mappings = {
                         n = {
-                            ["<C-d>"] = actions.delete_buffer
-                                + actions.move_to_top,
+                            ["<C-x>"] = actions.delete_buffer,
                         },
-                        i = {
-                            ["<C-d>"] = actions.delete_buffer
-                                + actions.move_to_top,
-                        },
+                    },
+                },
+                live_grep = {
+                    layout_config = {
+                        width = 160,
+                        preview_width = 80,
                     },
                 },
                 diagnostics = {
