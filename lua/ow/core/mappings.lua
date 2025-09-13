@@ -56,6 +56,7 @@ vim.keymap.set({ "x" }, ">", ">gv")
 
 -- Remove default mappings
 vim.keymap.set("", "<C-LeftMouse>", "")
+vim.keymap.set("n", "gr", "<Nop>")
 vim.keymap.set("n", "K", function()
     if vim.bo.filetype == "vim" or vim.bo.filetype == "help" then
         vim.cmd("help " .. vim.fn.expand("<cword>"))
@@ -108,9 +109,6 @@ vim.keymap.set("n", "<Leader>r", function()
         vim.cmd(":%s/\\<" .. word .. "\\>/" .. replacement .. "/g")
     end
 end)
-
--- Removed bindings
-vim.keymap.set("n", "gr", "<Nop>")
 
 -- Default bindings that are good to know:
 -- insert mode:
