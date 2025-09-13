@@ -179,7 +179,7 @@ return {
             sources = cmp.config.sources({ { name = "path" } }, {
                 {
                     name = "cmdline",
-                    option = { ignore_cmds = { "Man", "!" } },
+                    option = { ignore_cmds = { "!" } },
                 },
             }),
         })
