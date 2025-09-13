@@ -44,6 +44,25 @@ return {
             mode = "n",
         },
         {
+            "<leader>gD",
+            function()
+                vim.cmd.Gvdiffsplit("HEAD")
+            end,
+            mode = "n",
+        },
+        {
+            "<leader>gh",
+            vim.cmd.Ghdiffsplit,
+            mode = "n",
+        },
+        {
+            "<leader>gH",
+            function()
+                vim.cmd.Ghdiffsplit("HEAD")
+            end,
+            mode = "n",
+        },
+        {
             "<leader>gc",
             function()
                 vim.cmd.G("commit")
