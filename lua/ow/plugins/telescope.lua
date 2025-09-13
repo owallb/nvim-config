@@ -7,6 +7,7 @@ return {
     dependencies = {
         "nvim-lua/plenary.nvim",
         "debugloop/telescope-undo.nvim",
+        "rcarriga/nvim-notify",
         {
             "nvim-telescope/telescope-fzf-native.nvim",
             build = "make",
@@ -70,8 +71,18 @@ return {
                         preview_width = 80,
                     },
                 },
+                highlights = {
+                    layout_config = {
+                        width = 160,
+                        preview_width = 80,
+                    },
+                },
                 diagnostics = {
                     initial_mode = "normal",
+                    layout_config = {
+                        width = 160,
+                        preview_width = 80,
+                    },
                 },
                 lsp_definitions = {
                     initial_mode = "normal",
@@ -84,6 +95,10 @@ return {
                 },
                 lsp_references = {
                     initial_mode = "normal",
+                    layout_config = {
+                        width = 160,
+                        preview_width = 80,
+                    },
                 },
                 git_status = {
                     initial_mode = "normal",
@@ -130,9 +145,25 @@ return {
 
         telescope.load_extension("fzf")
         telescope.load_extension("notify")
-        vim.keymap.set("n", "<leader>fn", telescope.extensions.notify.notify)
+        vim.keymap.set("n", "<leader>fn", function()
+            telescope.extensions.notify.notify({
+                initial_mode = "normal",
+                layout_config = {
+                    width = 160,
+                    preview_width = 80,
+                },
+            })
+        end)
 
         telescope.load_extension("undo")
-        vim.keymap.set("n", "<leader>fu", telescope.extensions.undo.undo)
+        vim.keymap.set("n", "<leader>fu", function()
+            telescope.extensions.undo.undo({
+                initial_mode = "normal",
+                layout_config = {
+                    width = 160,
+                    preview_width = 80,
+                },
+            })
+        end)
     end,
 }
