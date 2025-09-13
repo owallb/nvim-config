@@ -106,7 +106,9 @@ vim.keymap.set("n", "<Leader>r", function()
     local word = vim.fn.expand("<cword>")
     local replacement = vim.fn.input('Replace "' .. word .. '" by? ')
     if replacement ~= "" then
+        local cursor_pos = vim.api.nvim_win_get_cursor(0)
         vim.cmd(":%s/\\<" .. word .. "\\>/" .. replacement .. "/g")
+        vim.api.nvim_win_set_cursor(0, cursor_pos)
     end
 end)
 
