@@ -48,7 +48,7 @@ vim.keymap.set({ "n", "i" }, "<C-c>", function()
     return close_pum()
 end, { expr = true })
 
-vim.keymap.set("n", "<C-w>q", ":bp | bd#<CR>")
+vim.keymap.set("n", "<C-w>q", ":bn | bd#<CR>")
 
 -- Allow (de)indenting without deselecting
 vim.keymap.set({ "x" }, "<", "<gv")
