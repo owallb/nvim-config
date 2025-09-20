@@ -141,7 +141,6 @@ function Hover.eval_expr(frame_id, expr)
         frameId = frame_id,
         context = "hover",
     }, function(err, resp)
-        log.debug("resp: %s", vim.inspect(resp))
         if err or not resp or not resp.result then
             if err then
                 log.warning("Failed to evaluate '%s': %s", expr, err)
@@ -307,6 +306,12 @@ return {
     config = function()
         local dap = require("dap")
 
+        -- Set DebugPC to only use underline
+        vim.api.nvim_set_hl(0, "DebugPC", {
+            bg = "NONE",
+            fg = "NONE",
+        })
+
         vim.api.nvim_create_user_command(
             "Debug",
             ---@param opts vim.api.keyset.create_user_command.command_args
@@ -330,7 +335,6 @@ return {
                     end
                     cfg.args = args
 
-                    log.debug("Config: %s", vim.inspect(cfg))
                     dap.run(cfg)
                 end
 
