@@ -78,6 +78,7 @@ vim.opt.autoread = true
 vim.opt.jumpoptions = { "stack", "view", "clean" }
 vim.opt.updatetime = 100
 vim.opt.guicursor:append("a:Cursor")
+vim.opt.inccommand = "split"
 
 function _G._status_line_git()
     local status = vim.b.gitsigns_status_dict
