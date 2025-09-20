@@ -29,6 +29,33 @@ vim.api.nvim_create_autocmd({ "BufReadPost" }, {
 })
 
 vim.api.nvim_create_autocmd("FileType", {
+    pattern = { "c" },
+    callback = function()
+        vim.o.errorformat = "%-Gmake: *** [Makefile:,"
+            .. "%-Gg%\\?make[%*\\d]: *** [%f:%l:%m,"
+            .. "%-Gg%\\?make: *** [%f:%l:%m,"
+            .. "%-G%f:%l: (Each undeclared identifier is reported only once,"
+            .. "%-G%f:%l: for each function it appears in.),"
+            .. "%-GIn file included from %f:%l:%c:,"
+            .. "%-GIn file included from %f:%l:%c\\,,"
+            .. "%-GIn file included from %f:%l:%c,"
+            .. "%-GIn file included from %f:%l,"
+            .. "%-G%*[ ]from %f:%l:%c,"
+            .. "%-G%*[ ]from %f:%l:,"
+            .. "%-G%*[ ]from %f:%l\\,,"
+            .. "%-G%*[ ]from %f:%l,"
+            .. "%D%*\\a[%*\\d]: Entering directory %*[`']%f',"
+            .. "%X%*\\a[%*\\d]: Leaving directory %*[`']%f',"
+            .. "%D%*\\a: Entering directory %*[`']%f',"
+            .. "%X%*\\a: Leaving directory %*[`']%f',"
+            .. "%DMaking %*\\a in %f,"
+            .. "%f:%l:%c: %t%*[^:]: %m,"
+            .. "%*[^:]: %f:%l: %m,"
+            .. "%-G%.%#"
+    end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
     desc = "Use two space indent for C++ files",
     pattern = { "cpp" },
     callback = function()
