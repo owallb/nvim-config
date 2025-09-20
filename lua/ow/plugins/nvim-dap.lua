@@ -306,7 +306,6 @@ return {
     config = function()
         local dap = require("dap")
 
-        -- Set DebugPC to only use underline
         vim.api.nvim_set_hl(0, "DebugPC", {
             bg = "NONE",
             fg = "NONE",
