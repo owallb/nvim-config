@@ -29,8 +29,8 @@ vim.keymap.set("t", "<C-\\>", function()
 end)
 
 -- Use :diffput/get instead of normal one to allow staging visual selection
-vim.keymap.set({ "n", "x" }, "dp", ":diffput<CR>")
-vim.keymap.set({ "n", "x" }, "do", ":diffget<CR>")
+vim.keymap.set({ "n", "x" }, "<leader>dp", ":diffput<CR>")
+vim.keymap.set({ "n", "x" }, "<leader>do", ":diffget<CR>")
 
 local close_pum = function()
     if vim.fn.pumvisible() ~= 0 then
