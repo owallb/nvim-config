@@ -5,6 +5,12 @@ return {
     "nvim-treesitter/nvim-treesitter",
     build = ":TSUpdate",
     event = "VeryLazy",
+    dependencies = {
+        {
+            "LiadOz/nvim-dap-repl-highlights",
+            config = true,
+        },
+    },
     opts = {
         ensure_installed = {
             "c", -- recommended default
@@ -15,6 +21,7 @@ return {
             "luadoc",
             "phpdoc",
             "comment",
+            "dap_repl",
         },
         auto_install = true,
         highlight = {
