@@ -169,7 +169,10 @@ function M.setup()
                     "clang-tidy",
                     "-p=build",
                     "--quiet",
-                    "--checks=-*,clang-analyzer-*",
+                    "--checks=-*,"
+                        .. "clang-analyzer-*,"
+                        .. "-clang-analyzer-security.insecureAPI.DeprecatedOrUnsafeBufferHandling,"
+                        .. "-clang-analyzer-security.insecureAPI.strcpy",
                     "%file%",
                 },
                 events = { "BufWritePost" },
