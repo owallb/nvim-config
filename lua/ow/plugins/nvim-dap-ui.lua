@@ -16,6 +16,7 @@ return {
             function()
                 require("dapui").eval()
             end,
+            mode = { "x", "n" },
         },
         {
             "<Leader>dw",
