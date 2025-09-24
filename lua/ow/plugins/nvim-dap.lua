@@ -268,7 +268,7 @@ end
 local HoverState = {}
 HoverState.__index = HoverState
 
-HoverState.MAX_WIDTH = 50
+HoverState.MAX_WIDTH = 80
 HoverState.MAX_HEIGHT = 20
 
 function HoverState.new(session, frame_id, line_nr, col_nr, current_file)
