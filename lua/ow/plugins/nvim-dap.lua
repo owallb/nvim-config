@@ -119,8 +119,14 @@ end
 function CFormatter:format_pointer(item)
     if self:is_null_pointer(item) then
         return FormatResult.new(nil, "nullptr")
+    elseif not item.value:match("^0x%x+$") then
+        -- Value contains more than just a pointer address
+        -- (e.g., "0x12345 \"hello\"" for char*)
+        -- Remove the leading address to show just the meaningful content
+        return FormatResult.new(nil, item.value:gsub("^0x%x+%s*", ""))
     elseif
-        not self:is_container(item) or item.depth == CFormatter.MAX_DEPTH
+        item.depth == CFormatter.MAX_DEPTH
+        or not self:is_container(item)
     then
         return FormatResult.new(nil, item.value)
     end
@@ -134,18 +140,20 @@ function CFormatter:format_pointer(item)
 
     if #resp.variables == 0 then
         return FormatResult.new(nil, item.value)
+    elseif #resp.variables == 1 then
+        local var = resp.variables[1]
+        local inner = Item.from_var(var, item.depth)
+        return self:format_value(inner)
+    else
+        return self:format_container(item, resp.variables)
     end
-
-    local var = resp.variables[1]
-    local inner = Item.from_var(var, item.depth)
-
-    return self:format_value(inner)
 end
 
 ---@async
 ---@param item Item
+---@param vars dap.Variable[]?
 ---@return FormatResult
-function CFormatter:format_container(item)
+function CFormatter:format_container(item, vars)
     if item.depth >= CFormatter.MAX_DEPTH then
         return FormatResult.new(
             nil,
@@ -154,21 +162,24 @@ function CFormatter:format_container(item)
         )
     end
 
-    local content = "{\n"
-    local err, resp = self.session:request("variables", {
-        variablesReference = item.variablesReference,
-    })
-    if err or not resp then
-        return FormatResult.new(err)
+    if not vars then
+        local err, resp = self.session:request("variables", {
+            variablesReference = item.variablesReference,
+        })
+        if err or not resp then
+            return FormatResult.new(err)
+        end
+
+        vars = resp.variables
     end
 
-    if #resp.variables == 0 then
+    if #vars == 0 then
         return FormatResult.new(nil, item.value)
     end
 
     ---@type Item[]
     local items = {}
-    for _, var in ipairs(resp.variables) do
+    for _, var in ipairs(vars) do
         table.insert(items, Item.from_var(var, item.depth + 1))
     end
 
@@ -182,6 +193,7 @@ function CFormatter:format_container(item)
     end
 
     local indent = self:make_indent(items[1].depth)
+    local content = "{\n"
 
     for i, inner in ipairs(items) do
         if is_array and i > CFormatter.MAX_ARR_ELEMENTS then
