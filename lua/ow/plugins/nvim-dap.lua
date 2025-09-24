@@ -1,17 +1,306 @@
 -- https://github.com/mfussenegger/nvim-dap
 local log = require("ow.log")
 
-local Hover = {}
+---@class Item
+---@field name string
+---@field type string
+---@field value string
+---@field variablesReference? number
+---@field depth integer
+local Item = {}
+Item.__index = Item
 
----@param filetype string
----@param lines string[]
-function Hover.show_lines(filetype, lines)
-    local buf = vim.api.nvim_create_buf(false, true)
-    vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
-    vim.api.nvim_set_option_value("filetype", filetype, { buf = buf })
+---@param name string
+---@param type string
+---@param value string
+---@param variablesReference? number
+---@param depth integer
+---@return Item
+function Item.new(name, type, value, variablesReference, depth)
+    return setmetatable({
+        name = name,
+        type = type,
+        value = value,
+        variablesReference = variablesReference,
+        depth = depth,
+    }, Item)
+end
+
+---@param var dap.Variable
+---@param depth integer
+---@return Item
+function Item.from_var(var, depth)
+    return Item.new(
+        var.name,
+        var.type,
+        var.value,
+        var.variablesReference,
+        depth
+    )
+end
+
+---@class FormatResult
+---@field success boolean
+---@field error? dap.ErrorResponse
+---@field value? string
+local FormatResult = {}
+FormatResult.__index = FormatResult
+
+---@param error? dap.ErrorResponse
+---@param value? string
+---@return FormatResult
+function FormatResult.new(error, value)
+    return setmetatable({
+        success = not error and true or false,
+        error = error,
+        value = value,
+    }, FormatResult)
+end
+
+---@class BaseFormatter
+---@field session dap.Session
+---@field MAX_DEPTH integer
+---@field INDENT string
+local BaseFormatter = {}
+BaseFormatter.__index = BaseFormatter
+
+BaseFormatter.MAX_DEPTH = 2
+BaseFormatter.INDENT = "  "
+
+---@return BaseFormatter
+function BaseFormatter:new(session)
+    return setmetatable({ session = session }, self)
+end
+
+---@param item Item
+---@return FormatResult
+---@diagnostic disable-next-line: unused-local
+function BaseFormatter:format(item)
+    return FormatResult.new(nil, item.value)
+end
+
+---@param item Item
+---@return boolean
+function BaseFormatter:is_container(item)
+    return item.variablesReference and item.variablesReference > 0 or false
+end
+
+---@param level integer
+---@return string
+function BaseFormatter:make_indent(level)
+    return string.rep(self.INDENT, level)
+end
+
+---@class CFormatter: BaseFormatter
+local CFormatter = {}
+CFormatter.__index = CFormatter
+setmetatable(CFormatter, BaseFormatter)
+
+CFormatter.MAX_ARR_ELEMENTS = 10
+CFormatter.ARRAY_ELEM_PFX = ""
+CFormatter.STRUCT_FIELD_PFX = "."
+CFormatter.PLACEHOLDER = "..."
+
+---@param item Item
+---@return boolean
+function CFormatter:is_pointer(item)
+    return item.type:match("%*%s*[const%s]*[volatile%s]*[restrict%s]*$") ~= nil
+end
+
+---@param item Item
+---@return boolean
+function CFormatter:is_null_pointer(item)
+    return self:is_pointer(item) and item.value:match("^0x0+$")
+end
+
+---@async
+---@param item Item
+---@return FormatResult
+function CFormatter:format_pointer(item)
+    if self:is_null_pointer(item) then
+        return FormatResult.new(nil, "nullptr")
+    elseif
+        not self:is_container(item) or item.depth == CFormatter.MAX_DEPTH
+    then
+        return FormatResult.new(nil, item.value)
+    end
+
+    local err, resp = self.session:request("variables", {
+        variablesReference = item.variablesReference,
+    })
+    if err or not resp then
+        return FormatResult.new(err)
+    end
+
+    if #resp.variables == 0 then
+        return FormatResult.new(nil, item.value)
+    end
+
+    local var = resp.variables[1]
+    local inner = Item.from_var(var, item.depth)
+
+    return self:format_value(inner)
+end
+
+---@async
+---@param item Item
+---@return FormatResult
+function CFormatter:format_container(item)
+    if item.depth >= CFormatter.MAX_DEPTH then
+        return FormatResult.new(
+            nil,
+            vim.trim(item.value) ~= "" and item.value
+                or string.format("{%s}", CFormatter.PLACEHOLDER)
+        )
+    end
+
+    local content = "{\n"
+    local err, resp = self.session:request("variables", {
+        variablesReference = item.variablesReference,
+    })
+    if err or not resp then
+        return FormatResult.new(err)
+    end
+
+    if #resp.variables == 0 then
+        return FormatResult.new(nil, item.value)
+    end
+
+    ---@type Item[]
+    local items = {}
+    for _, var in ipairs(resp.variables) do
+        table.insert(items, Item.from_var(var, item.depth + 1))
+    end
+
+    local is_array = false
+    local pfx
+    if items[1].name:match("^%[?%d+%]?$") then
+        is_array = true
+        pfx = CFormatter.ARRAY_ELEM_PFX
+    else
+        pfx = CFormatter.STRUCT_FIELD_PFX
+    end
+
+    local indent = self:make_indent(items[1].depth)
+
+    for i, inner in ipairs(items) do
+        if is_array and i > CFormatter.MAX_ARR_ELEMENTS then
+            content = content
+                .. string.format("%s%s\n", indent, CFormatter.PLACEHOLDER)
+            break
+        end
+
+        if is_array and inner.name:match("^%d+$") then
+            inner.name = "[" .. inner.name .. "]"
+        end
+
+        local res = self:format(inner)
+        if not res.success then
+            return res
+        end
+
+        content = content .. string.format("%s%s%s,\n", indent, pfx, res.value)
+    end
+
+    content = content .. self:make_indent(item.depth) .. "}"
+    return FormatResult.new(nil, content)
+end
+
+---@async
+---@param item Item
+---@return FormatResult
+function CFormatter:format_value(item)
+    if self:is_pointer(item) then
+        return self:format_pointer(item)
+    elseif self:is_container(item) then
+        return self:format_container(item)
+    else
+        return FormatResult.new(nil, item.value)
+    end
+end
+
+---@async
+---@param item Item
+---@return FormatResult
+function CFormatter:format(item)
+    local res = self:format_value(item)
+    if not res.success then
+        return res
+    end
+
+    if self:is_container(item) and not self:is_null_pointer(item) then
+        local value = string.format(
+            "%s(%s) %s",
+            item.name ~= "" and string.format("%s = ", item.name) or "",
+            item.type,
+            res.value
+        )
+        return FormatResult.new(nil, value)
+    else
+        local value = string.format("%s = %s", item.name, res.value)
+        return FormatResult.new(nil, value)
+    end
+end
+
+---@class HoverState
+---@field MAX_WIDTH integer
+---@field MAX_HEIGHT integer
+---@field current_win? integer
+---@field session dap.Session
+---@field frame_id number
+---@field line_nr integer
+---@field col_nr integer
+---@field current_file string
+---@field lines string[]
+---@field depth integer
+local HoverState = {}
+HoverState.__index = HoverState
+
+HoverState.MAX_WIDTH = 50
+HoverState.MAX_HEIGHT = 20
+
+function HoverState.new(session, frame_id, line_nr, col_nr, current_file)
+    return setmetatable({
+        session = session,
+        frame_id = frame_id,
+        line_nr = line_nr,
+        col_nr = col_nr,
+        current_file = current_file,
+        lines = {},
+        depth = 0,
+    }, HoverState)
+end
+
+function HoverState.close()
+    if
+        HoverState.current_win
+        and vim.api.nvim_win_is_valid(HoverState.current_win)
+    then
+        vim.api.nvim_win_close(HoverState.current_win, true)
+    end
+    HoverState.current_win = nil
+end
+
+---@param content string
+function HoverState:render(content)
+    local lines = vim.split(content, "\n")
+    local filetype = self.session.filetype
+
+    local orig_buf = vim.api.nvim_get_current_buf()
+    local hover_buf = vim.api.nvim_create_buf(false, true)
+    vim.api.nvim_buf_set_lines(hover_buf, 0, -1, false, lines)
+    vim.api.nvim_set_option_value(
+        "filetype",
+        filetype or self.session.filetype,
+        { buf = hover_buf }
+    )
 
     local max_width = 0
     for _, line in ipairs(lines) do
+        if #line >= HoverState.MAX_WIDTH then
+            max_width = HoverState.MAX_WIDTH
+            break
+        end
         max_width = math.max(max_width, #line)
     end
 
@@ -19,172 +308,114 @@ function Hover.show_lines(filetype, lines)
         return
     end
 
-    local win = vim.api.nvim_open_win(buf, false, {
+    local win = vim.api.nvim_open_win(hover_buf, false, {
         relative = "cursor",
-        width = math.min(80, max_width),
-        height = math.min(20, #lines),
+        width = max_width,
+        height = 1,
         row = 1,
         col = 0,
         border = "rounded",
         style = "minimal",
+        hide = true,
     })
 
-    vim.api.nvim_create_autocmd({ "CursorMoved", "BufLeave", "InsertEnter" }, {
+    vim.api.nvim_win_set_config(win, {
+        height = math.min(
+            HoverState.MAX_HEIGHT,
+            vim.api.nvim_win_text_height(win, {}).all
+        ),
+        hide = false,
+    })
+
+    HoverState.current_win = win
+
+    vim.api.nvim_create_autocmd({ "CursorMoved", "InsertEnter" }, {
+        buffer = orig_buf,
         once = true,
-        callback = function()
-            if vim.api.nvim_win_is_valid(win) then
-                vim.api.nvim_win_close(win, true)
-            end
-        end,
+        callback = HoverState.close,
+    })
+
+    vim.api.nvim_create_autocmd("WinLeave", {
+        buffer = hover_buf,
+        once = true,
+        callback = HoverState.close,
     })
 end
 
----@param frame_id integer
----@param expr string
----@param eval_resp dap.EvaluateResponse
----@param variables dap.Variable[]
----@param callback fun(filetype: string, lines: string[])
-function Hover.format_expandable(frame_id, expr, eval_resp, variables, callback)
-    local filetype = vim.bo.filetype
-    local lines = {}
-
+---@return BaseFormatter
+function HoverState:get_formatter()
+    local filetype = self.session.filetype
     if filetype == "c" or filetype == "cpp" then
-        if eval_resp.type and eval_resp.type:match("%*%s*$") then
-            if eval_resp.result == "0x0" then
-                table.insert(
-                    lines,
-                    string.format("%s = %s", expr, eval_resp.result)
-                )
-                goto done
-            else
-                Hover.eval_expr(frame_id, "*" .. expr)
-                return
-            end
-        else
-            table.insert(
-                lines,
-                string.format("%s = (%s) {", expr, eval_resp.type)
-            )
-        end
-        for _, var in ipairs(variables) do
-            if var.variablesReference and var.variablesReference > 0 then
-                table.insert(
-                    lines,
-                    string.format("  .%s = (%s) { ... },", var.name, var.type)
-                )
-            else
-                table.insert(
-                    lines,
-                    string.format("  .%s = %s,", var.name, var.value or "?")
-                )
-            end
-        end
-        table.insert(lines, "}")
-    elseif filetype == "python" then
-        local ignored_names = {
-            ["special variables"] = true,
-            ["function variables"] = true,
-            ["class variables"] = true,
-        }
-        local ignored_types = {
-            ["method"] = true,
-            ["function"] = true,
-        }
-        table.insert(lines, string.format("%s: %s", expr, eval_resp.type))
-        for _, var in ipairs(variables) do
-            if ignored_names[var.name] or ignored_types[var.type] then
-                goto continue
-            end
-
-            if var.variablesReference and var.variablesReference > 0 then
-                table.insert(
-                    lines,
-                    string.format("    %s: %s = ...", var.name, var.type)
-                )
-            else
-                table.insert(
-                    lines,
-                    string.format(
-                        "    %s: %s = %s",
-                        var.name,
-                        var.type,
-                        var.value
-                    )
-                )
-            end
-            ::continue::
-        end
+        return CFormatter:new(self.session)
     else
-        filetype = "yaml"
-        table.insert(lines, string.format("%s:", expr))
-        for _, var in ipairs(variables) do
-            if var.variablesReference and var.variablesReference > 0 then
-                table.insert(lines, string.format("  %s: ...", var.name))
-            else
-                table.insert(
-                    lines,
-                    string.format("  %s: %s", var.name, var.value)
-                )
-            end
+        return BaseFormatter:new(self.session)
+    end
+end
+
+---@async
+---@param expr string
+---@return dap.ErrorResponse?, string?
+function HoverState:eval(expr)
+    local request = {
+        expression = expr,
+        frameId = self.frame_id,
+        context = "hover",
+        line = self.line_nr,
+        column = self.col_nr,
+        source = {
+            path = self.current_file,
+        },
+    }
+
+    local eval
+    do
+        local err, resp = self.session:request("evaluate", request)
+        if err or not resp then
+            return err
         end
+
+        eval = resp
     end
 
-    ::done::
-    callback(filetype, lines)
+    local fmt = self:get_formatter()
+    local res = fmt:format(
+        Item.new(expr, eval.type, eval.result, eval.variablesReference, 0)
+    )
+    if not res.success then
+        return res.error
+    end
+
+    return nil, res.value
 end
 
----@param frame_id integer
----@param expr string
-function Hover.eval_expr(frame_id, expr)
-    Hover.session:request("evaluate", {
-        expression = expr,
-        frameId = frame_id,
-        context = "hover",
-    }, function(err, resp)
-        if err or not resp or not resp.result then
-            if err then
-                log.warning("Failed to evaluate '%s': %s", expr, err)
-            end
-            return
-        end
-
-        if resp.variablesReference and resp.variablesReference > 0 then
-            Hover.session:request("variables", {
-                variablesReference = resp.variablesReference,
-            }, function(e, r)
-                if e or not r or #r.variables <= 0 then
-                    log.warning("Failed to evaluate '%s': %s", expr, e)
-                    Hover.show_lines(
-                        vim.bo.filetype,
-                        { string.format("%s = %s", expr, resp.result) }
-                    )
-                else
-                    Hover.format_expandable(
-                        frame_id,
-                        expr,
-                        resp,
-                        r.variables,
-                        function(filetype, lines)
-                            Hover.show_lines(filetype, lines)
-                        end
-                    )
-                end
-            end)
-        else
-            Hover.show_lines(
-                vim.bo.filetype,
-                { string.format("%s = %s", expr, resp.result) }
-            )
-        end
-    end)
-end
-
-function Hover.dap_hover()
-    Hover.dap = require("dap")
-    Hover.session = Hover.dap.session()
-    if not Hover.session then
+---@async
+local function hover_async()
+    if
+        HoverState.current_win
+        and vim.api.nvim_win_is_valid(HoverState.current_win)
+    then
+        vim.api.nvim_set_current_win(HoverState.current_win)
         return
     end
+
+    local dap = require("dap")
+    local session = dap.session()
+    if not session then
+        return
+    end
+
+    local capabilities = session.capabilities or {}
+    local supports_hover = capabilities.supportsEvaluateForHovers
+
+    if not supports_hover then
+        log.warning("Hover is not supported by this adapter")
+        return
+    end
+
+    local cursor_pos = vim.api.nvim_win_get_cursor(0)
+    local line_nr = cursor_pos[1] -- nvim-dap sets linesStartAt1=true
+    local col_nr = cursor_pos[2] + 1 -- nvim-dap sets columnsStartAt1=true
+    local current_file = vim.api.nvim_buf_get_name(0)
 
     local expr
     local mode = vim.api.nvim_get_mode()
@@ -225,18 +456,47 @@ function Hover.dap_hover()
         return
     end
 
-    Hover.session:request(
-        "stackTrace",
-        { threadId = 1 },
-        function(err, stack_resp)
-            if err or not stack_resp or not stack_resp.stackFrames[1] then
-                return
-            end
-
-            local frame_id = stack_resp.stackFrames[1].id
-            Hover.eval_expr(frame_id, expr)
+    local thread_id
+    do
+        local err, resp = session:request("threads", nil)
+        if err or not resp or #resp.threads == 0 then
+            log.warning("Failed to get threads: %s", err)
+            return
         end
-    )
+        thread_id = resp.threads[1].id
+    end
+
+    local frame_id
+    do
+        local err, resp =
+            session:request("stackTrace", { threadId = thread_id })
+        if err or not resp or #resp.stackFrames == 0 then
+            log.warning("Failed to get stack trace: %s", err)
+            return
+        end
+
+        frame_id = resp.stackFrames[1].id
+    end
+
+    local state =
+        HoverState.new(session, frame_id, line_nr, col_nr, current_file)
+
+    local err, resp = state:eval(expr)
+    if err or not resp then
+        log.warning("Failed to evaluate '%s': %s", expr, err)
+        return
+    end
+
+    state:render(resp)
+end
+
+local function hover()
+    coroutine.wrap(function()
+        local ok, err = xpcall(hover_async, debug.traceback)
+        if not ok then
+            log.error("Hover failed:\n%s", err)
+        end
+    end)()
 end
 
 ---@type LazyPluginSpec
@@ -256,20 +516,27 @@ return {
             end,
         },
         {
-            "<Leader>do",
+            "<C-S-i>",
             function()
                 require("dap").up()
             end,
         },
         {
-            "<Leader>di",
+            "<C-S-o>",
             function()
                 require("dap").down()
             end,
         },
         {
             "<Leader>dk",
-            Hover.dap_hover,
+            hover,
+            mode = { "n", "x" },
+        },
+        {
+            "<Leader>dr",
+            function()
+                require("dap").repl.toggle()
+            end,
             mode = { "n", "x" },
         },
         {
@@ -369,10 +636,16 @@ return {
             }
         )
 
+        -- https://sourceware.org/gdb/current/onlinedocs/gdb#Debugger-Adapter-Protocol
         dap.adapters.gdb = {
             type = "executable",
             command = "gdb",
             args = { "--interpreter=dap" },
+        }
+
+        dap.adapters.lldb = {
+            type = "executable",
+            command = "lldb-dap",
         }
 
         dap.adapters.python = {
@@ -398,6 +671,25 @@ return {
                 stopAtBeginningOfMainSubprogram = false,
             },
         }
+
+        -- dap.configurations.c = {
+        --     {
+        --         type = "lldb",
+        --         request = "launch",
+        --         name = "Launch",
+        --         program = function()
+        --             local path = vim.fn.input({
+        --                 prompt = "Path to executable: ",
+        --                 default = vim.fn.getcwd() .. "/",
+        --                 completion = "file",
+        --             })
+        --             return (path and path ~= "") and path or dap.ABORT
+        --         end,
+        --         cwd = "${workspaceFolder}",
+        --         stopAtBeginningOfMainSubprogram = false,
+        --         console = "internalConsole",
+        --     },
+        -- }
 
         dap.configurations.cpp = dap.configurations.c
 
