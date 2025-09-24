@@ -12,6 +12,12 @@ return {
             end,
         },
         {
+            "<Leader>de",
+            function()
+                require("dapui").eval()
+            end,
+        },
+        {
             "<Leader>dw",
             function()
                 require("dapui").elements.watches.add(vim.fn.expand("<cexpr>"))
