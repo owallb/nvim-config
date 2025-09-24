@@ -14,7 +14,7 @@ return {
         {
             "<Leader>de",
             function()
-                require("dapui").eval()
+                require("dapui").eval(nil, { context = "hover", enter = true })
             end,
             mode = { "x", "n" },
         },
