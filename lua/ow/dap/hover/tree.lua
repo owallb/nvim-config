@@ -4,9 +4,7 @@ local Node = require("ow.dap.hover.node")
 
 ---@class ow.dap.hover.Tree
 ---@field session dap.Session
----@field root_node ow.dap.hover.Node?
----@field line_to_node table<integer, ow.dap.hover.Node> Map line numbers to nodes
----@field extmark_to_node table<integer, ow.dap.hover.Node> Map extmark IDs to nodes
+---@field root ow.dap.hover.Node?
 local Tree = {}
 Tree.__index = Tree
 
@@ -22,20 +20,19 @@ function Tree.new(session)
     }, Tree)
 end
 
----Build the tree from a DAP item (async)
+---Build the tree from a DAP item
 ---@async
 ---@param item ow.dap.Item Root item to build tree from
----@return ow.dap.hover.Node
 function Tree:build(item)
-    local root = Node.new(item, nil)
-    self.root_node = root
+    self.root = Node.new(item, nil)
 
-    -- For now, start with everything collapsed
-    -- Later we can add logic to expand first level by default
-    return root
+    if self.root:is_container() then
+        self:load_children(self.root)
+        self.root.is_expanded = true
+    end
 end
 
----Load children for a node (async)
+---Load children for a node
 ---@async
 ---@param node ow.dap.hover.Node
 ---@return boolean success Whether loading succeeded
@@ -80,14 +77,13 @@ end
 ---@async
 ---@return ow.dap.hover.Content
 function Tree:render()
-    if not self.root_node then
+    if not self.root then
         return Content.new()
     end
 
     local content = Content.new()
-    self.line_to_node = {}
 
-    self:render_subtree(self.root_node, content)
+    self:render_subtree(self.root, content)
     return content
 end
 
@@ -96,9 +92,6 @@ end
 ---@param node ow.dap.hover.Node
 ---@param content ow.dap.hover.Content
 function Tree:render_subtree(node, content)
-    -- Store line mapping
-    self.line_to_node[content:current_line()] = node
-
     -- Format this node
     node:format_into(self.session, content)
 
@@ -111,18 +104,53 @@ function Tree:render_subtree(node, content)
     end
 end
 
----Toggle expansion state of node at given line
----@async
----@param line_number integer
----@return boolean success Whether toggle succeeded
-function Tree:toggle_at_line(line_number)
-    local node = self.line_to_node[line_number]
-    if not node or not node:is_container() then
-        return false
+---@param node ow.dap.hover.Node
+---@return integer
+function Tree:count_subtree_nodes(node)
+    local count = 1
+
+    if node.is_expanded then
+        for _, child in ipairs(node.children) do
+            count = count + self:count_subtree_nodes(child)
+        end
     end
 
+    return count
+end
+
+---@param target_line integer
+---@return ow.dap.hover.Node?
+function Tree:get_node_at_line(target_line)
+    local current_line = 0
+
+    ---@param node ow.dap.hover.Node
+    local function search(node)
+        current_line = current_line + 1
+        if current_line == target_line then
+            return node
+        end
+
+        if node.is_expanded and node.children then
+            for _, child in ipairs(node.children) do
+                local found = search(child)
+                if found then
+                    return found
+                end
+            end
+        end
+    end
+
+    if self.root then
+        return search(self.root)
+    end
+end
+
+---Toggle expansion state of node at given line
+---@async
+---@param node ow.dap.hover.Node
+---@return boolean success Whether toggle succeeded
+function Tree:toggle_node(node)
     if not node.is_expanded then
-        -- Expanding: load children if needed
         local success = self:load_children(node)
         if not success then
             return false

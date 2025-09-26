@@ -1,4 +1,5 @@
 -- DAP hover implementation with tree-based display
+local Content = require("ow.dap.hover.content")
 local Item = require("ow.dap.item")
 local Tree = require("ow.dap.hover.tree")
 local log = require("ow.log")
@@ -45,6 +46,7 @@ function Window.show(lines, content)
     local orig_buf = vim.api.nvim_get_current_buf()
     local buf = vim.api.nvim_create_buf(false, true)
     vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
+    vim.api.nvim_set_option_value("modifiable", false, { buf = buf })
 
     -- Create window (initially hidden for size calculation)
     local win = vim.api.nvim_open_win(buf, false, {
@@ -66,7 +68,7 @@ function Window.show(lines, content)
     })
 
     -- Apply syntax highlighting
-    content:apply_highlights(Window.ns_id, buf)
+    content:apply_highlights(Window.ns_id, buf, 0)
 
     -- Store window reference
     Window.current_win = win
@@ -94,6 +96,17 @@ function Window.show(lines, content)
     end, { buffer = buf, nowait = true })
 end
 
+---@param buf integer
+---@param callback fun()
+function Window.update_buffer(buf, callback)
+    local prev_scrolloff = vim.wo[Window.current_win].scrolloff
+    vim.wo[Window.current_win].scrolloff = 0
+    vim.bo[buf].modifiable = true
+    callback()
+    vim.bo[buf].modifiable = false
+    vim.wo[Window.current_win].scrolloff = prev_scrolloff
+end
+
 ---Expand/collapse item at cursor position
 ---@param buf integer
 function Window.expand_at_cursor(buf)
@@ -105,36 +118,40 @@ function Window.expand_at_cursor(buf)
     coroutine.wrap(function()
         local ok, err = xpcall(function()
             -- Toggle expansion
-            local cursor = vim.api.nvim_win_get_cursor(Window.current_win)
-            local success = Window.tree:toggle_at_line(cursor[1])
+            local lnum = vim.api.nvim_win_get_cursor(Window.current_win)[1]
+            local node = Window.tree:get_node_at_line(lnum)
+            if not node or not node:is_container() then
+                return
+            end
+
+            local prev_node_count = Window.tree:count_subtree_nodes(node)
+
+            local success = Window.tree:toggle_node(node)
             if not success then
                 return
             end
 
-            local content = Window.tree:render()
+            local content = Content.new()
+            Window.tree:render_subtree(node, content)
             local lines = content:get_lines()
 
-            -- TODO: possible to only update the affected lines?
-            -- Update buffer content
-            vim.api.nvim_set_option_value(
-                "scrolloff",
-                0,
-                { win = Window.current_win }
-            )
-            vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
-            vim.api.nvim_set_option_value(
-                "scrolloff",
-                vim.o.scrolloff,
-                { win = Window.current_win }
-            )
+            Window.update_buffer(buf, function()
+                vim.api.nvim_buf_set_lines(
+                    buf,
+                    lnum - 1,
+                    lnum - 1 + prev_node_count,
+                    true,
+                    lines
+                )
+            end)
 
-            -- Re-apply highlights
-            vim.api.nvim_buf_clear_namespace(buf, -1, 0, -1) -- Clear old highlights
-            content:apply_highlights(Window.ns_id, buf)
+            -- Apply highlights
+            content:apply_highlights(Window.ns_id, buf, lnum - 1)
 
             -- Adjust window size
+            local all_lines = vim.api.nvim_buf_get_lines(buf, 0, -1, true)
             vim.api.nvim_win_set_config(Window.current_win, {
-                width = Window.compute_width(lines),
+                width = Window.compute_width(all_lines),
             })
             local text_height =
                 vim.api.nvim_win_text_height(Window.current_win, {}).all
@@ -152,7 +169,7 @@ function Window.expand_at_cursor(buf)
     end)()
 end
 
----Main hover entry point (async)
+---Main hover entry point
 ---@async
 ---@param expr string Expression to evaluate
 ---@param session dap.Session DAP session
@@ -207,6 +224,7 @@ local function hover_eval(
 end
 
 ---Public hover function
+---@async
 local function hover_async()
     -- Check if hover window is already open - focus it instead
     if Window.current_win and vim.api.nvim_win_is_valid(Window.current_win) then

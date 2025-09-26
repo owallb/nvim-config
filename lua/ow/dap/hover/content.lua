@@ -125,14 +125,15 @@ end
 ---Apply highlights to a buffer
 ---@param ns_id integer
 ---@param buf integer Buffer handle
-function Content:apply_highlights(ns_id, buf)
+---@param row_offset integer
+function Content:apply_highlights(ns_id, buf, row_offset)
     for _, highlight in ipairs(self.highlights) do
         vim.hl.range(
             buf,
             ns_id,
             highlight.group,
-            { highlight.start_row, highlight.start_col },
-            { highlight.end_row, highlight.end_col }
+            { row_offset + highlight.start_row, highlight.start_col },
+            { row_offset + highlight.end_row, highlight.end_col }
         )
     end
 end
