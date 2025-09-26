@@ -1,5 +1,3 @@
--- DAP variable item representation
-
 ---@class ow.dap.Item
 ---@field name string
 ---@field type string
@@ -9,7 +7,6 @@
 local Item = {}
 Item.__index = Item
 
----Create a new item
 ---@param name string
 ---@param type string
 ---@param value string
@@ -26,7 +23,6 @@ function Item.new(name, type, value, variablesReference, depth)
     }, Item)
 end
 
----Create item from DAP variable
 ---@param var dap.Variable
 ---@param depth integer
 ---@return ow.dap.Item

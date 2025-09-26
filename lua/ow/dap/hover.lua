@@ -1,35 +1,62 @@
--- DAP hover implementation with tree-based display
 local Content = require("ow.dap.hover.content")
 local Item = require("ow.dap.item")
 local Tree = require("ow.dap.hover.tree")
 local log = require("ow.log")
 
 ---@class ow.dap.hover.Window
----@field current_win? integer Currently active hover window ID
----@field ns_id integer Namespace for extmarks
----@field tree ow.dap.hover.Tree? Current tree formatter
+---@field NAMESPACE string
+---@field max_width? integer
+---@field max_height? integer
+---@field winid? integer
+---@field bufnr? integer
+---@field NS_ID integer
+---@field augroup? integer
+---@field tree ow.dap.hover.Tree?
 local Window = {}
+Window.__index = Window
 
-Window.MAX_WIDTH = nil
-Window.MAX_HEIGHT = nil
-Window.ns_id = vim.api.nvim_create_namespace("ow.dap.hover")
+Window.NAMESPACE = "ow.dap.hover.Window"
+Window.NS_ID = vim.api.nvim_create_namespace(Window.NAMESPACE)
 
----Close any existing hover window
-function Window.close()
-    if Window.current_win and vim.api.nvim_win_is_valid(Window.current_win) then
-        vim.api.nvim_win_close(Window.current_win, true)
+local instance = nil
+
+---@return ow.dap.hover.Window
+function Window.get_instance()
+    if not instance then
+        instance = setmetatable({
+            max_width = nil,
+            max_height = nil,
+            winid = nil,
+            bufnr = nil,
+            augroup = nil,
+        }, Window)
     end
-    Window.current_win = nil
-    Window.tree = nil
+
+    return instance
 end
 
----@param lines string[]
+function Window:close()
+    if self.winid and vim.api.nvim_win_is_valid(self.winid) then
+        vim.api.nvim_win_close(self.winid, true)
+    end
+
+    if self.augroup then
+        vim.api.nvim_del_augroup_by_id(self.augroup)
+    end
+
+    self.augroup = nil
+    self.winid = nil
+    self.bufnr = nil
+    self.tree = nil
+end
+
 ---@return integer
-function Window.compute_width(lines)
+function Window:compute_width()
+    local lines = vim.api.nvim_buf_get_lines(self.bufnr, 0, -1, true)
     local max_width = 1
     for _, line in ipairs(lines) do
-        if Window.MAX_WIDTH and #line >= Window.MAX_WIDTH then
-            max_width = Window.MAX_WIDTH
+        if self.max_width and #line >= self.max_width then
+            max_width = self.max_width
             break
         end
         max_width = math.max(max_width, #line)
@@ -38,20 +65,24 @@ function Window.compute_width(lines)
     return max_width
 end
 
----Create and display hover window with tree content
+---@return integer
+function Window:compute_height()
+    local text_height = vim.api.nvim_win_text_height(self.winid, {}).all
+    return math.min(self.max_height or text_height, text_height)
+end
+
 ---@param lines string[]
 ---@param content ow.dap.hover.Content
-function Window.show(lines, content)
-    -- Create buffer
-    local orig_buf = vim.api.nvim_get_current_buf()
-    local buf = vim.api.nvim_create_buf(false, true)
-    vim.api.nvim_buf_set_lines(buf, 0, -1, false, lines)
-    vim.api.nvim_set_option_value("modifiable", false, { buf = buf })
+function Window:show(lines, content)
+    local prev_buf = vim.api.nvim_get_current_buf()
+    self.bufnr = vim.api.nvim_create_buf(false, true)
 
-    -- Create window (initially hidden for size calculation)
-    local win = vim.api.nvim_open_win(buf, false, {
+    vim.api.nvim_buf_set_lines(self.bufnr, 0, -1, false, lines)
+    vim.bo[self.bufnr].modifiable = false
+
+    self.winid = vim.api.nvim_open_win(self.bufnr, false, {
         relative = "cursor",
-        width = Window.compute_width(lines),
+        width = self:compute_width(),
         height = 1,
         row = 1,
         col = 0,
@@ -60,84 +91,84 @@ function Window.show(lines, content)
         hide = true,
     })
 
-    -- Calculate and apply final height
-    local text_height = vim.api.nvim_win_text_height(win, {}).all
-    vim.api.nvim_win_set_config(win, {
-        height = math.min(Window.MAX_HEIGHT or text_height, text_height),
+    vim.api.nvim_win_set_config(self.winid, {
+        height = self:compute_height(),
         hide = false,
     })
 
-    -- Apply syntax highlighting
-    content:apply_highlights(Window.ns_id, buf, 0)
+    content:apply_highlights(Window.NS_ID, self.bufnr, 0)
 
-    -- Store window reference
-    Window.current_win = win
-
-    -- Set up auto-close behavior
+    self.augroup =
+        vim.api.nvim_create_augroup(Window.NAMESPACE, { clear = true })
     vim.api.nvim_create_autocmd({ "CursorMoved", "InsertEnter" }, {
-        buffer = orig_buf,
+        group = self.augroup,
+        buffer = prev_buf,
         once = true,
-        callback = Window.close,
+        callback = self.close,
     })
 
-    vim.api.nvim_create_autocmd("WinLeave", {
-        buffer = buf,
-        once = true,
-        callback = Window.close,
+    vim.api.nvim_create_autocmd("BufEnter", {
+        group = self.augroup,
+        callback = function(arg)
+            if arg.buf ~= self.bufnr then
+                self:close()
+                return true
+            end
+        end,
     })
 
-    -- Set up expansion keymaps
-    vim.keymap.set("n", "<CR>", function()
-        Window.expand_at_cursor(buf)
-    end, { buffer = buf, nowait = true })
+    vim.keymap.set(
+        "n",
+        "<CR>",
+        self.expand_at_cursor,
+        { buffer = self.bufnr, nowait = true }
+    )
 
-    vim.keymap.set("n", "<Tab>", function()
-        Window.expand_at_cursor(buf)
-    end, { buffer = buf, nowait = true })
+    vim.keymap.set(
+        "n",
+        "<Tab>",
+        self.expand_at_cursor,
+        { buffer = self.bufnr, nowait = true }
+    )
 end
 
----@param buf integer
 ---@param callback fun()
-function Window.update_buffer(buf, callback)
-    local prev_scrolloff = vim.wo[Window.current_win].scrolloff
-    vim.wo[Window.current_win].scrolloff = 0
-    vim.bo[buf].modifiable = true
+function Window:update_buffer(callback)
+    local prev_scrolloff = vim.wo[self.winid].scrolloff
+    vim.wo[self.winid].scrolloff = 0
+    vim.bo[self.bufnr].modifiable = true
     callback()
-    vim.bo[buf].modifiable = false
-    vim.wo[Window.current_win].scrolloff = prev_scrolloff
+    vim.bo[self.bufnr].modifiable = false
+    vim.wo[self.winid].scrolloff = prev_scrolloff
 end
 
----Expand/collapse item at cursor position
----@param buf integer
-function Window.expand_at_cursor(buf)
-    if not Window.tree then
+function Window:expand_at_cursor()
+    if not self.tree then
         return
     end
 
-    -- Re-render the tree
     coroutine.wrap(function()
         local ok, err = xpcall(function()
-            -- Toggle expansion
-            local lnum = vim.api.nvim_win_get_cursor(Window.current_win)[1]
-            local node = Window.tree:get_node_at_line(lnum)
+            local lnum = vim.api.nvim_win_get_cursor(self.winid)[1]
+            local node = self.tree:get_node_at_line(lnum)
             if not node or not node:is_container() then
                 return
             end
 
-            local prev_node_count = Window.tree:count_subtree_nodes(node)
+            local prev_node_count = self.tree:count_subtree_nodes(node)
 
-            local success = Window.tree:toggle_node(node)
+            local success = self.tree:toggle_node(node)
             if not success then
                 return
             end
 
             local content = Content.new()
-            Window.tree:render_subtree(node, content)
+            self.tree:render_subtree(node, content)
             local lines = content:get_lines()
 
-            Window.update_buffer(buf, function()
+            self:update_buffer(function()
                 vim.api.nvim_buf_set_lines(
-                    buf,
+                    self.bufnr,
                     lnum - 1,
                     lnum - 1 + prev_node_count,
                     true,
@@ -145,19 +176,16 @@ function Window.expand_at_cursor(buf)
                 )
             end)
 
-            -- Apply highlights
-            content:apply_highlights(Window.ns_id, buf, lnum - 1)
+            content:apply_highlights(Window.NS_ID, self.bufnr, lnum - 1)
 
-            -- Adjust window size
-            local all_lines = vim.api.nvim_buf_get_lines(buf, 0, -1, true)
-            vim.api.nvim_win_set_config(Window.current_win, {
-                width = Window.compute_width(all_lines),
+            vim.api.nvim_win_set_config(self.winid, {
+                width = self:compute_width(),
             })
             local text_height =
-                vim.api.nvim_win_text_height(Window.current_win, {}).all
-            vim.api.nvim_win_set_config(Window.current_win, {
+                vim.api.nvim_win_text_height(self.winid, {}).all
+            vim.api.nvim_win_set_config(self.winid, {
                 height = math.min(
-                    Window.MAX_HEIGHT or text_height,
+                    self.max_height or text_height,
                     text_height
                 ),
             })
@@ -185,8 +213,9 @@ local function hover_eval(
     col_nr,
     current_file
 )
+    local win = Window.get_instance()
     -- Close existing hover window
-    Window.close()
+    win:close()
 
     -- Evaluate expression
     local eval_request = {
@@ -217,18 +246,19 @@ local function hover_eval(
     local lines = content:get_lines()
 
     -- Store formatter for expansion
-    Window.tree = tree
+    win.tree = tree
 
     -- Show hover window
-    Window.show(lines, content)
+    win:show(lines, content)
 end
 
 ---Public hover function
 ---@async
 local function hover_async()
     -- Check if hover window is already open - focus it instead
-    if Window.current_win and vim.api.nvim_win_is_valid(Window.current_win) then
-        vim.api.nvim_set_current_win(Window.current_win)
+    local win = Window.get_instance()
+    if win.winid and vim.api.nvim_win_is_valid(win.winid) then
+        vim.api.nvim_set_current_win(win.winid)
         return
     end
 
