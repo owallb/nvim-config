@@ -1,4 +1,3 @@
--- Tree-based DAP variable formatter with expand/collapse support
 local Content = require("ow.dap.hover.content")
 local Node = require("ow.dap.hover.node")
 
@@ -8,7 +7,6 @@ local Node = require("ow.dap.hover.node")
 local Tree = {}
 Tree.__index = Tree
 
----Create a new tree formatter
 ---@param session dap.Session
 ---@return ow.dap.hover.Tree
 function Tree.new(session)
@@ -20,9 +18,8 @@ function Tree.new(session)
     }, Tree)
 end
 
----Build the tree from a DAP item
 ---@async
----@param item ow.dap.Item Root item to build tree from
+---@param item ow.dap.Item
 function Tree:build(item)
     self.root = Node.new(item, nil)
 
@@ -32,10 +29,9 @@ function Tree:build(item)
     end
 end
 
----Load children for a node
 ---@async
 ---@param node ow.dap.hover.Node
----@return boolean success Whether loading succeeded
+---@return boolean success
 function Tree:load_children(node)
     if not node:is_container() or #node.children > 0 then
         return true -- Already loaded or not a container
@@ -49,7 +45,6 @@ function Tree:load_children(node)
         return false
     end
 
-    -- Create child nodes
     for i, var in ipairs(resp.variables) do
         local child_item = {
             name = var.name,
@@ -62,7 +57,6 @@ function Tree:load_children(node)
         local child = Node.new(child_item, node)
         child.is_last_child = (i == #resp.variables)
 
-        -- Format array indices properly
         if child_item.name:match("^%d+$") then
             child_item.name = "[" .. child_item.name .. "]"
         end
@@ -73,7 +67,6 @@ function Tree:load_children(node)
     return true
 end
 
----Render the tree to highlighted content
 ---@async
 ---@return ow.dap.hover.Content
 function Tree:render()
@@ -87,15 +80,12 @@ function Tree:render()
     return content
 end
 
----Render a single node and its expanded children
 ---@async
 ---@param node ow.dap.hover.Node
 ---@param content ow.dap.hover.Content
 function Tree:render_subtree(node, content)
-    -- Format this node
     node:format_into(self.session, content)
 
-    -- Render expanded children
     if node.is_expanded then
         for _, child in ipairs(node.children) do
             content:newline()
@@ -145,10 +135,9 @@ function Tree:get_node_at_line(target_line)
     end
 end
 
----Toggle expansion state of node at given line
 ---@async
 ---@param node ow.dap.hover.Node
----@return boolean success Whether toggle succeeded
+---@return boolean success
 function Tree:toggle_node(node)
     if not node.is_expanded then
         local success = self:load_children(node)
@@ -157,7 +146,6 @@ function Tree:toggle_node(node)
         end
     end
 
-    -- Toggle state
     node.is_expanded = not node.is_expanded
     return true
 end

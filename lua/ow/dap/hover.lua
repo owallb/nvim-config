@@ -3,14 +3,13 @@ local Tree = require("ow.dap.hover.tree")
 local Window = require("ow.dap.hover.window")
 local log = require("ow.log")
 
----Main hover entry point
 ---@async
----@param expr string Expression to evaluate
----@param session dap.Session DAP session
----@param frame_id number Current frame ID
----@param line_nr integer Line number for context
----@param col_nr integer Column number for context
----@param current_file string Current file path
+---@param expr string
+---@param session dap.Session
+---@param frame_id number
+---@param line_nr integer
+---@param col_nr integer
+---@param current_file string
 local function hover_eval(
     expr,
     session,
@@ -20,10 +19,8 @@ local function hover_eval(
     current_file
 )
     local win = Window.get_instance()
-    -- Close existing hover window
     win:close()
 
-    -- Evaluate expression
     local eval_request = {
         expression = expr,
         frameId = frame_id,
@@ -41,27 +38,21 @@ local function hover_eval(
         return
     end
 
-    -- Create item and tree formatter
     local item =
         Item.new(expr, resp.type, resp.result, resp.variablesReference, 0)
     local tree = Tree.new(session)
 
-    -- Build and render tree
     tree:build(item)
     local content = tree:render()
     local lines = content:get_lines()
 
-    -- Store formatter for expansion
     win.tree = tree
 
-    -- Show hover window
     win:show(lines, content)
 end
 
----Public hover function
 ---@async
 local function hover_async()
-    -- Check if hover window is already open - focus it instead
     local win = Window.get_instance()
     if win.winid and vim.api.nvim_win_is_valid(win.winid) then
         vim.api.nvim_set_current_win(win.winid)
@@ -86,11 +77,9 @@ local function hover_async()
     local col_nr = cursor_pos[2] + 1 -- nvim-dap sets columnsStartAt1=true
     local current_file = vim.api.nvim_buf_get_name(0)
 
-    -- Get expression under cursor
     local expr
     local mode = vim.api.nvim_get_mode()
     if mode.mode == "v" then
-        -- Visual mode selection
         local start_pos = vim.fn.getpos("v")
         local end_pos = vim.fn.getpos(".")
 
@@ -127,7 +116,6 @@ local function hover_async()
         return
     end
 
-    -- Get thread and frame information
     local thread_id
     do
         local err, resp = session:request("threads", nil)
@@ -149,11 +137,9 @@ local function hover_async()
         frame_id = resp.stackFrames[1].id
     end
 
-    -- Evaluate and display hover
     hover_eval(expr, session, frame_id, line_nr, col_nr, current_file)
 end
 
----Wrapped hover function with error handling
 local function hover()
     coroutine.wrap(function()
         local ok, err = xpcall(hover_async, debug.traceback)

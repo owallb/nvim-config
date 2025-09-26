@@ -1,15 +1,12 @@
--- Tree node representation for DAP variables
-
 ---@class ow.dap.hover.Node
----@field item ow.dap.Item The DAP item this node represents
----@field parent ow.dap.hover.Node? Parent node
----@field children ow.dap.hover.Node[] Child nodes
----@field is_expanded boolean Whether this node is expanded
----@field is_last_child boolean Whether this is the last child of its parent
+---@field item ow.dap.Item
+---@field parent ow.dap.hover.Node?
+---@field children ow.dap.hover.Node[]
+---@field is_expanded boolean
+---@field is_last_child boolean
 local Node = {}
 Node.__index = Node
 
----Create a new tree node
 ---@param item ow.dap.Item
 ---@param parent ow.dap.hover.Node?
 ---@return ow.dap.hover.Node
@@ -25,23 +22,20 @@ function Node.new(item, parent)
     return node
 end
 
----Check if this node represents a container (struct/array)
 ---@return boolean
 function Node:is_container()
     return self.item.variablesReference and self.item.variablesReference > 0
         or false
 end
 
----Get the tree prefix for this node (├─, └─, │, etc.)
 ---@return string
 function Node:get_tree_prefix()
     if not self.parent then
-        return "" -- Root node has no prefix
+        return ""
     end
 
     local prefix = ""
 
-    -- Walk up the tree to build the prefix
     local node = self.parent
     while node and node.parent do
         if node.is_last_child then
@@ -52,7 +46,6 @@ function Node:get_tree_prefix()
         node = node.parent
     end
 
-    -- Add the final branch character
     if self.is_last_child then
         prefix = prefix .. "└─ "
     else
@@ -99,8 +92,7 @@ function Node:format_c()
     )
 end
 
----Format this node into the provided content
----@param session dap.Session DAP session for making requests
+---@param session dap.Session
 ---@param content ow.dap.hover.Content
 function Node:format_into(session, content)
     if self:is_container() then
