@@ -38,11 +38,9 @@ function Window.compute_width(lines)
 end
 
 ---Create and display hover window with tree content
----@param session dap.Session
----@param item ow.dap.Item
 ---@param lines string[]
 ---@param content ow.dap.hover.Content
-function Window.show(session, item, lines, content)
+function Window.show(lines, content)
     -- Create buffer
     local orig_buf = vim.api.nvim_get_current_buf()
     local buf = vim.api.nvim_create_buf(false, true)
@@ -108,7 +106,7 @@ function Window.expand_at_cursor(buf)
         local ok, err = xpcall(function()
             -- Toggle expansion
             local cursor = vim.api.nvim_win_get_cursor(Window.current_win)
-            local success = Window.tree:toggle_at_line(cursor[1] - 1)
+            local success = Window.tree:toggle_at_line(cursor[1])
             if not success then
                 return
             end
@@ -205,7 +203,7 @@ local function hover_eval(
     Window.tree = tree
 
     -- Show hover window
-    Window.show(session, item, lines, content)
+    Window.show(lines, content)
 end
 
 ---Public hover function

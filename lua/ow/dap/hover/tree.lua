@@ -1,7 +1,6 @@
 -- Tree-based DAP variable formatter with expand/collapse support
 local Content = require("ow.dap.hover.content")
 local Node = require("ow.dap.hover.node")
-local log = require("ow.log")
 
 ---@class ow.dap.hover.Tree
 ---@field session dap.Session
@@ -88,7 +87,7 @@ function Tree:render()
     local content = Content.new()
     self.line_to_node = {}
 
-    self:render_node(self.root_node, content, 0)
+    self:render_subtree(self.root_node, content)
     return content
 end
 
@@ -96,38 +95,20 @@ end
 ---@async
 ---@param node ow.dap.hover.Node
 ---@param content ow.dap.hover.Content
----@param line_number integer Current line number
----@return integer new_line_number Updated line number after rendering
-function Tree:render_node(node, content, line_number)
+function Tree:render_subtree(node, content)
     -- Store line mapping
-    node.line_number = line_number
-    self.line_to_node[line_number] = node
+    self.line_to_node[content:current_line()] = node
 
     -- Format this node
-    local node_content = node:format(self.session)
-    content.text = content.text .. node_content.text
-
-    -- Copy highlights, adjusting for current position
-    local text_offset = #content.text - #node_content.text
-    for _, highlight in ipairs(node_content.highlights) do
-        table.insert(content.highlights, {
-            group = highlight.group,
-            start_col = highlight.start_col + text_offset,
-            end_col = highlight.end_col + text_offset,
-        })
-    end
-
-    content:newline()
-    line_number = line_number + 1
+    node:format_into(self.session, content)
 
     -- Render expanded children
     if node.is_expanded then
         for _, child in ipairs(node.children) do
-            line_number = self:render_node(child, content, line_number)
+            content:newline()
+            self:render_subtree(child, content)
         end
     end
-
-    return line_number
 end
 
 ---Toggle expansion state of node at given line

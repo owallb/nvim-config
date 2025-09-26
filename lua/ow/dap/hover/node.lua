@@ -1,13 +1,10 @@
 -- Tree node representation for DAP variables
-local Content = require("ow.dap.hover.content")
-local log = require("ow.log")
 
 ---@class ow.dap.hover.Node
 ---@field item ow.dap.Item The DAP item this node represents
 ---@field parent ow.dap.hover.Node? Parent node
 ---@field children ow.dap.hover.Node[] Child nodes
 ---@field is_expanded boolean Whether this node is expanded
----@field line_number integer Buffer line number where this node is displayed
 ---@field is_last_child boolean Whether this is the last child of its parent
 local Node = {}
 Node.__index = Node
@@ -17,14 +14,15 @@ Node.__index = Node
 ---@param parent ow.dap.hover.Node?
 ---@return ow.dap.hover.Node
 function Node.new(item, parent)
-    return setmetatable({
+    local node = setmetatable({
         item = item,
         parent = parent,
         children = {},
         is_expanded = false,
-        line_number = -1,
         is_last_child = false,
     }, Node)
+
+    return node
 end
 
 ---Check if this node represents a container (struct/array)
@@ -79,7 +77,7 @@ function Node:is_c_pointer_child()
 end
 
 ---@return string
-function Node:format_c_expression()
+function Node:format_c()
     if self:is_c_array_element() then
         return string.format(
             "%s = (%s) %s",
@@ -90,7 +88,7 @@ function Node:format_c_expression()
     end
 
     if self:is_c_pointer_child() then
-        return string.format("*%s = %s", self.parent.item.name, self.item.value)
+        return string.format("%s = %s", self.item.name, self.item.value)
     end
 
     return string.format(
@@ -101,13 +99,10 @@ function Node:format_c_expression()
     )
 end
 
----Format this node as highlighted content
+---Format this node into the provided content
 ---@param session dap.Session DAP session for making requests
----@return ow.dap.hover.Content
-function Node:format(session)
-    local content = Content.new()
-
-    -- Add expansion marker for containers
+---@param content ow.dap.hover.Content
+function Node:format_into(session, content)
     if self:is_container() then
         local marker = self.is_expanded and "-" or "+"
         content:add(marker .. " ", "@comment")
@@ -115,27 +110,25 @@ function Node:format(session)
         content:add("  ")
     end
 
-    -- Add tree prefix
     local tree_prefix = self:get_tree_prefix()
     if tree_prefix ~= "" then
         content:add(tree_prefix, "@comment")
     end
 
-    local stmt
+    local text
     if session.filetype == "c" or session.filetype == "cpp" then
-        stmt = self:format_c_expression()
+        text = self:format_c()
     else
         error(
             string.format("Formatting for %s not implemented", session.filetype)
         )
     end
-    content:add_with_treesitter(stmt, session.filetype)
+
+    content:add_with_treesitter(text, session.filetype)
 
     if self.item.value == "" then
         content:add("...", "@comment")
     end
-
-    return content
 end
 
 return Node
