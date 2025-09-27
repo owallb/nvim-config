@@ -10,18 +10,11 @@ local log = require("ow.log")
 ---@param line_nr integer
 ---@param col_nr integer
 ---@param current_file string
-local function hover_eval(
-    expr,
-    session,
-    frame_id,
-    line_nr,
-    col_nr,
-    current_file
-)
+local function eval(expr, session, frame_id, line_nr, col_nr, current_file)
     local win = Window.get_instance()
     win:close()
 
-    local eval_request = {
+    local request = {
         expression = expr,
         frameId = frame_id,
         context = "hover",
@@ -32,23 +25,21 @@ local function hover_eval(
         },
     }
 
-    local err, resp = session:request("evaluate", eval_request)
-    if err or not resp then
+    local err, resp = session:request("evaluate", request)
+    if err then
         log.warning("Failed to evaluate '%s': %s", expr, err)
+    end
+    if err or not resp then
         return
     end
 
-    local item =
-        Item.new(expr, resp.type, resp.result, resp.variablesReference, 0)
-    local tree = Tree.new(session)
+    local item = Item.new(expr, resp.type, resp.result, resp.variablesReference)
+    win.tree = Tree.new(session)
 
-    tree:build(item)
-    local content = tree:render()
-    local lines = content:get_lines()
+    win.tree:build(item)
+    local content = win.tree:render()
 
-    win.tree = tree
-
-    win:show(lines, content)
+    win:show(content)
 end
 
 ---@async
@@ -119,8 +110,10 @@ local function hover_async()
     local thread_id
     do
         local err, resp = session:request("threads", nil)
-        if err or not resp or #resp.threads == 0 then
+        if err then
             log.warning("Failed to get threads: %s", err)
+        end
+        if err or not resp or #resp.threads == 0 then
             return
         end
         thread_id = resp.threads[1].id
@@ -130,14 +123,16 @@ local function hover_async()
     do
         local err, resp =
             session:request("stackTrace", { threadId = thread_id })
-        if err or not resp or #resp.stackFrames == 0 then
+        if err then
             log.warning("Failed to get stack trace: %s", err)
+        end
+        if err or not resp or #resp.stackFrames == 0 then
             return
         end
         frame_id = resp.stackFrames[1].id
     end
 
-    hover_eval(expr, session, frame_id, line_nr, col_nr, current_file)
+    eval(expr, session, frame_id, line_nr, col_nr, current_file)
 end
 
 local function hover()

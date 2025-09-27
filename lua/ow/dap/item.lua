@@ -3,7 +3,6 @@
 ---@field type string
 ---@field value string
 ---@field variablesReference? number
----@field depth integer
 local Item = {}
 Item.__index = Item
 
@@ -11,28 +10,24 @@ Item.__index = Item
 ---@param type string
 ---@param value string
 ---@param variablesReference? number
----@param depth integer
 ---@return ow.dap.Item
-function Item.new(name, type, value, variablesReference, depth)
+function Item.new(name, type, value, variablesReference)
     return setmetatable({
         name = name,
         type = type,
         value = value,
         variablesReference = variablesReference,
-        depth = depth,
     }, Item)
 end
 
 ---@param var dap.Variable
----@param depth integer
 ---@return ow.dap.Item
-function Item.from_var(var, depth)
+function Item.from_var(var)
     return Item.new(
         var.name,
         var.type,
         var.value,
-        var.variablesReference,
-        depth
+        var.variablesReference
     )
 end
 

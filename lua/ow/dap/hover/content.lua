@@ -108,7 +108,7 @@ end
 
 ---@return string[]
 function Content:get_lines()
-    return vim.split(self.text, "\n", { trimempty = true })
+    return vim.split(vim.trim(self.text), "\n")
 end
 
 ---@param ns_id integer

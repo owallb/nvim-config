@@ -42,9 +42,11 @@ function Window:close()
         vim.api.nvim_del_augroup_by_id(self.augroup)
     end
 
-    self.augroup = nil
+    self.max_width = nil
+    self.max_height = nil
     self.winid = nil
     self.bufnr = nil
+    self.augroup = nil
     self.tree = nil
 end
 
@@ -69,12 +71,12 @@ function Window:compute_height()
     return math.min(self.max_height or text_height, text_height)
 end
 
----@param lines string[]
 ---@param content ow.dap.hover.Content
-function Window:show(lines, content)
+function Window:show(content)
     local prev_buf = vim.api.nvim_get_current_buf()
     self.bufnr = vim.api.nvim_create_buf(false, true)
 
+    local lines = content:get_lines()
     vim.api.nvim_buf_set_lines(self.bufnr, 0, -1, false, lines)
     vim.bo[self.bufnr].modifiable = false
 

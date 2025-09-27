@@ -1,5 +1,7 @@
 local Content = require("ow.dap.hover.content")
+local Item = require("ow.dap.item")
 local Node = require("ow.dap.hover.node")
+local log = require("ow.log")
 
 ---@class ow.dap.hover.Tree
 ---@field session dap.Session
@@ -12,9 +14,7 @@ Tree.__index = Tree
 function Tree.new(session)
     return setmetatable({
         session = session,
-        root_node = nil,
-        line_to_node = {},
-        extmark_to_node = {},
+        root = nil,
     }, Tree)
 end
 
@@ -40,25 +40,20 @@ function Tree:load_children(node)
     local err, resp = self.session:request("variables", {
         variablesReference = node.item.variablesReference,
     })
-
+    if err then
+        log.warning("Failed to get variables for %s: %s", node.item.name, err)
+    end
     if err or not resp or #resp.variables == 0 then
         return false
     end
 
     for i, var in ipairs(resp.variables) do
-        local child_item = {
-            name = var.name,
-            type = var.type,
-            value = var.value,
-            variablesReference = var.variablesReference,
-            depth = node.item.depth + 1,
-        }
-
-        local child = Node.new(child_item, node)
+        local item = Item.from_var(var)
+        local child = Node.new(item, node)
         child.is_last_child = (i == #resp.variables)
 
-        if child_item.name:match("^%d+$") then
-            child_item.name = "[" .. child_item.name .. "]"
+        if item.name:match("^%d+$") then
+            item.name = "[" .. item.name .. "]"
         end
 
         table.insert(node.children, child)
