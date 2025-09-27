@@ -179,9 +179,8 @@ function Window:expand_at_cursor()
             vim.api.nvim_win_set_config(self.winid, {
                 width = self:compute_width(),
             })
-            local text_height = vim.api.nvim_win_text_height(self.winid, {}).all
             vim.api.nvim_win_set_config(self.winid, {
-                height = math.min(self.max_height or text_height, text_height),
+                height = self:compute_height(),
             })
         end, debug.traceback)
 
