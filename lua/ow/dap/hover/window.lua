@@ -20,15 +20,17 @@ local instance = nil
 
 ---@return ow.dap.hover.Window
 function Window.get_instance()
-    if not instance then
-        instance = setmetatable({
-            max_width = nil,
-            max_height = nil,
-            winid = nil,
-            bufnr = nil,
-            augroup = nil,
-        }, Window)
+    if instance then
+        return instance
     end
+
+    instance = setmetatable({
+        max_width = nil,
+        max_height = nil,
+        winid = nil,
+        bufnr = nil,
+        augroup = nil,
+    }, Window)
 
     return instance
 end

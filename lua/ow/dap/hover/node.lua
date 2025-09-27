@@ -11,15 +11,13 @@ Node.__index = Node
 ---@param parent ow.dap.hover.Node?
 ---@return ow.dap.hover.Node
 function Node.new(item, parent)
-    local node = setmetatable({
+    return setmetatable({
         item = item,
         parent = parent,
         children = {},
         is_expanded = false,
         is_last_child = false,
     }, Node)
-
-    return node
 end
 
 ---@return boolean
