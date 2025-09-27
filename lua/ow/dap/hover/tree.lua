@@ -130,6 +130,34 @@ function Tree:get_node_at_line(target_line)
     end
 end
 
+---@param target_node ow.dap.hover.Node
+---@return integer?
+function Tree:get_line_for_node(target_node)
+    local current_line = 0
+
+    ---@param node ow.dap.hover.Node
+    local function search(node)
+        current_line = current_line + 1
+        if node == target_node then
+            return current_line
+        end
+
+        if node.is_expanded and node.children then
+            for _, child in ipairs(node.children) do
+                local found = search(child)
+                if found then
+                    return found
+                end
+            end
+        end
+        return nil
+    end
+
+    if self.root then
+        return search(self.root)
+    end
+end
+
 ---@async
 ---@param node ow.dap.hover.Node
 ---@return boolean success
@@ -143,6 +171,47 @@ function Tree:toggle_node(node)
 
     node.is_expanded = not node.is_expanded
     return true
+end
+
+---@async
+---@param node ow.dap.hover.Node
+---@return boolean success
+function Tree:expand_all_children(node)
+    if not node:is_container() then
+        return true
+    end
+
+    if
+        (self.session.filetype == "c" or self.session.filetype == "cpp")
+        and node:is_c_null_pointer()
+    then
+        return true
+    end
+
+    if not node.is_expanded then
+        local success = self:load_children(node)
+        if not success then
+            return false
+        end
+        node.is_expanded = true
+    end
+
+    for _, child in ipairs(node.children) do
+        local success = self:expand_all_children(child)
+        if not success then
+            return false
+        end
+    end
+
+    return true
+end
+
+---@param node ow.dap.hover.Node
+function Tree:collapse_all_children(node)
+    node.is_expanded = false
+    for _, child in ipairs(node.children) do
+        self:collapse_all_children(child)
+    end
 end
 
 return Tree

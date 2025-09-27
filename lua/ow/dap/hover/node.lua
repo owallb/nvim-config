@@ -26,6 +26,20 @@ function Node:is_container()
         or false
 end
 
+---@return boolean
+function Node:is_c_pointer()
+    return self:is_container()
+        and self.item.type:match(
+                "%*%s*[const%s]*[volatile%s]*[restrict%s]*$"
+            )
+            ~= nil
+end
+
+---@return boolean
+function Node:is_c_null_pointer()
+    return self:is_c_pointer() and self.item.value:match("^0[xX]0*$") ~= nil
+end
+
 ---@return string
 function Node:get_tree_prefix()
     if not self.parent then
@@ -60,11 +74,7 @@ end
 
 ---@return boolean
 function Node:is_c_pointer_child()
-    return self.parent
-            and self.parent.item.type:match(
-                "%*%s*[const%s]*[volatile%s]*[restrict%s]*$"
-            ) ~= nil
-        or false
+    return self.parent ~= nil and self.parent:is_c_pointer()
 end
 
 ---@return string
@@ -88,6 +98,39 @@ function Node:format_c()
         self.item.name,
         self.item.value
     )
+end
+
+---@return string
+function Node:get_full_expression()
+    local parts = {}
+    local current = self
+
+    while current do
+        table.insert(parts, 1, current.item.name)
+        current = current.parent
+    end
+
+    if #parts <= 1 then
+        return parts[1] or ""
+    end
+
+    local expr = parts[1]
+    for i = 2, #parts do
+        local part = parts[i]
+        if part:match("^%[.*%]$") then
+            expr = expr .. part
+        elseif part:match("^%*") then
+            expr = "(" .. expr .. ")" .. part
+        else
+            if expr:match("%*$") then
+                expr = expr .. part
+            else
+                expr = expr .. "." .. part
+            end
+        end
+    end
+
+    return expr
 end
 
 ---@param session dap.Session
