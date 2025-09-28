@@ -4,6 +4,7 @@ local Node = require("ow.dap.hover.node")
 local log = require("ow.log")
 
 ---@class ow.dap.hover.Tree
+---@field lang string
 ---@field session dap.Session
 ---@field root ow.dap.hover.Node?
 local Tree = {}
@@ -13,6 +14,7 @@ Tree.__index = Tree
 ---@return ow.dap.hover.Tree
 function Tree.new(session)
     return setmetatable({
+        lang = session.filetype,
         session = session,
         root = nil,
     }, Tree)
@@ -21,7 +23,7 @@ end
 ---@async
 ---@param item ow.dap.Item
 function Tree:build(item)
-    self.root = Node.new(item, nil)
+    self.root = Node.new(item, nil, self.lang)
 
     if self.root:is_container() then
         self:load_children(self.root)
@@ -49,7 +51,7 @@ function Tree:load_children(node)
 
     for i, var in ipairs(resp.variables) do
         local item = Item.from_var(var)
-        local child = Node.new(item, node)
+        local child = Node.new(item, node, self.lang)
         child.is_last_child = (i == #resp.variables)
 
         if item.name:match("^%d+$") then
@@ -79,7 +81,7 @@ end
 ---@param node ow.dap.hover.Node
 ---@param content ow.dap.hover.Content
 function Tree:render_subtree(node, content)
-    node:format_into(self.session, content)
+    node:format_into(content)
 
     if node.is_expanded then
         for _, child in ipairs(node.children) do
@@ -177,14 +179,7 @@ end
 ---@param node ow.dap.hover.Node
 ---@return boolean success
 function Tree:expand_all_children(node)
-    if not node:is_container() then
-        return true
-    end
-
-    if
-        (self.session.filetype == "c" or self.session.filetype == "cpp")
-        and node:is_c_null_pointer()
-    then
+    if not node:is_expandable() then
         return true
     end
 

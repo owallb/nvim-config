@@ -260,7 +260,7 @@ function Window:toggle_node()
     coroutine.wrap(function()
         local ok, err = xpcall(function()
             local info = self:get_current_node_info()
-            if not info:is_valid() or not info.node:is_container() then
+            if not info:is_valid() or not info.node:is_expandable() then
                 return
             end
 
@@ -308,7 +308,7 @@ function Window:expand_all_at_cursor()
     coroutine.wrap(function()
         local ok, err = xpcall(function()
             local info = self:get_current_node_info()
-            if not info:is_valid() or not info.node:is_container() then
+            if not info:is_valid() or not info.node:is_expandable() then
                 return
             end
 

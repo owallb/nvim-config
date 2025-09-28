@@ -1,4 +1,5 @@
 ---@class ow.dap.hover.Node
+---@field lang string
 ---@field item ow.dap.Item
 ---@field parent ow.dap.hover.Node?
 ---@field children ow.dap.hover.Node[]
@@ -9,9 +10,11 @@ Node.__index = Node
 
 ---@param item ow.dap.Item
 ---@param parent ow.dap.hover.Node?
+---@param lang string
 ---@return ow.dap.hover.Node
-function Node.new(item, parent)
+function Node.new(item, parent, lang)
     return setmetatable({
+        lang = lang,
         item = item,
         parent = parent,
         children = {},
@@ -26,9 +29,14 @@ function Node:is_container()
         or false
 end
 
+function Node:is_c_lang()
+    return self.lang == "c" or self.lang == "cpp"
+end
+
 ---@return boolean
 function Node:is_c_pointer()
-    return self:is_container()
+    return self:is_c_lang()
+        and self:is_container()
         and self.item.type:match(
                 "%*%s*[const%s]*[volatile%s]*[restrict%s]*$"
             )
@@ -69,7 +77,7 @@ end
 
 ---@return boolean
 function Node:is_c_array_element()
-    return self.item.name:match("^%[?%d+%]?$") ~= nil
+    return self:is_c_lang() and self.item.name:match("^%[?%d+%]?$") ~= nil
 end
 
 ---@return string
@@ -124,10 +132,14 @@ function Node:get_full_expression()
     return expr
 end
 
----@param session dap.Session
+---@return boolean
+function Node:is_expandable()
+    return self:is_container() and not self:is_c_null_pointer()
+end
+
 ---@param content ow.dap.hover.Content
-function Node:format_into(session, content)
-    if self:is_container() then
+function Node:format_into(content)
+    if self:is_expandable() then
         local marker = self.is_expanded and "-" or "+"
         content:add(marker .. " ", "@comment")
     else
@@ -140,15 +152,13 @@ function Node:format_into(session, content)
     end
 
     local text
-    if session.filetype == "c" or session.filetype == "cpp" then
+    if self:is_c_lang() then
         text = self:format_c()
     else
-        error(
-            string.format("Formatting for %s not implemented", session.filetype)
-        )
+        error(string.format("Formatting for %s not implemented", self.lang))
     end
 
-    content:add_with_treesitter(text, session.filetype)
+    content:add_with_treesitter(text, self.lang)
 
     if self.item.value == "" then
         content:add("...", "@comment")
