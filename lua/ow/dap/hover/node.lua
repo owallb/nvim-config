@@ -72,11 +72,6 @@ function Node:is_c_array_element()
     return self.item.name:match("^%[?%d+%]?$") ~= nil
 end
 
----@return boolean
-function Node:is_c_pointer_child()
-    return self.parent ~= nil and self.parent:is_c_pointer()
-end
-
 ---@return string
 function Node:format_c()
     if self:is_c_array_element() then
@@ -86,10 +81,6 @@ function Node:format_c()
             self.item.type,
             self.item.value
         )
-    end
-
-    if self:is_c_pointer_child() then
-        return string.format("%s = %s", self.item.name, self.item.value)
     end
 
     return string.format(
