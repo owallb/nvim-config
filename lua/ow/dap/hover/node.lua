@@ -29,6 +29,7 @@ function Node:is_container()
         or false
 end
 
+---@return boolean
 function Node:is_c_lang()
     return self.lang == "c" or self.lang == "cpp"
 end
