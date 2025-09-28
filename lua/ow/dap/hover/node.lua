@@ -92,12 +92,16 @@ function Node:format_c()
         )
     end
 
-    return string.format(
-        "%s %s = %s",
-        self.item.type,
-        self.item.name,
-        self.item.value
-    )
+    if self.item.value == "" then
+        return string.format("%s %s", self.item.type, self.item.name)
+    else
+        return string.format(
+            "%s %s = %s",
+            self.item.type,
+            self.item.name,
+            self.item.value
+        )
+    end
 end
 
 ---@return boolean
@@ -127,10 +131,6 @@ function Node:format_into(content)
     end
 
     content:add_with_treesitter(text, self.lang)
-
-    if self.item.value == "" then
-        content:add("...", "@comment")
-    end
 end
 
 return Node
