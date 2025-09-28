@@ -194,10 +194,6 @@ function Window:show(content)
     vim.keymap.set("n", "y", function()
         self:yank_value()
     end, { buffer = self.bufnr, nowait = true })
-
-    vim.keymap.set("n", "Y", function()
-        self:yank_expression()
-    end, { buffer = self.bufnr, nowait = true })
 end
 
 ---@param callback fun()
@@ -389,21 +385,6 @@ function Window:yank_value()
 
     vim.fn.setreg('"', info.node.item.value)
     vim.fn.setreg("+", info.node.item.value)
-end
-
-function Window:yank_expression()
-    if not self.tree then
-        return
-    end
-
-    local info = self:get_current_node_info()
-    if not info:is_valid() then
-        return
-    end
-
-    local expr = info.node:get_full_expression()
-    vim.fn.setreg('"', expr)
-    vim.fn.setreg("+", expr)
 end
 
 return Window

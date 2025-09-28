@@ -100,39 +100,6 @@ function Node:format_c()
     )
 end
 
----@return string
-function Node:get_full_expression()
-    local parts = {}
-    local current = self
-
-    while current do
-        table.insert(parts, 1, current.item.name)
-        current = current.parent
-    end
-
-    if #parts <= 1 then
-        return parts[1] or ""
-    end
-
-    local expr = parts[1]
-    for i = 2, #parts do
-        local part = parts[i]
-        if part:match("^%[.*%]$") then
-            expr = expr .. part
-        elseif part:match("^%*") then
-            expr = "(" .. expr .. ")" .. part
-        else
-            if expr:match("%*$") then
-                expr = expr .. part
-            else
-                expr = expr .. "." .. part
-            end
-        end
-    end
-
-    return expr
-end
-
 ---@return boolean
 function Node:is_expandable()
     return self:is_container() and not self:is_c_null_pointer()
