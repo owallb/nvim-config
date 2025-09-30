@@ -5,6 +5,7 @@ local hover = require("ow.dap.hover")
 ---@type LazyPluginSpec
 return {
     "mfussenegger/nvim-dap",
+    lazy = false,
     keys = {
         {
             "<Leader>db",
