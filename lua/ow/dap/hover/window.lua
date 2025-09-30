@@ -71,11 +71,12 @@ function Window:compute_width()
     local lines = vim.api.nvim_buf_get_lines(self.bufnr, 0, -1, true)
     local max_width = 1
     for _, line in ipairs(lines) do
-        if self.max_width and #line >= self.max_width then
+        local line_width = vim.api.nvim_strwidth(line)
+        if self.max_width and line_width >= self.max_width then
             max_width = self.max_width
             break
         end
-        max_width = math.max(max_width, #line)
+        max_width = math.max(max_width, line_width)
     end
 
     return max_width
