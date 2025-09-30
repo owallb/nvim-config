@@ -1,3 +1,6 @@
+local Item = require("ow.dap.item")
+local log = require("ow.log")
+
 ---@class ow.dap.hover.Node
 ---@field lang string
 ---@field item ow.dap.Item
@@ -21,6 +24,104 @@ function Node.new(item, parent, lang)
         is_expanded = false,
         is_last_child = false,
     }, Node)
+end
+
+---@return integer
+function Node:size()
+    local count = 1
+
+    if self.is_expanded and self.children then
+        for _, child in ipairs(self.children) do
+            count = count + child:size()
+        end
+    end
+
+    return count
+end
+
+---@param n integer
+---@return ow.dap.hover.Node?
+function Node:at(n)
+    if n < 1 then
+        return nil
+    end
+
+    local current = 0
+
+    ---@param node ow.dap.hover.Node
+    local function search(node)
+        current = current + 1
+        if current == n then
+            return node
+        end
+
+        if node.is_expanded and node.children then
+            for _, child in ipairs(node.children) do
+                local found = search(child)
+                if found then
+                    return found
+                end
+            end
+        end
+    end
+
+    return search(self)
+end
+
+---@param target ow.dap.hover.Node? if nil, returns index of self
+---@return integer?
+function Node:index_of(target)
+    target = target or self
+    local current = 0
+
+    local function search(node)
+        current = current + 1
+        if node == target then
+            return current
+        end
+
+        if node.is_expanded and node.children then
+            for _, child in ipairs(node.children) do
+                local found = search(child)
+                if found then
+                    return found
+                end
+            end
+        end
+    end
+
+    return search(self)
+end
+
+---@param session dap.Session
+function Node:expand_all(session)
+    if not self:is_expandable() then
+        return true
+    end
+
+    if not self.is_expanded then
+        local success = self:load_children(session)
+        if not success then
+            return false
+        end
+        self.is_expanded = true
+    end
+
+    for _, child in ipairs(self.children) do
+        local success = child:expand_all(session)
+        if not success then
+            return false
+        end
+    end
+
+    return true
+end
+
+function Node:collapse_all()
+    self.is_expanded = false
+    for _, child in ipairs(self.children) do
+        child:collapse_all()
+    end
 end
 
 ---@return boolean
@@ -131,6 +232,39 @@ function Node:format_into(content)
     end
 
     content:add_with_treesitter(text, self.lang)
+end
+
+---@async
+---@param session dap.Session
+---@return boolean
+function Node:load_children(session)
+    if not self:is_container() or #self.children > 0 then
+        return true -- Already loaded or not a container
+    end
+
+    local err, resp = session:request("variables", {
+        variablesReference = self.item.variablesReference,
+    })
+    if err then
+        log.warning("Failed to get variables for %s: %s", self.item.name, err)
+    end
+    if err or not resp or #resp.variables == 0 then
+        return false
+    end
+
+    for i, var in ipairs(resp.variables) do
+        local item = Item.from_var(var)
+        local child = Node.new(item, self, self.lang)
+        child.is_last_child = (i == #resp.variables)
+
+        if item.name:match("^%d+$") then
+            item.name = "[" .. item.name .. "]"
+        end
+
+        table.insert(self.children, child)
+    end
+
+    return true
 end
 
 return Node

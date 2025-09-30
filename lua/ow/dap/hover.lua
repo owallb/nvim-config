@@ -1,58 +1,19 @@
 local Item = require("ow.dap.item")
-local Tree = require("ow.dap.hover.tree")
+local Node = require("ow.dap.hover.node")
 local Window = require("ow.dap.hover.window")
 local log = require("ow.log")
 
 ---@async
----@param expr string
----@param session dap.Session
----@param frame_id number
----@param line_nr integer
----@param col_nr integer
----@param current_file string
-local function eval(expr, session, frame_id, line_nr, col_nr, current_file)
-    local win = Window.get_instance()
-    win:close()
-
-    local request = {
-        expression = expr,
-        frameId = frame_id,
-        context = "hover",
-        line = line_nr,
-        column = col_nr,
-        source = {
-            path = current_file,
-        },
-    }
-
-    local err, resp = session:request("evaluate", request)
-    if err then
-        log.warning("Failed to evaluate '%s': %s", expr, err)
-    end
-    if err or not resp then
-        return
-    end
-
-    local item = Item.new(expr, resp.type, resp.result, resp.variablesReference)
-    win.tree = Tree.new(session)
-
-    win.tree:build(item)
-    local content = win.tree:render()
-
-    win:show(content)
-end
-
----@async
 local function hover_async()
-    local win = Window.get_instance()
-    if win.winid and vim.api.nvim_win_is_valid(win.winid) then
-        vim.api.nvim_set_current_win(win.winid)
-        return
-    end
-
     local dap = require("dap")
     local session = dap.session()
     if not session then
+        return
+    end
+
+    local win = Window.get_instance(session)
+    if win.winid and vim.api.nvim_win_is_valid(win.winid) then
+        vim.api.nvim_set_current_win(win.winid)
         return
     end
 
@@ -132,7 +93,29 @@ local function hover_async()
         frame_id = resp.stackFrames[1].id
     end
 
-    eval(expr, session, frame_id, line_nr, col_nr, current_file)
+    local request = {
+        expression = expr,
+        frameId = frame_id,
+        context = "hover",
+        line = line_nr,
+        column = col_nr,
+        source = {
+            path = current_file,
+        },
+    }
+
+    local err, resp = session:request("evaluate", request)
+    if err then
+        log.warning("Failed to evaluate '%s': %s", expr, err)
+    end
+    if err or not resp then
+        return
+    end
+
+    local item = Item.new(expr, resp.type, resp.result, resp.variablesReference)
+    local root = Node.new(item, nil, session.filetype)
+    root:load_children(session)
+    win:show(root)
 end
 
 local function hover()
