@@ -17,6 +17,21 @@ Window.__index = Window
 Window.NAMESPACE = "ow.dap.hover.Window"
 Window.NS_ID = vim.api.nvim_create_namespace(Window.NAMESPACE)
 
+local function setup_highlights()
+    vim.api.nvim_set_hl(0, "DapHoverPrefix", {
+        link = "@comment",
+    })
+    vim.api.nvim_set_hl(0, "DapHoverExpandMarker", {
+        link = "@comment",
+    })
+end
+
+setup_highlights()
+
+vim.api.nvim_create_autocmd("ColorScheme", {
+    callback = setup_highlights,
+})
+
 local instance = nil
 
 ---@param session dap.Session

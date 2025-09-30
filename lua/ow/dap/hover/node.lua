@@ -212,16 +212,9 @@ end
 
 ---@param content ow.dap.hover.Content
 function Node:format_into(content)
-    if self:is_expandable() then
-        local marker = self.is_expanded and "-" or "+"
-        content:add(marker .. " ", "@comment")
-    else
-        content:add("  ")
-    end
-
     local tree_prefix = self:get_tree_prefix()
     if tree_prefix ~= "" then
-        content:add(tree_prefix, "@comment")
+        content:add(tree_prefix, "DapHoverPrefix")
     end
 
     local text
@@ -232,6 +225,17 @@ function Node:format_into(content)
     end
 
     content:add_with_treesitter(text, self.lang)
+
+    if self:is_expandable() then
+        if self.is_expanded then
+            for _, child in ipairs(self.children) do
+                content:newline()
+                child:format_into(content)
+            end
+        else
+            content:add(" ...", "DapHoverExpandMarker")
+        end
+    end
 end
 
 ---@async
