@@ -220,6 +220,13 @@ function Node:format_into(content)
     local text
     if self:is_c_lang() then
         text = self:format_c()
+    elseif self.lang == "python" then
+        text = string.format(
+            "%s: %s = %s",
+            self.item.name,
+            self.item.type,
+            self.item.value
+        )
     else
         error(string.format("Formatting for %s not implemented", self.lang))
     end
