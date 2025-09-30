@@ -54,7 +54,7 @@ function Window.get_instance(session)
     return instance
 end
 
-function Window:close()
+function Window:destroy()
     if self.winid and vim.api.nvim_win_is_valid(self.winid) then
         vim.api.nvim_win_close(self.winid, true)
     end
@@ -63,12 +63,7 @@ function Window:close()
         vim.api.nvim_del_augroup_by_id(self.augroup)
     end
 
-    self.max_width = nil
-    self.max_height = nil
-    self.winid = nil
-    self.bufnr = nil
-    self.augroup = nil
-    self.root = nil
+    instance = nil
 end
 
 ---@return integer
@@ -267,7 +262,7 @@ function Window:show(root)
         buffer = prev_buf,
         once = true,
         callback = function()
-            self:close()
+            self:destroy()
         end,
     })
 
@@ -275,9 +270,18 @@ function Window:show(root)
         group = self.augroup,
         callback = function(arg)
             if arg.buf ~= self.bufnr then
-                self:close()
+                self:destroy()
                 return true
             end
+        end,
+    })
+
+    vim.api.nvim_create_autocmd("WinClosed", {
+        group = self.augroup,
+        once = true,
+        pattern = tostring(self.winid),
+        callback = function()
+            self:destroy()
         end,
     })
 
@@ -319,11 +323,11 @@ function Window:show(root)
 
     -- Quick actions
     vim.keymap.set("n", "q", function()
-        self:close()
+        self:destroy()
     end, { buffer = self.bufnr, nowait = true })
 
     vim.keymap.set("n", "<Esc>", function()
-        self:close()
+        self:destroy()
     end, { buffer = self.bufnr, nowait = true })
 
     -- Yank operations
