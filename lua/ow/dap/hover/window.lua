@@ -295,10 +295,6 @@ function Window:show(root)
         self:toggle_node()
     end, { buffer = self.bufnr, nowait = true })
 
-    vim.keymap.set("n", "<Space>", function()
-        self:toggle_node()
-    end, { buffer = self.bufnr, nowait = true })
-
     -- Collapse
     vim.keymap.set("n", "<S-Tab>", function()
         self:collapse_parent()
