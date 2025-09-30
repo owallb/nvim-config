@@ -27,7 +27,6 @@ return {
             DiffDelete = { bg = "#3d2224" },
         }
         require("onedark").set_options("highlights", highlights)
-
-        require("onedark").colorscheme()
+        require("onedark").load()
     end,
 }
