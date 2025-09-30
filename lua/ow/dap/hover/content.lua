@@ -108,7 +108,8 @@ end
 
 ---@return string[]
 function Content:get_lines()
-    return vim.split(vim.trim(self.text), "\n")
+    local text = self.text:gsub("%s+$", "")
+    return vim.split(text, "\n")
 end
 
 ---@param ns_id integer
