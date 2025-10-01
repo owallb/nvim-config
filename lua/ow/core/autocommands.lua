@@ -44,6 +44,7 @@ vim.api.nvim_create_autocmd("FileType", {
             .. "%-G%*[ ]from %f:%l:,"
             .. "%-G%*[ ]from %f:%l\\,,"
             .. "%-G%*[ ]from %f:%l,"
+            .. "%-G%f:%l:%c: note: '%*[^']' declared here,"
             .. "%D%*\\a[%*\\d]: Entering directory %*[`']%f',"
             .. "%X%*\\a[%*\\d]: Leaving directory %*[`']%f',"
             .. "%D%*\\a: Entering directory %*[`']%f',"
