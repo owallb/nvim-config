@@ -472,6 +472,18 @@ function M.setup()
         end),
         settings = {
             ["rust-analyzer"] = {
+                check = {
+                    command = "clippy",
+                    extraArgs = {
+                        "--",
+                        "-Wclippy::pedantic",
+                    },
+                },
+                diagnostics = {
+                    styleLints = {
+                        enable = true,
+                    },
+                },
                 inlayHints = {
                     chainingHints = {
                         enable = false,
