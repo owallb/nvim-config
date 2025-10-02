@@ -79,7 +79,7 @@ function M.setup()
             show_header = false,
             source = true,
             border = "rounded",
-            focusable = false,
+            focusable = true,
             format = function(diagnostic)
                 return string.format("%s", diagnostic.message)
             end,
