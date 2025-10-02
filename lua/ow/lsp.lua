@@ -450,7 +450,26 @@ function M.setup()
     })
 
     vim.lsp.config("rust_analyzer", {
-        on_attach = M.with_defaults("rust_analyzer"),
+        on_attach = M.with_defaults("rust_analyzer", function(client)
+            local handler_name = "textDocument/publishDiagnostics"
+            local default_handler = client.handlers[handler_name]
+                or vim.lsp.handlers[handler_name]
+            client.handlers[handler_name] = function(
+                err,
+                result,
+                context,
+                config
+            )
+                if result and result.diagnostics then
+                    result.diagnostics = vim.tbl_filter(function(diagnostic)
+                        return diagnostic.severity
+                            < vim.diagnostic.severity.HINT
+                    end, result.diagnostics)
+                end
+
+                default_handler(err, result, context, config)
+            end
+        end),
         settings = {
             ["rust-analyzer"] = {
                 inlayHints = {
