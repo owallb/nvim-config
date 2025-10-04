@@ -68,7 +68,10 @@ function M.set_defaults(bufnr)
             mode = { "n" },
             lhs = "<leader>ld",
             rhs = function()
-                vim.diagnostic.enable(not vim.diagnostic.is_enabled())
+                vim.diagnostic.enable(
+                    not vim.diagnostic.is_enabled({ bufnr = bufnr }),
+                    { bufnr = bufnr }
+                )
             end,
         },
         {
