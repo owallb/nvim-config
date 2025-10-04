@@ -495,6 +495,9 @@ function M.setup()
                         enable = false,
                     },
                 },
+                rustfmt = {
+                    extraArgs = { "+nightly" },
+                },
             },
         },
     })
