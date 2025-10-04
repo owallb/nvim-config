@@ -1,16 +1,16 @@
-local util = require("ow.util")
+local util = require("util")
 
----@class Keymap
+---@class ow.lsp.Keymap
 ---@field mode string|string[]
 ---@field lhs string
 ---@field rhs string|function
 ---@field opts? vim.keymap.set.Opts
 
-local M = {}
+local Keymap = {}
 
 ---@param bufnr integer
----@param keymaps Keymap[]
-function M.set(bufnr, keymaps)
+---@param keymaps ow.lsp.Keymap[]
+function Keymap.set(bufnr, keymaps)
     for _, keymap in ipairs(keymaps) do
         keymap.opts = vim.tbl_extend(
             "force",
@@ -22,8 +22,8 @@ function M.set(bufnr, keymaps)
 end
 
 ---@param bufnr integer
-function M.set_defaults(bufnr)
-    ---@type Keymap[]
+function Keymap.set_defaults(bufnr)
+    ---@type ow.lsp.Keymap[]
     local keymaps = {
         { mode = { "n" }, lhs = "<leader>df", rhs = vim.diagnostic.open_float },
         {
@@ -105,7 +105,7 @@ function M.set_defaults(bufnr)
         })
     end
 
-    M.set(bufnr, keymaps)
+    Keymap.set(bufnr, keymaps)
 end
 
-return M
+return Keymap

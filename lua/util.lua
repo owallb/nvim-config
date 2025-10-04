@@ -1,8 +1,8 @@
-local log = require("ow.log")
+local log = require("log")
 
-local M = {}
+local Util = {}
 
-M.os_name = vim.uv.os_uname().sysname
+Util.os_name = vim.uv.os_uname().sysname
 
 --- Get the module path of a file
 ---@param file string
@@ -45,16 +45,16 @@ end
 --- Check that an executable is available
 --- @param exe string Array to look for
 --- @return boolean
-function M.is_executable(exe)
+function Util.is_executable(exe)
     return vim.fn.executable(exe) == 1
 end
 
 --- Check that at least one executable is available
 --- @param exes table Array of exes
 --- @return boolean
-function M.any_installed(exes)
+function Util.any_installed(exes)
     for _, e in ipairs(exes) do
-        if M.is_executable(e) then
+        if Util.is_executable(e) then
             return true
         end
     end
@@ -65,16 +65,16 @@ end
 --- Asserts that an executable is available
 --- Raises error if missing.
 --- @param exe string Array to look for
-function M.assert_installed(exe)
-    assert(M.is_executable(exe), "Missing executable '" .. exe .. "'.")
+function Util.assert_installed(exe)
+    assert(Util.is_executable(exe), "Missing executable '" .. exe .. "'.")
 end
 
 --- Asserts that at least one executable is available
 --- Raises error if missing.
 --- @param exes table Array of exes
-function M.assert_any_installed(exes)
+function Util.assert_any_installed(exes)
     assert(
-        M.any_installed(exes),
+        Util.any_installed(exes),
         "At least one of the following is required:\n"
             .. table.concat(exes, ", ")
     )
@@ -82,8 +82,8 @@ end
 
 --- Asserts that a python module is installed
 ---@param mod string The python module to check
-function M.python3_module_is_installed(mod)
-    if not M.is_executable("python3") then
+function Util.python3_module_is_installed(mod)
+    if not Util.is_executable("python3") then
         return false
     end
 
@@ -93,8 +93,8 @@ end
 
 --- Asserts that a python module is installed
 ---@param mod string The python module to check
-function M.assert_python3_module_installed(mod)
-    if not M.python3_module_is_installed(mod) then
+function Util.assert_python3_module_installed(mod)
+    if not Util.python3_module_is_installed(mod) then
         error("Python3 module " .. mod .. " not installed")
     end
 end
@@ -102,7 +102,7 @@ end
 --- Attempts to load a module and logs errors on failure.
 ---@param module string The module to attempt to load.
 ---@return any module The loaded module if successful, otherwise nil.
-function M.try_require(module)
+function Util.try_require(module)
     local has_module, resp = pcall(require, module)
 
     if has_module then
@@ -115,7 +115,7 @@ end
 --- Checks if it is possible to require a module
 ---@param module string
 ---@return boolean
-function M.has_module(module)
+function Util.has_module(module)
     local has_module, _ = pcall(require, module)
     return has_module
 end
@@ -144,7 +144,7 @@ end
 
 --- Format buffer
 ---@param opts FormatOptions
-function M.format(opts)
+function Util.format(opts)
     opts = {
         cmd = opts.cmd,
         output = opts.output,
@@ -308,7 +308,7 @@ end
 ---@param kt type
 ---@param vt type
 ---@return boolean
-function M.is_map(val, kt, vt)
+function Util.is_map(val, kt, vt)
     if type(val) ~= "table" then
         return false
     end
@@ -330,7 +330,7 @@ end
 ---@param val any
 ---@param t? type
 ---@return boolean
-function M.is_list(val, t)
+function Util.is_list(val, t)
     if not vim.islist(val) then
         return false
     end
@@ -352,11 +352,11 @@ end
 ---@param val? any
 ---@param t? type
 ---@return boolean
-function M.is_list_or_nil(val, t)
+function Util.is_list_or_nil(val, t)
     if val == nil then
         return true
     else
-        return M.is_list(val, t)
+        return Util.is_list(val, t)
     end
 end
 
@@ -365,7 +365,7 @@ end
 ---@param fn fun(...) Function to be debounced
 ---@param delay number Debounce delay in milliseconds
 ---@return fun(...) function Debounced function
-function M.debounce(fn, delay)
+function Util.debounce(fn, delay)
     ---@type uv_timer_t?
     local timer = nil
 
@@ -388,7 +388,7 @@ end
 ---@param fn fun(...) Function to be debounced
 ---@param delay number Debounce delay in milliseconds
 ---@return fun(id: any, ...) function Debounced function, where `id` is a unique identifier
-function M.debounce_with_id(fn, delay)
+function Util.debounce_with_id(fn, delay)
     local map = {}
 
     return function(id, ...)
@@ -405,7 +405,7 @@ function M.debounce_with_id(fn, delay)
     end
 end
 
-function M.get_hl_source(name)
+function Util.get_hl_source(name)
     local hl = vim.api.nvim_get_hl(0, { name = name })
     while hl.link do
         hl = vim.api.nvim_get_hl(0, { name = hl.link })
@@ -414,4 +414,4 @@ function M.get_hl_source(name)
     return hl
 end
 
-return M
+return Util

@@ -23,12 +23,7 @@ end
 ---@param var dap.Variable
 ---@return ow.dap.Item
 function Item.from_var(var)
-    return Item.new(
-        var.name,
-        var.type,
-        var.value,
-        var.variablesReference
-    )
+    return Item.new(var.name, var.type, var.value, var.variablesReference)
 end
 
 return Item

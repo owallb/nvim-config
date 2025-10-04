@@ -1,15 +1,7 @@
-local log = require("ow.log")
-local util = require("ow.util")
+local log = require("log")
+local util = require("util")
 
----@class Linter
----@field namespace number
----@field augroup number
----@field bufnr number
----@field config LinterConfig
-M = {}
-M.__index = M
-
----@alias Group
+---@alias ow.lsp.linter.Group
 ---| "lnum"
 ---| "end_lnum"
 ---| "col"
@@ -19,7 +11,7 @@ M.__index = M
 ---| "source"
 ---| "code"
 
----@class JsonConfig
+---@class ow.lsp.linter.JsonConfig
 ---@field diagnostics_root? string
 ---@field lnum? string
 ---@field end_lnum? string
@@ -31,11 +23,11 @@ M.__index = M
 ---@field code? string
 ---@field callback? fun(diag: vim.Diagnostic)
 
----@class DiagnosticTagMap
+---@class ow.lsp.linter.DiagnosticTagMap
 ---@field unnecessary? string[]
 ---@field deprecated? string[]
 
----@class LinterConfig
+---@class ow.lsp.linter.Config
 --- Command to run. The following keywords get replaces by the specified values:
 --- * %file%         - path to the current file
 --- * %filename%     - name of the current file
@@ -53,7 +45,7 @@ M.__index = M
 --- Regex pattern to parse diagnostic lines (required if not using json)
 ---@field pattern? string
 --- Named capture groups for pattern matching (required if not using json)
----@field groups? Group[]
+---@field groups? ow.lsp.linter.Group[]
 --- Map severity strings to vim diagnostic levels
 ---@field severity_map? table<string, vim.diagnostic.Severity>
 --- Source name for diagnostics (default: command name)
@@ -61,9 +53,9 @@ M.__index = M
 --- Debounce delay in ms (default: 100)
 ---@field debounce? number
 --- Configuration for JSON output parsing
----@field json? JsonConfig
+---@field json? ow.lsp.linter.JsonConfig
 --- Map diagnostic codes to tags
----@field tags? DiagnosticTagMap
+---@field tags? ow.lsp.linter.DiagnosticTagMap
 --- Line numbers are 0-indexed (default: false, 1-indexed)
 ---@field zero_idx_lnum? boolean
 --- Column numbers are 0-indexed (default: false, 1-indexed)
@@ -71,14 +63,21 @@ M.__index = M
 --- Don't log stderr as errors (default: false)
 ---@field ignore_stderr? boolean
 --- Post-process diagnostics
----@field hook? fun(self: Linter, diagnostics: vim.Diagnostic[])
-M.config = {}
+---@field hook? fun(self: ow.lsp.Linter, diagnostics: vim.Diagnostic[])
+
+---@class ow.lsp.Linter
+---@field namespace number
+---@field augroup number
+---@field bufnr number
+---@field config ow.lsp.linter.Config
+Linter = {}
+Linter.__index = Linter
 
 -- Extract a value from a JSON object using a path
 ---@param obj table The JSON object
 ---@param path string Path to the value (dot notation string)
 ---@return any The value at the specified path, or nil if not found
-function M.get_json_value(obj, path)
+function Linter.get_json_value(obj, path)
     if not obj then
         return nil
     end
@@ -110,7 +109,7 @@ end
 
 --- Clamp column to line length
 ---@param diag vim.Diagnostic
-function M:clamp_col(diag)
+function Linter:clamp_col(diag)
     local lines =
         vim.api.nvim_buf_get_lines(self.bufnr, diag.lnum, diag.lnum + 1, false)
     if #lines == 0 then
@@ -125,7 +124,7 @@ end
 
 --- Add diagnostic tags
 ---@param diag vim.Diagnostic
-function M:add_tags(diag)
+function Linter:add_tags(diag)
     if not self.config.tags then
         return
     end
@@ -158,7 +157,7 @@ end
 
 --- Resolve 0/1-based indexing for lnum/col
 ---@param diag vim.Diagnostic
-function M:fix_indexing(diag)
+function Linter:fix_indexing(diag)
     if not self.config.zero_idx_lnum then
         if diag.lnum then
             diag.lnum = diag.lnum - 1
@@ -180,13 +179,13 @@ function M:fix_indexing(diag)
     end
 end
 
-function M:process_json_output(json)
+function Linter:process_json_output(json)
     ---@type vim.Diagnostic[]
     local diagnostics = {}
 
     local items = json
     if self.config.json.diagnostics_root then
-        items = M.get_json_value(json, self.config.json.diagnostics_root)
+        items = Linter.get_json_value(json, self.config.json.diagnostics_root)
     end
 
     if type(items) ~= "table" then
@@ -203,7 +202,7 @@ function M:process_json_output(json)
 
         for field, path in pairs(self.config.json) do
             if field ~= "diagnostics_root" and field ~= "callback" then
-                diag[field] = M.get_json_value(item, path)
+                diag[field] = Linter.get_json_value(item, path)
             end
         end
 
@@ -232,9 +231,9 @@ function M:process_json_output(json)
 end
 
 --- Validate input
----@param config LinterConfig
+---@param config ow.lsp.linter.Config
 ---@return boolean
-function M.validate(config)
+function Linter.validate(config)
     local ok, resp = pcall(vim.validate, {
         config = { config, "table" },
     })
@@ -308,7 +307,7 @@ function M.validate(config)
 end
 
 ---@return boolean success
-function M:run()
+function Linter:run()
     local input
 
     if self.config.stdin then
@@ -410,9 +409,9 @@ function M:run()
 end
 
 ---@param bufnr integer
----@param config LinterConfig
-function M.add(bufnr, config)
-    if not M.validate(config) then
+---@param config ow.lsp.linter.Config
+function Linter.add(bufnr, config)
+    if not Linter.validate(config) then
         return
     end
 
@@ -420,16 +419,13 @@ function M.add(bufnr, config)
     config.events = config.events or { "TextChanged", "TextChangedI" }
 
     local linter = {
-        namespace = vim.api.nvim_create_namespace("ow.lsp.linter"),
-        augroup = vim.api.nvim_create_augroup(
-            "ow.lsp.linter",
-            { clear = false }
-        ),
+        namespace = vim.api.nvim_create_namespace("lsp.linter"),
+        augroup = vim.api.nvim_create_augroup("lsp.linter", { clear = false }),
         bufnr = bufnr,
         config = config,
     }
 
-    linter = setmetatable(linter, M)
+    linter = setmetatable(linter, Linter)
 
     local success = linter:run()
     if not success then
@@ -456,4 +452,4 @@ function M.add(bufnr, config)
     end
 end
 
-return M
+return Linter

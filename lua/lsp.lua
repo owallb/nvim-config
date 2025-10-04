@@ -1,10 +1,10 @@
 ---@type fun(name: string, cfg: vim.lsp.Config)
 vim.lsp.config = vim.lsp.config
 
-local keymap = require("ow.lsp.keymap")
-local linter = require("ow.lsp.linter")
-local log = require("ow.log")
-local util = require("ow.util")
+local Keymap = require("lsp.keymap")
+local Linter = require("lsp.linter")
+local log = require("log")
+local util = require("util")
 
 local M = {}
 
@@ -27,7 +27,7 @@ function M.with_defaults(server, fn)
             default_cb(client, bufnr)
         end
 
-        keymap.set_defaults(bufnr)
+        Keymap.set_defaults(bufnr)
 
         -- For document highlight
         vim.cmd.highlight({ "link LspReferenceRead Visual", bang = true })
@@ -134,7 +134,7 @@ function M.setup()
             "zsh",
         },
         on_attach = M.with_defaults("bashls", function(_, bufnr)
-            keymap.set(bufnr, {
+            Keymap.set(bufnr, {
                 {
                     mode = "n",
                     lhs = "<leader>lf",
@@ -164,7 +164,7 @@ function M.setup()
         },
         single_file_support = true,
         on_attach = M.with_defaults("clangd", function(_, bufnr)
-            linter.add(bufnr, {
+            Linter.add(bufnr, {
                 cmd = {
                     "clang-tidy",
                     "-p=build",
@@ -191,7 +191,7 @@ function M.setup()
                 zero_idx_lnum = true,
                 ignore_stderr = true,
             })
-            keymap.set(bufnr, {
+            Keymap.set(bufnr, {
                 {
                     mode = "n",
                     lhs = "gs",
@@ -215,7 +215,7 @@ function M.setup()
             },
         },
         on_attach = M.with_defaults("gopls", function(_, bufnr)
-            keymap.set(bufnr, {
+            Keymap.set(bufnr, {
                 {
                     mode = "n",
                     lhs = "<leader>lf",
@@ -249,7 +249,7 @@ function M.setup()
             },
         },
         on_attach = M.with_defaults("intelephense", function(_, bufnr)
-            linter.add(bufnr, {
+            Linter.add(bufnr, {
                 cmd = {
                     "phpcs",
                     "--standard=PSR12",
@@ -271,7 +271,7 @@ function M.setup()
                 zero_idx_lnum = true,
             })
 
-            keymap.set(bufnr, {
+            Keymap.set(bufnr, {
                 {
                     mode = "n",
                     lhs = "<leader>lf",
@@ -364,7 +364,7 @@ function M.setup()
             },
         },
         on_attach = M.with_defaults("lua_ls", function(_, bufnr)
-            keymap.set(bufnr, {
+            Keymap.set(bufnr, {
                 {
                     mode = "n",
                     lhs = "<leader>lf",
@@ -425,7 +425,7 @@ function M.setup()
 
     vim.lsp.config("ruff", {
         on_attach = M.with_defaults("ruff", function(_, bufnr)
-            keymap.set(bufnr, {
+            Keymap.set(bufnr, {
                 {
                     mode = "n",
                     lhs = "<leader>lf",

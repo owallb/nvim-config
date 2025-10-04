@@ -8,7 +8,7 @@ if version.major == 0 then
     end
 end
 
-local util = require("ow.util")
+local util = require("util")
 
 -- Install lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"

@@ -1,5 +1,5 @@
-local Content = require("ow.dap.hover.content")
-local log = require("ow.log")
+local Content = require("dap.hover.content")
+local log = require("log")
 
 ---@class ow.dap.hover.Window
 ---@field NAMESPACE string
@@ -14,7 +14,7 @@ local log = require("ow.log")
 local Window = {}
 Window.__index = Window
 
-Window.NAMESPACE = "ow.dap.hover.Window"
+Window.NAMESPACE = "dap.hover.Window"
 Window.NS_ID = vim.api.nvim_create_namespace(Window.NAMESPACE)
 
 local function setup_highlights()

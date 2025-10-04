@@ -1,7 +1,7 @@
-local Item = require("ow.dap.item")
-local Node = require("ow.dap.hover.node")
-local Window = require("ow.dap.hover.window")
-local log = require("ow.log")
+local Item = require("dap.item")
+local Node = require("dap.hover.node")
+local Window = require("dap.hover.window")
+local log = require("log")
 
 ---@async
 local function hover_async()

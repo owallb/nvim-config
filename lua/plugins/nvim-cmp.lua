@@ -38,7 +38,7 @@ return {
                 require("luasnip.loaders.from_vscode").lazy_load()
             end,
             build = (
-                require("ow.util").os_name ~= "Windows_NT"
+                require("util").os_name ~= "Windows_NT"
                     and "make install_jsregexp"
                 or nil
             ),

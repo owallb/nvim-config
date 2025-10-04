@@ -1,5 +1,5 @@
-local Item = require("ow.dap.item")
-local log = require("ow.log")
+local Item = require("dap.item")
+local log = require("log")
 
 ---@class ow.dap.hover.Node
 ---@field lang string

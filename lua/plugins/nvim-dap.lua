@@ -1,6 +1,6 @@
 -- https://github.com/mfussenegger/nvim-dap
-local log = require("ow.log")
-local hover = require("ow.dap.hover")
+local hover = require("dap.hover")
+local log = require("log")
 
 ---@type LazyPluginSpec
 return {

@@ -1,4 +1,4 @@
-local util = require("ow.util")
+local util = require("util")
 
 local function override_highlights()
     -- File Icon
@@ -89,7 +89,7 @@ return {
             end
         end
 
-        local signs = require("ow.lsp").diagnostic_signs
+        local signs = require("lsp").diagnostic_signs
         require("nvim-tree").setup({
             on_attach = function(bufnr)
                 local function opts(desc)
