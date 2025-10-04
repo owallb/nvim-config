@@ -62,7 +62,7 @@ M.__index = M
 ---@field debounce? number
 --- Configuration for JSON output parsing
 ---@field json? JsonConfig
---- Map diagnostic codes to tags (unnecessary/deprecated)
+--- Map diagnostic codes to tags
 ---@field tags? DiagnosticTagMap
 --- Line numbers are 0-indexed (default: false, 1-indexed)
 ---@field zero_idx_lnum? boolean
