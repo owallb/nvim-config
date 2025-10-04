@@ -14,6 +14,7 @@ return {
         {
             "<Leader>de",
             function()
+                ---@diagnostic disable-next-line: missing-fields
                 require("dapui").eval(nil, { context = "hover", enter = true })
             end,
             mode = { "x", "n" },
