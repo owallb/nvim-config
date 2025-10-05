@@ -48,7 +48,40 @@ vim.keymap.set({ "n", "i" }, "<C-c>", function()
     return close_pum()
 end, { expr = true })
 
-vim.keymap.set("n", "<C-w>q", ":bn | bd#<CR>")
+---@param force boolean
+local function delete_buffer(force)
+    local buffers =
+        vim.split(vim.fn.execute("buffers t"), "\n", { trimempty = true })
+    if #buffers < 2 then
+        return
+    end
+
+    local current = tonumber(buffers[1]:match("^%s*(%d+)"))
+    local previous = tonumber(buffers[2]:match("^%s*(%d+)"))
+
+    if not current or not previous then
+        return
+    end
+
+    if not force and vim.bo[current].modified then
+        vim.api.nvim_echo(
+            { { "Buffer has unsaved changes", "ErrorMsg" } },
+            false,
+            {}
+        )
+        return
+    end
+
+    vim.api.nvim_set_current_buf(previous)
+    vim.api.nvim_buf_delete(current, { force = force })
+end
+
+vim.keymap.set("n", "<C-q>", function()
+    delete_buffer(false)
+end)
+vim.keymap.set("n", "<M-q>", function()
+    delete_buffer(true)
+end)
 
 -- Allow (de)indenting without deselecting
 vim.keymap.set({ "x" }, "<", "<gv")
