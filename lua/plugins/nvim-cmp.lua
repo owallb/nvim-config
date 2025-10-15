@@ -51,6 +51,7 @@ return {
                 require("lspkind").init()
             end,
         },
+        "teramako/cmp-cmdline-prompt.nvim",
     },
     config = function()
         local cmp = require("cmp")
@@ -182,6 +183,50 @@ return {
                     option = { ignore_cmds = { "!" } },
                 },
             }),
+        })
+        -- for cmdline `input()` prompt
+        -- see: `:help getcmdtype()`
+        cmp.setup.cmdline("@", {
+            mapping = cmp.mapping.preset.cmdline(),
+            sources = cmp.config.sources({
+                {
+                    name = "cmdline-prompt",
+                    ---@type prompt.Option
+                    option = {
+                        kinds = {
+                            file = cmp.lsp.CompletionItemKind.File,
+                            dir = {
+                                kind = cmp.lsp.CompletionItemKind.Folder,
+                                hl_group = "CmpItemKindEnum",
+                            },
+                        },
+                    },
+                },
+            }),
+            formatting = {
+                fields = { "kind", "abbr", "menu" },
+                format = function(entry, vim_item)
+                    local item = entry.completion_item
+                    if entry.source.name == "cmdline-prompt" then
+                        vim_item.kind = cmp.lsp.CompletionItemKind[item.kind]
+                        local kind =
+                            lspkind.cmp_format({ mode = "symbol_text" })(
+                                entry,
+                                vim_item
+                            )
+                        local strings =
+                            vim.split(kind.kind, "%s", { trimempty = true })
+                        kind.kind = " " .. (strings[1] or "")
+                        kind.menu = " ("
+                            .. (item.data.completion_type or "")
+                            .. ")"
+                        kind.menu_hl_group = kind.kind_hl_group
+                        return kind
+                    else
+                        return vim_item
+                    end
+                end,
+            },
         })
     end,
 }
