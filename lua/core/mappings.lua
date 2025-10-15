@@ -82,6 +82,7 @@ end)
 vim.keymap.set("n", "<M-q>", function()
     delete_buffer(true)
 end)
+vim.keymap.set("n", "<C-Space>", ":b#<CR>")
 
 -- Allow (de)indenting without deselecting
 vim.keymap.set({ "x" }, "<", "<gv")
