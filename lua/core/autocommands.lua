@@ -57,6 +57,22 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 vim.api.nvim_create_autocmd("FileType", {
+    pattern = { "rust" },
+    callback = function()
+        vim.bo.errorformat = "%Enote: test %m at %f:%l:%c,"
+            .. "%E%\\%%(%.%#panicked%\\)%\\@=%m at %f:%l:%c:,"
+            .. "%-Gerror: test failed\\, %.%#,"
+            .. "%-Gwarning: %.%# generated 3 warnings%.%#,"
+            .. "%-Gnote: run with `RUST_BACKTRACE=%.%#,"
+            .. "%-G%\\s%#Running%.%#,"
+            .. vim.bo.errorformat:gsub(
+                "%%E  left:%%m,%%C right:%%m %%f:%%l:%%c,",
+                ""
+            )
+    end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
     desc = "Use two space indent for C++ files",
     pattern = { "cpp" },
     callback = function()
