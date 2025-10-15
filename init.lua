@@ -6,6 +6,7 @@ local files = {
     "globals",
     "options",
     "autocommands",
+    "commands",
     "mappings",
 }
 
