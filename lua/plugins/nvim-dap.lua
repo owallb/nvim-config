@@ -20,13 +20,13 @@ return {
             end,
         },
         {
-            "<C-S-i>",
+            "<PageUp>",
             function()
                 require("dap").up()
             end,
         },
         {
-            "<C-S-o>",
+            "<PageDown>",
             function()
                 require("dap").down()
             end,
