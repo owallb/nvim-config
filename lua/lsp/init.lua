@@ -484,6 +484,9 @@ function M.setup()
                         enable = true,
                     },
                 },
+                imports = {
+                    prefix = "self",
+                },
                 inlayHints = {
                     chainingHints = {
                         enable = false,
