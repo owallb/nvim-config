@@ -101,7 +101,7 @@ vim.api.nvim_create_autocmd("FileType", {
         vim.bo.errorformat = "%Enote: test %m at %f:%l:%c,"
             .. "%E%\\%%(%.%#panicked%\\)%\\@=%m at %f:%l:%c:,"
             .. "%-Gerror: test failed\\, %.%#,"
-            .. "%-Gwarning: %.%# generated 3 warnings%.%#,"
+            .. "%-G%*[^:]: %.%# generated %*\\d %.%#,"
             .. "%-Gnote: run with `RUST_BACKTRACE=%.%#,"
             .. "%-G%\\s%#Running%.%#,"
             .. vim.bo.errorformat:gsub(
