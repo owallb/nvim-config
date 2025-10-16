@@ -1,3 +1,42 @@
+vim.fn.sign_define("QfError", { text = "E", texthl = "DiagnosticError" })
+vim.fn.sign_define("QfWarn", { text = "W", texthl = "DiagnosticWarn" })
+vim.fn.sign_define("QfInfo", { text = "I", texthl = "DiagnosticInfo" })
+vim.fn.sign_define("QfNote", { text = "N", texthl = "DiagnosticHint" })
+
+vim.api.nvim_create_autocmd("FileType", {
+    desc = "Add signs to quickfix entries",
+    pattern = "qf",
+    callback = function(event)
+        vim.fn.sign_unplace("quickfix_signs")
+        local qflist = vim.fn.getqflist()
+        require("log").debug(vim.inspect(qflist))
+        for i, item in ipairs(qflist) do
+            if item.valid == 1 then
+                local sign_name = nil
+                if item.type == "E" then
+                    sign_name = "QfError"
+                elseif item.type == "W" then
+                    sign_name = "QfWarn"
+                elseif item.type == "I" then
+                    sign_name = "QfInfo"
+                elseif item.type == "N" then
+                    sign_name = "QfNote"
+                end
+
+                if sign_name then
+                    vim.fn.sign_place(
+                        0,
+                        "quickfix_signs",
+                        sign_name,
+                        event.buf,
+                        { lnum = i }
+                    )
+                end
+            end
+        end
+    end,
+})
+
 vim.api.nvim_create_autocmd("FileType", {
     pattern = "help",
     callback = function()

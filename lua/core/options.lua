@@ -149,5 +149,50 @@ vim.opt.statusline = " %{expand('%:.')}%4( %m%) %{%v:lua._status_line_git()%} %=
     .. " %{&filetype}  %-6.6{&fileencoding}"
     .. " %-4.4{&fileformat} %4.4(%p%%%)%6.6l:%-3.3v"
 
-vim.cmd("syntax on")
-vim.cmd("filetype plugin indent on")
+function _G._quickfix_text_func(info)
+    local items
+    if info.quickfix == 1 then
+        items = vim.fn.getqflist({ id = info.id, items = 1 }).items
+    else
+        items = vim.fn.getloclist(info.winid, { id = info.id, items = 1 }).items
+    end
+
+    local lines = {}
+    for i = info.start_idx, info.end_idx do
+        local item = items[i]
+        local line = ""
+
+        local name = ""
+        if item.bufnr ~= 0 then
+            name = vim.fn.bufname(item.bufnr)
+        end
+        if vim.fn.strchars(name) == 0 then
+            name = "  "
+        end
+        line = line .. name
+
+        if item.lnum > 0 then
+            line = line .. ":" .. item.lnum
+            if item.col > 0 then
+                line = line .. ":" .. item.col
+            end
+            line = line .. ": "
+        end
+
+        line = line .. item.text
+        table.insert(lines, line)
+    end
+
+    return lines
+end
+
+vim.cmd [[
+    syntax on
+    filetype plugin indent on
+
+    function! QuickfixTextFunc(info) abort
+        return v:lua._quickfix_text_func(a:info)
+    endfunction
+
+    set quickfixtextfunc=QuickfixTextFunc
+]]

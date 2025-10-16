@@ -146,6 +146,9 @@ vim.keymap.set("n", "<Leader>r", function()
     end
 end)
 
+vim.keymap.set("n", "]c", ":cn<CR>")
+vim.keymap.set("n", "[c", ":cp<CR>")
+
 -- Default bindings that are good to know:
 -- insert mode:
 --  <C-T>           - indent, see :h i_CTRL-T
