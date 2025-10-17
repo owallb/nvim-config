@@ -96,6 +96,13 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 vim.api.nvim_create_autocmd("FileType", {
+    pattern = "qf",
+    callback = function ()
+        vim.wo.colorcolumn = "0"
+    end,
+})
+
+vim.api.nvim_create_autocmd("FileType", {
     pattern = { "rust" },
     callback = function()
         vim.bo.errorformat = "%Enote: test %m at %f:%l:%c,"
