@@ -164,7 +164,7 @@ function _G._quickfix_text_func(info)
 
         local name = ""
         if item.bufnr ~= 0 then
-            name = vim.fn.bufname(item.bufnr)
+            name = vim.fn.fnamemodify(vim.fn.bufname(item.bufnr), ":.")
         end
         if vim.fn.strchars(name) == 0 then
             name = "  "
