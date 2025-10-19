@@ -54,19 +54,15 @@ vim.opt.virtualedit = "block"
 vim.opt.termguicolors = true
 vim.opt.signcolumn = "yes:2"
 -- Diff options
-vim.opt.diffopt = {}
--- Use vertical split by default
-vim.opt.diffopt:append("vertical")
--- Insert filler lines
-vim.opt.diffopt:append("filler")
--- Execute :diffoff when only one diff window remain
-vim.opt.diffopt:append("closeoff")
--- Use internal diff library
-vim.opt.diffopt:append("internal")
--- These make diffs easier to read, please see the following:
--- https://vimways.org/2018/the-power-of-diff/
-vim.opt.diffopt:append({ "indent-heuristic", "algorithm:histogram" })
-vim.opt.diffopt:append("linematch:40")
+vim.opt.diffopt = {
+    "vertical",
+    "filler",
+    "closeoff",
+    "internal",
+    "indent-heuristic",
+    "algorithm:histogram",
+    "linematch:60",
+}
 vim.opt.hlsearch = true
 vim.opt.laststatus = 2
 vim.opt.textwidth = 0
