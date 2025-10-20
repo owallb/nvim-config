@@ -182,7 +182,7 @@ function _G._quickfix_text_func(info)
     return lines
 end
 
-vim.cmd [[
+vim.cmd([[
     syntax on
     filetype plugin indent on
 
@@ -191,4 +191,4 @@ vim.cmd [[
     endfunction
 
     set quickfixtextfunc=QuickfixTextFunc
-]]
+]])
