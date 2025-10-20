@@ -16,17 +16,8 @@ vim.keymap.set({ "n", "x" }, "<leader>p", '"+p')
 vim.keymap.set({ "n", "x" }, "<leader>P", '"+P')
 vim.keymap.set({ "n", "x" }, "<leader>+", ":call setreg('+', @\")<CR>")
 
--- Allow exiting insert mode in terminal by hitting <ESC>
-vim.keymap.set("t", "<Esc>", "<C-\\><C-n>")
-
--- Feed ESC in terminal mode using <C-\>
-vim.keymap.set("t", "<C-\\>", function()
-    vim.api.nvim_feedkeys(
-        vim.api.nvim_replace_termcodes("<Esc>", true, false, true),
-        "n",
-        false
-    )
-end)
+-- Exit insert mode in terminal using <C-\>
+vim.keymap.set("t", "<C-\\>", "<C-\\><C-n>")
 
 -- Use :diffput/get instead of normal one to allow staging visual selection
 vim.keymap.set({ "n", "x" }, "<leader>dp", ":diffput<CR>")
@@ -102,30 +93,6 @@ end)
 -- Remove right-click menu items
 vim.cmd.aunmenu({ "PopUp.-1-" })
 vim.cmd.aunmenu({ "PopUp.How-to\\ disable\\ mouse" })
-
--- Insert-mode Emacs bindings
-vim.keymap.set("i", "<C-f>", "<Right>")
-vim.keymap.set("i", "<C-b>", "<Left>")
-vim.keymap.set("i", "<C-a>", "<C-o>^")
-vim.keymap.set("i", "<C-e>", "<C-o>$")
--- vim.keymap.set('i', '<C-d>', '<C-o>x') -- Overrides de-indent
-vim.keymap.set("i", "<M-f>", "<C-o>w")
-vim.keymap.set("i", "<M-b>", "<C-o>b")
-vim.keymap.set("i", "<M-d>", "<C-o>dw")
-vim.keymap.set("i", "<M-BS>", "<C-o>db")
-
--- Command-mode Emacs bindings
-vim.keymap.set("c", "<C-f>", "<Right>")
-vim.keymap.set("c", "<C-b>", "<Left>")
-vim.keymap.set("c", "<C-a>", "<Home>")
-vim.keymap.set("c", "<C-e>", "<End>")
-vim.keymap.set("c", "<C-d>", "<Delete>")
-vim.keymap.set("c", "<C-n>", "<Down>")
-vim.keymap.set("c", "<C-p>", "<Up>")
-vim.keymap.set("c", "<M-f>", "<C-Right>")
-vim.keymap.set("c", "<M-b>", "<C-Left>")
-vim.keymap.set("c", "<M-d>", "<C-Right><C-w>")
-vim.keymap.set("c", "<M-BS>", "<C-w>")
 
 vim.keymap.set("n", "<leader>ve", function()
     if vim.o.virtualedit == "all" then
