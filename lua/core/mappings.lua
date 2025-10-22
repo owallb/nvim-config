@@ -28,6 +28,9 @@ vim.keymap.set("t", "<C-\\>", function()
     )
 end)
 
+-- Enable <C-w> window commands in terminal mode
+vim.keymap.set("t", "<C-w>", "<C-\\><C-n><C-w>")
+
 -- Use :diffput/get instead of normal one to allow staging visual selection
 vim.keymap.set({ "n", "x" }, "<leader>dp", ":diffput<CR>")
 vim.keymap.set({ "n", "x" }, "<leader>do", ":diffget<CR>")
