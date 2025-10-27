@@ -261,7 +261,7 @@ function M.setup()
                 stdin = true,
                 stdout = true,
                 pattern = "^.+:(%d+):(%d+): (%w+) %- (.*) %((.*)%)$",
-                groups = { "lnum", "col", "severity", "message", "source" },
+                groups = { "lnum", "col", "severity", "message", "code" },
                 source = "phpcs",
                 severity_map = {
                     error = vim.diagnostic.severity.ERROR,
@@ -370,8 +370,14 @@ function M.setup()
                     lhs = "<leader>lf",
                     rhs = function()
                         util.format({
-                            cmd = { "stylua", "-" },
+                            cmd = {
+                                "stylua",
+                                "--stdin-filepath",
+                                "%file%",
+                                "-",
+                            },
                             output = "stdout",
+                            auto_indent = true,
                         })
                     end,
                 },
@@ -382,11 +388,13 @@ function M.setup()
                         util.format({
                             cmd = {
                                 "stylua",
-                                "-",
                                 "--range-start",
                                 "%byte_start%",
                                 "--range-end",
                                 "%byte_end%",
+                                "--stdin-filepath",
+                                "%file%",
+                                "-",
                             },
                             output = "stdout",
                         })

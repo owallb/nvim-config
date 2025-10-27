@@ -87,7 +87,7 @@ end
 ---| '"stderr"'
 ---| '"in_place"'
 
----@class FormatOptions
+---@class ow.FormatOptions
 ---@field cmd string[] Command to run. The following keywords get replaces by the specified values:
 ---                    * %file%         - path to the current file
 ---                    * %filename%     - name of the current file
@@ -103,11 +103,11 @@ end
 ---@field ignore_ret? boolean Ignore non-zero return codes
 ---@field ignore_stderr? boolean Ignore stderr output when not using stderr for output
 ---@field env? table<string, string> Map of environment variables
+local FormatOptions = {}
+FormatOptions.__index = FormatOptions
 
---- Format buffer
----@param opts FormatOptions
-function Util.format(opts)
-    opts = {
+function FormatOptions.from_opts(opts)
+    return setmetatable({
         cmd = opts.cmd,
         output = opts.output,
         auto_indent = opts.auto_indent or false,
@@ -115,7 +115,13 @@ function Util.format(opts)
         ignore_ret = opts.ignore_ret,
         ignore_stderr = opts.ignore_stderr,
         env = opts.env,
-    }
+    }, FormatOptions)
+end
+
+--- Format buffer
+---@param opts ow.FormatOptions
+function Util.format(opts)
+    opts = FormatOptions.from_opts(opts)
 
     if
         opts.output ~= "stdout"
@@ -134,12 +140,17 @@ function Util.format(opts)
     local mode = vim.fn.mode()
     local is_visual = mode == "v" or mode == "V" or mode == ""
 
-    local row_start, row_end, col_start, col_end, byte_start, byte_end
+    -- All 1-indexed, inclusive
+    local row_start, row_end
+    local col_start, col_end
     if is_visual then
         row_start, col_start = unpack(vim.fn.getpos("v"), 2, 3)
         row_end, col_end = unpack(vim.fn.getpos("."), 2, 3)
 
-        if row_start > row_end then
+        if
+            row_start > row_end
+            or (row_start == row_end and col_start > col_end)
+        then
             row_start, row_end, col_start, col_end =
                 row_end, row_start, col_end, col_start
         end
@@ -148,14 +159,26 @@ function Util.format(opts)
             col_start = 1
             col_end = #vim.fn.getline(row_end)
         end
-
-        byte_start = vim.fn.line2byte(row_start) + col_start - 1
-        byte_end = vim.fn.line2byte(row_end) + col_end - 1
+    else
+        row_start = 1
+        col_start = 1
+        row_end = vim.api.nvim_buf_line_count(0)
+        col_end = #vim.fn.getline(row_end)
     end
 
+    local byte_start = vim.fn.line2byte(row_start) - 1 + col_start - 1
+    local byte_end = vim.fn.line2byte(row_end) - 1 + col_end
+
     local input
-    if opts.only_selection then
-        input = vim.api.nvim_buf_get_lines(0, row_start - 1, row_end, false)
+    if is_visual and opts.only_selection then
+        input = vim.api.nvim_buf_get_text(
+            0,
+            row_start - 1,
+            col_start - 1,
+            row_end - 1,
+            col_end,
+            {}
+        )
     else
         input = vim.api.nvim_buf_get_lines(0, 0, -1, false)
     end
@@ -237,32 +260,78 @@ function Util.format(opts)
     elseif opts.output == "in_place" then
         output = tmp_out
     end
+    output = output:gsub("%s+$", "")
 
-    output = output or ""
-    output = output:gsub("\n$", "")
-    local output_lines = vim.fn.split(output, "\n", true)
+    local old_lines = input
+    local new_lines =
+        vim.split(output:gsub("\r\n", "\n"), "\n", { plain = true })
 
-    if opts.only_selection then
-        vim.api.nvim_buf_set_lines(
-            0,
-            row_start - 1,
-            row_end,
-            false,
-            output_lines
-        )
-    else
-        vim.api.nvim_buf_set_lines(0, 0, -1, false, output_lines)
+    local diff = vim.diff(
+        table.concat(old_lines, "\n"),
+        table.concat(new_lines, "\n"),
+        { result_type = "indices", algorithm = "histogram" }
+    )
+
+    if not diff or #diff == 0 then
+        return
     end
+
+    ---@type lsp.TextEdit[]
+    local text_edits = {}
+    local line_offset = (is_visual and opts.only_selection) and (row_start - 1)
+        or 0
+
+    ---@diagnostic disable-next-line: param-type-mismatch
+    for i, hunk in ipairs(diff) do
+        local old_start, old_count, new_start, new_count = unpack(hunk)
+
+        local lines = {}
+        for j = new_start, new_start + new_count - 1 do
+            table.insert(lines, new_lines[j])
+        end
+
+        local is_last_hunk = i == #diff
+        local is_at_eof = (line_offset + old_start - 1 + old_count)
+            >= vim.api.nvim_buf_line_count(0)
+        local needs_newline = new_count > 0 and not (is_last_hunk and is_at_eof)
+
+        table.insert(text_edits, {
+            range = {
+                start = {
+                    line = line_offset + old_start - 1,
+                    character = 0,
+                },
+                ["end"] = {
+                    line = line_offset + old_start - 1 + old_count,
+                    character = 0,
+                },
+            },
+            newText = table.concat(lines, "\n")
+                .. (needs_newline and "\n" or ""),
+        })
+    end
+
+    local view = vim.fn.winsaveview()
+
+    vim.lsp.util.apply_text_edits(
+        text_edits,
+        vim.api.nvim_get_current_buf(),
+        vim.o.encoding
+    )
 
     if opts.auto_indent then
-        if is_visual then
-            vim.api.nvim_command(
-                ("%d,%dnormal! =="):format(row_start, row_start + #output_lines)
-            )
-        else
-            vim.api.nvim_command("normal! gg=G")
-        end
+        vim.api.nvim_cmd({
+            cmd = "normal",
+            args = { "==" },
+            bang = true,
+            range = {
+                row_start,
+                math.min(row_end, vim.api.nvim_buf_line_count(0)),
+            },
+        }, { output = false })
     end
+
+    vim.fn.winrestview(view)
 end
 
 --- Check if `val` is a list of type `t` (if given)
