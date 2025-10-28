@@ -88,6 +88,7 @@ end
 ---| '"in_place"'
 
 ---@class ow.FormatOptions
+---@field buf integer Buffer to apply formatting to
 ---@field cmd string[] Command to run. The following keywords get replaces by the specified values:
 ---                    * %file%         - path to the current file
 ---                    * %filename%     - name of the current file
@@ -98,16 +99,17 @@ end
 ---                    * %byte_start%   - byte count of first cell in selection
 ---                    * %byte_end%     - byte count of last cell in selection
 ---@field output OutputStream What stream to use as the result. May be one of `stdout`, `stderr` or `in_place`.
----@field auto_indent? boolean Perform auto indent on formatted range
----@field only_selection? boolean Only send the selected lines to `stdin`
----@field ignore_ret? boolean Ignore non-zero return codes
----@field ignore_stderr? boolean Ignore stderr output when not using stderr for output
----@field env? table<string, string> Map of environment variables
+---@field auto_indent boolean Perform auto indent on formatted range
+---@field only_selection boolean Only send the selected lines to `stdin`
+---@field ignore_ret boolean Ignore non-zero return codes
+---@field ignore_stderr boolean Ignore stderr output when not using stderr for output
+---@field env table<string, string> Map of environment variables
 local FormatOptions = {}
 FormatOptions.__index = FormatOptions
 
 function FormatOptions.from_opts(opts)
     return setmetatable({
+        buf = opts.buf or vim.api.nvim_get_current_buf(),
         cmd = opts.cmd,
         output = opts.output,
         auto_indent = opts.auto_indent or false,
@@ -119,7 +121,7 @@ function FormatOptions.from_opts(opts)
 end
 
 --- Format buffer
----@param opts ow.FormatOptions
+---@param opts table
 function Util.format(opts)
     opts = FormatOptions.from_opts(opts)
 
@@ -134,8 +136,8 @@ function Util.format(opts)
         return
     end
 
-    local file = vim.fn.expand("%")
-    local filename = vim.fn.expand("%:t")
+    local file = vim.api.nvim_buf_get_name(opts.buf)
+    local filename = vim.fn.fnamemodify(file, ":t")
 
     local mode = vim.fn.mode()
     local is_visual = mode == "v" or mode == "V" or mode == ""
@@ -157,22 +159,37 @@ function Util.format(opts)
 
         if mode == "V" then
             col_start = 1
-            col_end = #vim.fn.getline(row_end)
+            col_end = #vim.api.nvim_buf_get_lines(
+                opts.buf,
+                row_end - 1,
+                row_end,
+                false
+            )[1]
         end
     else
         row_start = 1
         col_start = 1
-        row_end = vim.api.nvim_buf_line_count(0)
-        col_end = #vim.fn.getline(row_end)
+        row_end = vim.api.nvim_buf_line_count(opts.buf)
+        col_end = #vim.api.nvim_buf_get_lines(
+            opts.buf,
+            row_end - 1,
+            row_end,
+            false
+        )[1]
     end
 
-    local byte_start = vim.fn.line2byte(row_start) - 1 + col_start - 1
-    local byte_end = vim.fn.line2byte(row_end) - 1 + col_end
+    local function get_byte_offset(buf, row, col)
+        local lines = vim.api.nvim_buf_get_text(buf, 0, 0, row - 1, col - 1, {})
+        return #table.concat(lines, "\n")
+    end
+
+    local byte_start = get_byte_offset(opts.buf, row_start, col_start)
+    local byte_end = get_byte_offset(opts.buf, row_end, col_end) + 1
 
     local input
     if is_visual and opts.only_selection then
         input = vim.api.nvim_buf_get_text(
-            0,
+            opts.buf,
             row_start - 1,
             col_start - 1,
             row_end - 1,
@@ -180,7 +197,7 @@ function Util.format(opts)
             {}
         )
     else
-        input = vim.api.nvim_buf_get_lines(0, 0, -1, false)
+        input = vim.api.nvim_buf_get_lines(opts.buf, 0, -1, false)
     end
 
     local tmp
@@ -292,7 +309,7 @@ function Util.format(opts)
 
         local is_last_hunk = i == #diff
         local is_at_eof = (line_offset + old_start - 1 + old_count)
-            >= vim.api.nvim_buf_line_count(0)
+            >= vim.api.nvim_buf_line_count(opts.buf)
         local needs_newline = new_count > 0 and not (is_last_hunk and is_at_eof)
 
         table.insert(text_edits, {
@@ -313,11 +330,7 @@ function Util.format(opts)
 
     local view = vim.fn.winsaveview()
 
-    vim.lsp.util.apply_text_edits(
-        text_edits,
-        vim.api.nvim_get_current_buf(),
-        vim.o.encoding
-    )
+    vim.lsp.util.apply_text_edits(text_edits, opts.buf, vim.o.encoding)
 
     if opts.auto_indent then
         vim.api.nvim_cmd({
@@ -326,7 +339,7 @@ function Util.format(opts)
             bang = true,
             range = {
                 row_start,
-                math.min(row_end, vim.api.nvim_buf_line_count(0)),
+                math.min(row_end, vim.api.nvim_buf_line_count(opts.buf)),
             },
         }, { output = false })
     end
