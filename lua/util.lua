@@ -295,11 +295,9 @@ function Util.format(opts)
 
     ---@type lsp.TextEdit[]
     local text_edits = {}
-    local line_offset = (is_visual and opts.only_selection) and (row_start - 1)
-        or 0
 
     ---@diagnostic disable-next-line: param-type-mismatch
-    for i, hunk in ipairs(diff) do
+    for _, hunk in ipairs(diff) do
         local old_start, old_count, new_start, new_count = unpack(hunk)
 
         local lines = {}
@@ -307,24 +305,32 @@ function Util.format(opts)
             table.insert(lines, new_lines[j])
         end
 
-        local is_last_hunk = i == #diff
-        local is_at_eof = (line_offset + old_start - 1 + old_count)
-            >= vim.api.nvim_buf_line_count(opts.buf)
-        local needs_newline = new_count > 0 and not (is_last_hunk and is_at_eof)
+        local new_text = table.concat(lines, "\n") .. "\n"
+        if new_count == 0 then
+            new_text = ""
+        end
+
+        local start_line = row_start - 1 + old_start - 1
+        local end_line = row_start - 1 + old_start - 1 + old_count
+        if old_count == 0 then
+            -- Insertion: old_start means "after line N" (where N is 1-indexed),
+            --            which equals the 0-indexed position old_start
+            start_line = start_line + 1
+            end_line = end_line + 1
+        end
 
         table.insert(text_edits, {
             range = {
                 start = {
-                    line = line_offset + old_start - 1,
+                    line = start_line,
                     character = 0,
                 },
                 ["end"] = {
-                    line = line_offset + old_start - 1 + old_count,
+                    line = end_line,
                     character = 0,
                 },
             },
-            newText = table.concat(lines, "\n")
-                .. (needs_newline and "\n" or ""),
+            newText = new_text,
         })
     end
 
