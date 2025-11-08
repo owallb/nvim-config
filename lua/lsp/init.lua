@@ -419,7 +419,8 @@ function M.setup()
     })
 
     vim.lsp.config("pyright", {
-        on_attach = M.with_defaults("pyright"),
+        -- Handled in ruff instead
+        -- on_attach = M.with_defaults("pyright"),
         settings = {
             python = {
                 analysis = {
