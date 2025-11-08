@@ -140,6 +140,7 @@ function M.setup()
                     lhs = "<leader>lf",
                     rhs = function()
                         util.format({
+                            buf = bufnr,
                             cmd = { "shfmt", "-s", "-i", "4", "-" },
                             output = "stdout",
                         })
@@ -221,6 +222,7 @@ function M.setup()
                     lhs = "<leader>lf",
                     rhs = function()
                         util.format({
+                            buf = bufnr,
                             cmd = {
                                 "golines",
                                 "-m",
@@ -278,6 +280,7 @@ function M.setup()
                     rhs = function()
                         vim.lsp.buf.format()
                         util.format({
+                            buf = bufnr,
                             cmd = {
                                 "php-cs-fixer",
                                 "fix",
@@ -370,6 +373,7 @@ function M.setup()
                     lhs = "<leader>lf",
                     rhs = function()
                         util.format({
+                            buf = bufnr,
                             cmd = {
                                 "stylua",
                                 "--stdin-filepath",
@@ -386,6 +390,7 @@ function M.setup()
                     lhs = "<leader>lf",
                     rhs = function()
                         util.format({
+                            buf = bufnr,
                             cmd = {
                                 "stylua",
                                 "--range-start",
@@ -440,6 +445,7 @@ function M.setup()
                     rhs = function()
                         vim.lsp.buf.format()
                         util.format({
+                            buf = bufnr,
                             cmd = {
                                 "ruff",
                                 "check",
