@@ -157,3 +157,12 @@ vim.api.nvim_create_autocmd("TermLeave", {
         vim.cmd.checktime()
     end,
 })
+
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = { "vim", "help" },
+    callback = function(args)
+        vim.keymap.set("n", "K", function()
+            vim.cmd("help " .. vim.fn.expand("<cexpr>"))
+        end, { buffer = args.buf })
+    end,
+})

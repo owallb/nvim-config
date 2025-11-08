@@ -42,15 +42,15 @@ function Keymap.set_defaults(bufnr)
         },
         { mode = { "n" }, lhs = "gD", rhs = vim.lsp.buf.declaration },
         {
-            mode = { "n", "i" },
-            lhs = "<C-k>",
+            mode = "n",
+            lhs = "K",
             rhs = function()
                 vim.lsp.buf.hover({ border = "rounded", max_width = 80 })
             end,
         },
         {
-            mode = { "n", "i" },
-            lhs = "<C-j>",
+            mode = "i",
+            lhs = "<C-s>",
             rhs = function()
                 vim.lsp.buf.signature_help({
                     border = "rounded",
