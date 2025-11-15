@@ -45,6 +45,7 @@ return {
                                 return ctx.label
                             end,
                             highlight = function(ctx)
+
                                 local highlights = {
                                     {
                                         0,
