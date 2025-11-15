@@ -18,7 +18,6 @@ return {
             documentation = {
                 auto_show = true,
                 window = {
-                    border = "rounded",
                     winhighlight = "",
                 },
             },
@@ -32,6 +31,7 @@ return {
                 },
             },
             menu = {
+                border = "none",
                 draw = {
                     align_to = "simple_label",
                     columns = {
@@ -75,7 +75,6 @@ return {
         signature = {
             enabled = true,
             window = {
-                border = "rounded",
                 winhighlight = "",
                 show_documentation = false,
             },

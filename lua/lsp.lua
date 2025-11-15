@@ -38,17 +38,14 @@ local function set_keymaps(bufnr)
             mode = "n",
             lhs = "K",
             rhs = function()
-                vim.lsp.buf.hover({ border = "rounded", max_width = 80 })
+                vim.lsp.buf.hover({ max_width = 80 })
             end,
         },
         {
             mode = { "i", "s" },
             lhs = "<C-s>",
             rhs = function()
-                vim.lsp.buf.signature_help({
-                    border = "rounded",
-                    max_width = 80,
-                })
+                vim.lsp.buf.signature_help({ max_width = 80 })
             end,
         },
         {
