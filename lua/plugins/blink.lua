@@ -13,9 +13,6 @@ return {
                     auto_show = true,
                 },
             },
-            keymap = {
-                preset = "inherit",
-            },
         },
         completion = {
             documentation = {
