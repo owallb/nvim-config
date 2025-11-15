@@ -42,7 +42,7 @@ local function set_keymaps(bufnr)
             end,
         },
         {
-            mode = "i",
+            mode = { "i", "s" },
             lhs = "<C-s>",
             rhs = function()
                 vim.lsp.buf.signature_help({
@@ -141,12 +141,6 @@ function M.on_attach(client, bufnr)
         string.format(".%s.json", client.name),
         client.settings
     ) or client.settings
-
-    if client:supports_method("textDocument/completion") then
-        vim.lsp.completion.enable(true, client.id, bufnr, {
-            autotrigger = true,
-        })
-    end
 end
 
 function M.setup()
@@ -192,6 +186,11 @@ function M.setup()
     })
 
     local capabilities = vim.lsp.protocol.make_client_capabilities()
+    capabilities = vim.tbl_deep_extend(
+        "force",
+        capabilities,
+        require("blink.cmp").get_lsp_capabilities({}, false)
+    )
     vim.lsp.config("*", {
         capabilities = capabilities,
         on_attach = M.on_attach,
