@@ -87,7 +87,6 @@ return {
                 "lsp",
                 "path",
                 "snippets",
-                "buffer",
             },
         },
         keymap = {
