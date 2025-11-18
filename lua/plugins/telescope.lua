@@ -17,6 +17,7 @@ return {
         local telescope = require("telescope")
         local builtin = require("telescope.builtin")
         local actions = require("telescope.actions")
+        local utils = require("telescope.utils")
 
         telescope.setup({
             defaults = {
@@ -131,6 +132,20 @@ return {
                         "--iglob=!.git",
                     }
                 end,
+                previewer = true,
+            })
+        end)
+        vim.keymap.set("n", "<leader>fG", function()
+            builtin.live_grep({
+                additional_args = function(_)
+                    return {
+                        "--hidden",
+                        "--iglob=!.venv",
+                        "--iglob=!vendor",
+                        "--iglob=!.git",
+                    }
+                end,
+                cwd = utils.buffer_dir(),
                 previewer = true,
             })
         end)
