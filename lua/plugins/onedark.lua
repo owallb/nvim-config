@@ -7,6 +7,7 @@ return {
 
         local c = require("onedark.colors")
         local highlights = {
+            ["@string.special.url"] = { fg = "NONE", fmt = "NONE" },
             Cursor = { fg = c.bg, bg = c.fg, fmt = "NONE" },
             NormalFloat = { bg = c.bg0 },
             FloatBorder = { bg = c.bg0 },
