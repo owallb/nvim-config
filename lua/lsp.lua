@@ -18,7 +18,7 @@ M.diagnostic_signs = {
 ---@param bufnr integer
 local function set_keymaps(bufnr)
     local keymaps = {
-        { mode = { "n" }, lhs = "<leader>df", rhs = vim.diagnostic.open_float },
+        { mode = { "n" }, lhs = "<leader>dk", rhs = vim.diagnostic.open_float },
         {
             mode = { "n" },
             lhs = "[d",
