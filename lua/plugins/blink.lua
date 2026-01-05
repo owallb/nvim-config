@@ -38,7 +38,6 @@ return {
                                 return ctx.label
                             end,
                             highlight = function(ctx)
-
                                 local highlights = {
                                     {
                                         0,
@@ -88,6 +87,8 @@ return {
             ["<S-Tab>"] = { "insert_prev", "fallback" },
             ["<CR>"] = { "accept", "fallback" },
             ["<C-k>"] = { "show_signature", "hide_signature", "fallback" },
+            ["<C-n>"] = { "snippet_forward", "fallback" },
+            ["<C-p>"] = { "snippet_backward", "fallback" },
         },
     },
     opts_extend = { "sources.default" },
