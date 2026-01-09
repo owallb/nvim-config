@@ -1,53 +1,54 @@
 -- https://github.com/nvim-treesitter/nvim-treesitter
 
+local languages = {
+    "dap_repl",
+    "bash",
+    "zsh",
+    "python",
+    "c",
+    "cpp",
+    "lua",
+    "luadoc",
+    "vim",
+    "vimdoc",
+    "php",
+    "phpdoc",
+    "rust",
+    "comment",
+    "gitcommit",
+}
+
 ---@type LazyPluginSpec
 return {
     "nvim-treesitter/nvim-treesitter",
-    branch = "master",
-    build = ":TSUpdate",
-    event = "VeryLazy",
+    lazy = false,
+    build = function()
+        local ts = require("nvim-treesitter")
+        ts.install(languages):await(ts.update)
+    end,
     dependencies = {
         {
             "LiadOz/nvim-dap-repl-highlights",
             config = true,
         },
     },
-    opts = {
-        ensure_installed = {
-            "c", -- recommended default
-            "lua", -- recommended default
-            "vim", -- recommended default
-            "vimdoc", -- recommended default
-            "query", -- recommended default
-            "luadoc",
-            "phpdoc",
-            "comment",
-            "dap_repl",
-        },
-        auto_install = true,
-        highlight = {
-            enable = true,
-            disable = { "dockerfile" },
+    config = function()
+        local filetypes = {}
+        for _, lang in ipairs(languages) do
+            for _, ft in ipairs(vim.treesitter.language.get_filetypes(lang)) do
+                if not vim.list_contains(filetypes, ft) then
+                    table.insert(filetypes, ft)
+                end
+            end
+        end
 
-            -- Setting this to true will run `:h syntax` and tree-sitter at the same time.
-            -- Set this to `true` if you depend on 'syntax' being enabled (like for indentation).
-            -- Using this option may slow down your editor, and you may see some duplicate highlights.
-            -- Instead of true it can also be a list of languages
-            additional_vim_regex_highlighting = { "org", "php", "python" },
-        },
-    },
-    config = function(_, opts)
-        require("nvim-treesitter.configs").setup(opts)
-
-        vim.opt.foldmethod = "expr"
-        vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
-
-        -- Disable LSP semantic highlighting for lua comments because it will
-        -- otherwise override highlights from `comment`.
-        vim.api.nvim_set_hl(0, "@lsp.type.comment.lua", {})
-
-        -- To set the priority of semantic highlighting lower than treesitter (100),
-        -- uncomment the line below:
-        -- vim.hl.priorities.semantic_tokens = 99
+        vim.api.nvim_create_autocmd("FileType", {
+            pattern = filetypes,
+            callback = function()
+                vim.treesitter.start()
+                vim.wo.foldmethod = "expr"
+                vim.wo.foldexpr = "v:lua.vim.treesitter.foldexpr()"
+            end,
+        })
     end,
 }
