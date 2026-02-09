@@ -1,3 +1,6 @@
+> [!WARNING]
+> This project has moved to [codeberg.org/warg/nvim-config](https://codeberg.org/warg/nvim-config).
+
 My Neovim config.
 
 ## System Requirements
